@@ -3,11 +3,43 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
-
-
+    <link rel="stylesheet" href="components/angular-material/angular-material.min.css"/>
+    <link rel="stylesheet" href="components/angular-material/themes/default-theme.css"/>
 </head>
 <body>
 
-<script type="text/javascript" data-main="/js/main.js" src="/components/require/build/require.min.js"></script>
+<div ng-controller="LoginController" layout="column">
+    <md-content md-theme="light-blue-dark">
+        <form style="padding: 20px;">
+            <div class="row">
+                <md-text-float label="Title" ng-model="user.title"></md-text-float>
+                <md-text-float label="eMail" ng-model="user.email" type="email"></md-text-float>
+            </div>
+        </form>
+    </md-content>
+
+    <md-content>
+        <form style="padding: 20px;">
+            <md-text-float label="Company" ng-model="user.company" disabled></md-text-float>
+            <div class="row">
+                <md-text-float label="FirstName" ng-model="user.firstName"></md-text-float>
+                <md-text-float label="LastName" ng-model="user.lastName" class="long"></md-text-float>
+            </div>
+            <md-text-float label="Address" ng-model="user.address"></md-text-float>
+            <div class="row">
+                <md-text-float label="City" ng-model="user.city"></md-text-float>
+                <md-text-float label="State" ng-model="user.state"></md-text-float>
+                <md-text-float label="Postal Code" ng-model="user.postalCode"></md-text-float>
+            </div>
+            <md-text-float label="Country" ng-model="user.country" disabled></md-text-float>
+        </form>
+    </md-content>
+
+</div>
+
+
+<!--Le scripts-->
+<script type="text/javascript" data-main="/js/main.js" src="./components/requirejs/require.js"></script>
+
 </body>
 </html>

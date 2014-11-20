@@ -17,6 +17,7 @@
     "passport": "^0.2.1",
     "passport-http": "^0.2.2",
     "passport-local": "^1.0.0",
+    "require.js": "^0.3.94",
     "underscore": "^1.7.0",
     "validator": "^3.22.1"
   },
@@ -82,7 +83,7 @@
     "passfail": false,
     "white": false,
     "maxerr": 100,
-    "predef": [],
+    "predef": ["angular"],
     "indent": 4
   }
 }
