@@ -1,10 +1,8 @@
-
-import * as Config from 'config';
-
-var  Path, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GoogleStrategy, conn, server;
+var Path, Config, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GoogleStrategy, conn, server;
 
 //Node Modules
-Path = require('path')
+Path = require('path');
+Config = require('./config.js');
 Express = require('express');
 ExpressSession = require('express-session');
 ExpressBodyParser = require('body-parser');
@@ -39,7 +37,9 @@ server.post('/signup', require("./routes/signup"));
 
 server.listen(Config.http.port, Config.http.ip, function (error) {
     if (error) {
+        return console.log(error);
         throw error;
     }
-    return console.log(error);
+
+    console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
 });
