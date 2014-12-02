@@ -1,7 +1,7 @@
-/* eslint-env node */
-"use strict";
 
-var Config, Path, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GoogleStrategy, conn, server;
+import * as Config from 'config';
+
+var  Path, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GoogleStrategy, conn, server;
 
 //Node Modules
 Path = require('path')
@@ -10,9 +10,6 @@ ExpressSession = require('express-session');
 ExpressBodyParser = require('body-parser');
 Mongoose = require('mongoose');
 Passport = require('passport');
-
-//App Modules
-Config = require('./config');
 
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {

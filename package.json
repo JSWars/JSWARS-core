@@ -47,7 +47,7 @@
     "debug": false,
     "eqnull": false,
     "es5": false,
-    "esnext": false,
+    "esnext": true,
     "evil": false,
     "expr": false,
     "funcscope": false,
@@ -83,7 +83,7 @@
     "passfail": false,
     "white": false,
     "maxerr": 100,
-    "predef": ["angular"],
+    "predef": ["angular","require","define"],
     "indent": 4
   }
 }
