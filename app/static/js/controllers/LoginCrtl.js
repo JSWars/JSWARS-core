@@ -17,5 +17,7 @@ define([
             $scope.data.selectedIndex = Math.max($scope.data.selectedIndex - 1, 0);
         };
 
+        $scope.test =  "pelotudaso";
+
     }]);
 });

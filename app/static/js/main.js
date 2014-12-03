@@ -26,9 +26,6 @@ require.config({
         'angular-ui-router': {
             'deps': ['angular']
         },
-        'ocLazyLoad': {
-            'deps': ['angular']
-        },
         'angular-material': {
             'deps': ['angular', 'hammer', 'angular-aria', 'angular-animate']
         }
@@ -38,7 +35,7 @@ require.config({
 require([
     'app',
     'domReady',
-    'ocLazyLoad'
+    'js/controllers/LoginCrtl'
 ], function (app, domReady) {
 
     app.run(
@@ -84,17 +81,7 @@ require([
                     .state("login", {
                         url: "/login",
                         templateUrl: './views/LoginView.html',
-                        controller: "LoginController as LoginCrtl",
-                        resolve: {
-                            controller: function ($ocLazyLoad) {
-                                return $ocLazyLoad.load(
-                                    {
-                                        name: "LoginCrtl",
-                                        files: ["/js/controllers/LoginCrtl.js"]
-                                    }
-                                );
-                            }
-                        }
+                        controller: "LoginController as LoginController"
                     })
 
                     ///////////
