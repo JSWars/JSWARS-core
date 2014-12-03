@@ -2,12 +2,6 @@
 var _,Team,GridMap;
 
 
-/**
- * Created by JumpToFive.com
- * User: Luis Sebastián Huerta
- * Date: 12/10/13
- * Time: 17:19
- */
 
 _ = require("underscore");
 Team = require("./Team");
@@ -15,13 +9,13 @@ GridMap = require("./GridMap");
 
 /**
  * Representa un juego
- * @param {Map} _map Mapa sobre el que se va a presentar el juego
+ * @param {GridMap} _map Mapa sobre el que se va a presentar el juego
  * @param {Object} _teamPrototypes Prototipos para los equipos
  * @constructor
  */
 function Game(_map, _teamPrototypes) {
     //Checks
-    if (!_map instanceof Map) {
+    if (!_map instanceof GridMap) {
         throw "El parámetro 'map' debe ser un objeto válido 'Map'.";
     }
 
@@ -35,6 +29,15 @@ function Game(_map, _teamPrototypes) {
     }
 
 }
+
+Game.prototype.render=function(){
+    this.map.render();
+
+};
+
+/**
+ * GETTERS & SETTERS
+ */
 
 /**
  * Devuelve el mapa que se está usando en el juego

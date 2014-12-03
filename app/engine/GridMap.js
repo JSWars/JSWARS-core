@@ -1,7 +1,6 @@
 "use strict";
 var Point2D,Vector2D;
 
-
 Point2D = require("./vendor/Point2D");
 Vector2D = require("./vendor/Vector2D");
 
@@ -20,12 +19,12 @@ var TYPE={
  * @param colMap {int[][]} Array que representa el estado del mapa
  * @constructor
  */
-function GridMap(_name,_colMap){
+function GridMap(_name){
     // Map Attributes
     this.name   = _name;
-    this.colMap = _colMap || []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
-    this.width  = 500;//_colMap.length(); //_colMap.width(); //TODO:fix para debug
-    this.height = 500;//_colMap.length[0](); //_colMap.height(); //TODO:fix para debug
+    this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
+    this.width  = 25;//_colMap.length(); //_colMap.width(); //TODO:fix para debug
+    this.height = 25;//_colMap.length[0](); //_colMap.height(); //TODO:fix para debug
     this.scale  = 1;
     //this.initializeColMap();
 }
@@ -36,15 +35,25 @@ function GridMap(_name,_colMap){
  * Initialize a blank col map with walls in the boundaries.
  */
 GridMap.prototype.initializeColMap=function(){
+
+    //Rellenamos los bordes con bloques
     for(var i=0;i<this.width;i+=1){
+        this.colMap[i]=[];
         for(var j=0;j<this.height;j+=1){
-            if(i===0||i===this.width||j===0||j===this.height)
+            if(i===0||i===this.width-1||j===0||j===this.height-1)
             {
-                this.getColMap()[i][j]=TYPE.BLOCK;
+                this.colMap[i][j]=TYPE.BLOCK;
+            }else{
+                this.colMap[i][j]=TYPE.AIR;
             }
-            this.getColMap()[i][j]=TYPE.AIR;
+
         }
     }
+
+    //Ponemos algun murico
+    this.setWall(new Point2D(10,10),new Point2D(10,15));
+    this.setWall(new Point2D(15,10),new Point2D(15,15));
+    console.log("Mapa inicializado.");
 };
 
 /**
@@ -84,6 +93,24 @@ GridMap.prototype.loadColMap=function(_name){
  */
 GridMap.prototype.saveColMap=function(_name){
 
+};
+
+GridMap.prototype.getBlockAscii=function(_block){
+    return _block===TYPE.BLOCK?"#":" ";
+};
+
+
+
+GridMap.prototype.render=function(){
+
+    var render="";
+    for(var i=0;i<this.width;i+=1){
+        for(var j=0;j<this.height;j+=1) {
+            render+=" "+this.getBlockAscii(this.colMap[i][j])+" ";
+        }
+        render+="\n";
+    }
+    console.log(render);
 };
 
 /**

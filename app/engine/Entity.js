@@ -1,7 +1,7 @@
 "use strict";
 var V2D;
 
-V2D = require("../vendor/Vector2D");
+V2D = require("./vendor/Vector2D");
 
 var TO_RADIANS = Math.PI / 180;
 
@@ -20,7 +20,7 @@ var TO_RADIANS = Math.PI / 180;
 function Entity(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
     this.alive = true;
     this.position = _position;
-    this.body = null; // todo crear objeto de tipo Polygon.
+    this.body = null;
     this.speed = _speed;
     this.armor = _armor;
     this.speed = 0;
@@ -29,11 +29,11 @@ function Entity(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
 
 
 Entity.prototype.applyInputs=function(_input){
-    //todo NEED SOME CODE HERE MADAFAKA
+
 };
 
 Entity.prototype.checksCollision=function(){
-    //todo pato pato pato pato
+
 };
 
 /**
