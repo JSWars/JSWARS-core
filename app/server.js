@@ -22,7 +22,7 @@ server.use(ExpressBodyParser.urlencoded({extended: true}));
 server.use(ExpressSession({resave: true, saveUninitialized: true, secret: 'a6277604a'}))
 server.use(Passport.initialize());
 server.use(Passport.session()); // persistent login sessions
-server.use('/', Express.static(Path.join(__dirname, '/static')));
+//server.use('/', Express.static(Path.join(__dirname, '/static')));
 
 
 Passport.use(require('./auth/BasicStrategy'));

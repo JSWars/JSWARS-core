@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marcos Perez Ferro",
-  "license": "ISC",
+  "author": "Marcos Perez Ferro y Luis Sebastián Huerta",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.9.2",
     "coffee-script": "^1.8.0",
@@ -22,7 +22,6 @@
     "validator": "^3.22.1"
   },
   "devDependencies": {
-    "bower": "^1.3.12",
     "grunt": "^0.4.5",
     "grunt-exec": "^0.4.6"
   },
@@ -83,7 +82,7 @@
     "passfail": false,
     "white": false,
     "maxerr": 100,
-    "predef": ["angular","require","define"],
+    "predef": ["require","define"],
     "indent": 4
   }
 }
