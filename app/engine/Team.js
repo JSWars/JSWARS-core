@@ -5,7 +5,7 @@ var Vector2D,Entity;
 
 
 Vector2D = require("./vendor/Vector2D");
-Entity = require("./Entity");
+Entity = require("./Unit");
 
 /**
  * Representa un equipo
@@ -13,16 +13,23 @@ Entity = require("./Entity");
  * @param _entityNumber Número de entidades
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
-function Team(_name, _entityNumber) {
-    this.alive = 1;
+function Team(_name) {
+    this.alive = true;
     this.name = (_name && _name.trim()) || "Guest";
-    this.tanks = {};
+    this.units = {};
 
-    for (var i = 0; i < _entityNumber; i+=1) {
-        this.tanks[i] = new Entity();
-    }
+
 
 }
+
+/**
+ * Añade una unidad al equipo
+ * @param {Unit} _unit
+ */
+Team.prototype.addUnit=function(_unit){
+  this.units.push(_unit);
+};
+
 
 
 

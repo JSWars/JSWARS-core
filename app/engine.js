@@ -20,4 +20,4 @@ var game = new Game(testMap,teamsPrototypes);
 
 
 
-testMap.render();
+game.render();

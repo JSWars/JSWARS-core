@@ -23,8 +23,8 @@ function GridMap(_name){
     // Map Attributes
     this.name   = _name;
     this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
-    this.width  = 25;//_colMap.length(); //_colMap.width(); //TODO:fix para debug
-    this.height = 25;//_colMap.length[0](); //_colMap.height(); //TODO:fix para debug
+    this.width  = 25;//_colMap.length(); //_colMap.width();
+    this.height = 25;//_colMap.length[0](); //_colMap.height();
     this.scale  = 1;
     //this.initializeColMap();
 }
@@ -51,8 +51,9 @@ GridMap.prototype.initializeColMap=function(){
     }
 
     //Ponemos algun murico
-    this.setWall(new Point2D(10,10),new Point2D(10,15));
-    this.setWall(new Point2D(15,10),new Point2D(15,15));
+    this.setHorizontalWall(new Point2D(5,5),15);
+    this.setHorizontalWall(new Point2D(20,5),15);
+
     console.log("Mapa inicializado.");
 };
 
@@ -80,6 +81,18 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
     }
 };
 
+
+/**
+ *
+ * @param _ini
+ * @param _fin
+ */
+GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
+    for(var i=_posIni.y;i<(_posIni.y+_lenght);i+=1){
+        this.colMap[_posIni.x][i]=TYPE.BLOCK;
+    }
+};
+
 /**
  *  todo Lee el mapa de colisiones de un fichero o de base de datos
  */
@@ -103,14 +116,7 @@ GridMap.prototype.getBlockAscii=function(_block){
 
 GridMap.prototype.render=function(){
 
-    var render="";
-    for(var i=0;i<this.width;i+=1){
-        for(var j=0;j<this.height;j+=1) {
-            render+=" "+this.getBlockAscii(this.colMap[i][j])+" ";
-        }
-        render+="\n";
-    }
-    console.log(render);
+
 };
 
 /**
@@ -175,7 +181,7 @@ GridMap.prototype.isOutsideBounds=function(_point){
  * Checks if, between two positions, there is no obstacle, taking into account the radius of the ship.
  * @param _posIni {Point2D}
  * @param _posFin {Point2D}
- * @param _object {Entity}
+ * @param _object {Unit}
  * @param _radius {double}
  *
  * @return {boolean}
@@ -189,7 +195,7 @@ GridMap.prototype.checkObsFree = function(_posIni, _posFin, _object, _radius){
  * Returns the distance to the fist obstacle found, or -1 if no obstacle.
  * @param _posIni {Point2D}
  * @param _posFin {Point2D}
- * @param _object {Entity}
+ * @param _object {Unit}
  * @param _radius {double}
  */
 GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius){

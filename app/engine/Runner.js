@@ -7,17 +7,6 @@ Game = require("./Game");
 Config = require("./Config");
 
 
-Runner.STATES = {
-    INITIALIZING: 0,
-    RUNNING: 1,
-    PAUSED: 2,
-    ENDED: 3
-};
-
-Runner.CONTROLLER_TYPE = {
-    AGENT: 1,
-    REMOTE: 2 //Unused
-};
 
 /**
  * Representa un controlador que se ocupará de gestionar todos los movimientos del juego en
@@ -39,6 +28,18 @@ function Runner(_game, _fps) {
 
 
 }
+Runner.STATES = {
+    INITIALIZING: 0,
+    RUNNING: 1,
+    PAUSED: 2,
+    ENDED: 3
+};
+
+Runner.CONTROLLER_TYPE = {
+    AGENT: 1,
+    REMOTE: 2 //Unused
+};
+
 
 /**
  * Inicia la partida
@@ -77,45 +78,7 @@ Runner.prototype._isAlive = function (_e) {
 };
 
 
-/**
- * Procesa un equipo, solicitando para ello un tick al controlador
- * @param _team Objeto del equipo
- * @param _teamId Identificador del equipo.
- * @private
- */
-Runner.prototype._processTeam = function (_team, _teamId) {
-    var teamController = this.controllers[_teamId];
-    var controllerOutput = teamController.tick();
 
-    _(_team.tanks)
-        .chain()
-        .filter(this._isAlive)
-        .each(function(_tank,_tankId){
-            this._processTank(_tank,_tankId,controllerOutput.getTankOutput(_tankId));
-        }, this)
-
-    if(_.countBy(_team.tanks,this._isAlive)["true"]==0){
-        _team.setAlive(false);
-    }
-
-}
-
-/**
- *
- */
-Runner.prototype.tick = function () {
-
-    !Config.debug || console.log("Procesando tick para el juego");
-
-    _(this.game.teams)
-        .chain()
-        .filter(this._isAlive)
-        .each(this._processTeam, this);
-
-    if(_.countBy(this.game.teams,this._isAlive)["true"]<=1){
-        this.end();
-    }
-}
 
 
 module.exports = Runner;
