@@ -1,21 +1,34 @@
 "use strict";
-var Vector2D,Entity;
-
-
+var Vector2D,Point2D,Entity;
 
 
 Vector2D = require("./vendor/Vector2D");
+Point2D = require("./vendor/Point2D");
 Entity = require("./Unit");
 
 /**
  * Representa un equipo
- * @param _name Nombre del equipo
- * @param _entityNumber Número de entidades
+ * @param {string} _name Nombre del equipo
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
 function Team(_name) {
+
+    /**
+     * Indica si el equipo entero sigue vivo
+     * @type {boolean}
+     */
     this.alive = true;
+
+    /**
+     * Nombre del equipo
+     * @type {string}
+     */
     this.name = (_name && _name.trim()) || "Guest";
+
+    /**
+     * Unidades del equipo
+     * @type {Unit[]}
+     */
     this.units = {};
 
 
@@ -69,7 +82,7 @@ Team.prototype.getName = function () {
  * @param Identificador
  * @returns Tanque
  */
-Team.prototype.getTank = function (id) {
+Team.prototype.Unit = function (id) {
     return this.tanks[id];
 };
 

@@ -73,19 +73,19 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
         throw 'Some of the points is outside bounds of the map';
     }
 
-
-    for(var i=_posIni.x;(_posIni.x<_posFin.x)?i<_posFin.x:i>_posFin.x;(_posIni.x<_posFin.x)?i+=1:i-=1){
-        for(var j=_posIni.y;(_posIni.y<_posFin.y)?j<_posFin.y:j>_posFin.y;(_posIni.y<_posFin.y)?j+=1:j-=1){
-            this.getColMap()[i][j]=TYPE.BLOCK;
-        }
-    }
+    //TODO ESTO DE AQUI ABAJO NO FUNKA
+    //for(var i=_posIni.x;(_posIni.x<_posFin.x)?i<_posFin.x:i>_posFin.x;(_posIni.x<_posFin.x)?i+=1:i-=1){
+    //    for(var j=_posIni.y;(_posIni.y<_posFin.y)?j<_posFin.y:j>_posFin.y;(_posIni.y<_posFin.y)?j+=1:j-=1){
+    //        this.getColMap()[i][j]=TYPE.BLOCK;
+    //    }
+    //}
 };
 
 
 /**
  *
- * @param _ini
- * @param _fin
+ * @param {Point2D} _ini
+ * @param {Point2D} _fin
  */
 GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
     for(var i=_posIni.y;i<(_posIni.y+_lenght);i+=1){
@@ -114,10 +114,6 @@ GridMap.prototype.getBlockAscii=function(_block){
 
 
 
-GridMap.prototype.render=function(){
-
-
-};
 
 /**
  * Obtiene el tipo de celda del mapa de colisiones de un punto dado.
@@ -182,7 +178,7 @@ GridMap.prototype.isOutsideBounds=function(_point){
  * @param _posIni {Point2D}
  * @param _posFin {Point2D}
  * @param _object {Unit}
- * @param _radius {double}
+ * @param _radius {number}
  *
  * @return {boolean}
  */
@@ -196,7 +192,7 @@ GridMap.prototype.checkObsFree = function(_posIni, _posFin, _object, _radius){
  * @param _posIni {Point2D}
  * @param _posFin {Point2D}
  * @param _object {Unit}
- * @param _radius {double}
+ * @param _radius {number}
  */
 GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius){
     var increment=_radius;

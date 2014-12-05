@@ -1,89 +1,136 @@
 "use strict";
-var V2D,Point2D;
+var Point2D;
 
-V2D = require("./vendor/Vector2D");
 Point2D=require("./vendor/Point2D");
-
-var TO_RADIANS = Math.PI / 180;
 
 
 /**
  * Representa un Tanque.
  * @constructor
  * @param {Point2D} _position Posicion del centro dla entidad.
- * @param {double} _speed
- * @param {double} _armor
- * @param {double} _damage
- * @param {double} _fireRate
- * @param {double} _fireDistance
+ * @param {number} _speed
+ * @param {number} _armor
+ * @param {number} _damage
+ * @param {number} _fireRate
+ * @param {number} _fireDistance
  * @constructor
  */
 function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
+    /**
+     * Indica si la unidad está viva
+     * @type {boolean}
+     */
     this.alive = true;
+    /**
+     * Posición de la unidad
+     * @type {Point2D}
+     */
     this.position = _position;
-    this.body = null;
+    /**
+     * Velocidad de movimiento de la unidad
+     * @type {number}
+     */
     this.speed = _speed;
+    /**
+     * Armadura de la unidad
+     * @type {number}
+     */
     this.armor = _armor;
-    this.speed = 0;
+
+    /**
+     * Daño de la unidad
+     * @type {number}
+     */
+    this.damage=_damage;
+
+    /**
+     * Cadencia de tiro
+     * @type {number}
+     */
+    this.fireRate=_fireRate;
+
+    /**
+     * Alcance del disparo
+     * @type {number}
+     */
+    this.fireDistance=_fireDistance;
+
+
+    /**
+     * Array con las órdenes de movimiento de la unidad
+     *@type {Point2D[]}
+     */
+    this.moveTo=[];
+
+    /**
+     *
+     * @type {Array}
+     */
+    this.attackTo=[];
 
 }
 
 
 /**
- * Mueve la unidad a la posición indicada por parámetro si esta se encuentra a distancia menor igual que su velocidad de movimiento
+ * Para la unidad
+ */
+Unit.prototype.stop=function(){
+    this.moveTo=[];
+};
+
+/**
+ * Añade un destino de movimiento al array moveTo
  * @param {Point2D} _position
- *
- * @return {boolean} Devuelve true si la operación se ha realizado con éxito
+ */
+Unit.prototype.addDestination=function(_position){
+    if (!_position instanceof Point2D) {
+        throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
+    }
+    this.moveTo.push(_position);
+};
+
+/**
+ * Elimina los destinos anteriores de la unidad y añade un único destino
+ * @param {Point2D} _position
  */
 Unit.prototype.moveTo=function(_position){
     if (!_position instanceof Point2D) {
         throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
     }
-
-    //Comprobamos que se pueda mover a esa posición
-    //todo comprobar en mapa si libre de posicion de la unidad a posicion destino hay camino de longitud menor que speed
-
-
-    this.position=_position;
+    this.stop();
+    this.addDestination(_position);
     return true;
 };
-
 
 /**
  * Realiza un ataque a la posición
  * @param {Point2D} _position
  */
 Unit.prototype.attackTo=function(_position){
-
+    this.attackTo=[];
+    this.attackTo.push(_position);
 
 };
 
+
+
 /**
- * Se aplican las acciones indicadas por parámetro, movimiento, ataques etcetera
- * @param _input
+ * GETTERS & SETTERS
  */
-Unit.prototype.applyInputs=function(_input){
-
-
-};
-
-
-
 
 /**
- * Devuelve si la entidad sobrevive o no
- * @returns True si está vivo, false si no
+ * Devuelve si la entidad está viva
+ * @returns {boolean}
  */
 Unit.prototype.isAlive = function () {
     return this.alive;
 };
 
 
-//GETTERS && SETTERS
 
 /**
  * Devuelve la posicion actual como 2DVector
- * @returns 2DVector con la posición actual
+ * @returns {Point2D} con la posición actual
  */
 Unit.prototype.getPosition = function () {
     return this.position;
@@ -91,7 +138,7 @@ Unit.prototype.getPosition = function () {
 
 /**
  * Devuelve la armadura base
- * @returns Armadura
+ * @returns {number} Armadura
  */
 Unit.prototype.getArmor = function () {
     return this.armor;
@@ -105,5 +152,34 @@ Unit.prototype.getSpeed = function () {
     return this.speed;
 };
 
+/**
+ *
+ * @returns {number}
+ */
+Unit.prototype.getFireDistance=function(){
+    return this.fireDistance;
+};
 
+/**
+ *
+ * @param {number} _fireDistance
+ */
+Unit.prototype.setFireDistance=function(_fireDistance){
+    this.fireDistance=_fireDistance;
+};
+/**
+ *
+ * @returns {number}
+ */
+Unit.prototype.getFireRate=function(){
+    return this.fireRate;
+};
+
+/**
+ *
+ * @param _fireRate
+ */
+Unit.prototype.setFireRate=function(_fireRate){
+    this.fireRate=_fireRate;
+};
 module.exports = Unit;
