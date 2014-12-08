@@ -1,15 +1,19 @@
 "use strict";
-var Point2D,Vector2D;
+var Point2D,Vector2D,Graph,PF;
 
 Point2D = require("./vendor/Point2D");
 Vector2D = require("./vendor/Vector2D");
+Graph = require('./vendor/astar');
+PF = require('pathfinding');
 
 /**
  * Constants
  */
 var TYPE={
+
     AIR:0,
     BLOCK:1
+
 };
 
 /**
@@ -23,6 +27,7 @@ function GridMap(_name){
     // Map Attributes
     this.name   = _name;
     this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
+    this.grid  =null;
     this.width  = 25;//_colMap.length(); //_colMap.width();
     this.height = 25;//_colMap.length[0](); //_colMap.height();
     this.scale  = 1;
@@ -55,6 +60,13 @@ GridMap.prototype.initializeColMap=function(){
     this.setHorizontalWall(new Point2D(20,5),15);
 
     console.log("Mapa inicializado.");
+};
+
+GridMap.prototype.initializeGraph=function(){
+    this.grid=new PF.Grid(this.width,this.height,this.colMap);
+    var finder = new PF.AStarFinder();
+    var path=finder.findPath(10,2,16,23,this.grid);
+
 };
 
 /**

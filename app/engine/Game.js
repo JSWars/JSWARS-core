@@ -19,25 +19,82 @@ function Game(_map) {
         throw "El parámetro 'map' debe ser un objeto válido 'Map'.";
     }
 
+    /**
+     *
+     * @type {GridMap}
+     */
     this.map = _map;
-    this.units = {};
 
+    /**
+     *
+     * @type {Team{}}
+     */
+    this.teams = {};
 
-
+    /**
+     * Total de equipos
+     * @type {number}
+     */
+    this.totalTeams=0;
 
     //todo futuras implementaciones
-    this.gameObjects={};
+    this.gameObjects=[];
+
     this.totalTime=0;
 
 }
+
+/**
+ *
+ * @param {Team} _team
+ */
+Game.prototype.addTeam=function(_team){
+    this.teams[_team.id]=(_team);
+    this.totalTeams+=1;
+
+};
+
+/**
+ * Elimina el equipo con el identificador indicado por parámetro
+ * @param {number} _id
+ */
+Game.prototype.removeTeam=function(_id){
+  delete this.teams[_id];
+};
+
+
 
 
 /**
  * Realiza una iteracción del juego.
  */
 Game.prototype.tick=function(){
-
+    this.updatePositions();
 };
+
+/**
+ * Actualiza las posiciones
+ */
+Game.prototype.updatePositions=function(){
+    _.each(this.teams,function(_team){
+        _.each(_team.units,function(_unit){
+            //Actualizar posición de las unidades
+            this.moveUnit(_unit);
+        });
+    });
+};
+
+/**
+ * Mueve la unidad en la dirección
+ * @param _unit
+ */
+Game.prototype.moveUnit=function(_unit){
+    if(_unit.moveTo.length>0)
+    {
+        var dest = _unit.moveTo[0];
+    }
+};
+
 
 /**
  * Comprueba si la posición especificada por parámetro encuentra colisión con otro jugador o bloque del mapa
@@ -67,12 +124,12 @@ Game.prototype.createRandomUnit=function(){
     //Posicion aleatoria
     var rx=Math.random()*this.map.width;
     var ry=Math.random()*this.map.height;
-    if(this.checkPosition()){
+    if(this.checkPosition(new Point2D(rx,ry))){
         this.createRandomUnit();
     }
 
     //inicializamos factores de la unidad aleatoriamente
-// _speed,_armor, _damage, _fireRate, _fireDistance
+    // _speed,_armor, _damage, _fireRate, _fireDistance
     var uSpeed=Math.random()*2+1;
     var uArmor=1;
     var uDamage=Math.random()*2+1;

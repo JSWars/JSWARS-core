@@ -68,6 +68,8 @@ function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
      */
     this.attackTo=[];
 
+
+
 }
 
 
@@ -109,7 +111,6 @@ Unit.prototype.moveTo=function(_position){
 Unit.prototype.attackTo=function(_position){
     this.attackTo=[];
     this.attackTo.push(_position);
-
 };
 
 

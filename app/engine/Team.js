@@ -8,16 +8,24 @@ Entity = require("./Unit");
 
 /**
  * Representa un equipo
+ * @param {number} _id Identificador del equipo
  * @param {string} _name Nombre del equipo
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
-function Team(_name) {
+function Team(_id,_name) {
 
     /**
      * Indica si el equipo entero sigue vivo
      * @type {boolean}
      */
     this.alive = true;
+
+
+    /**
+     * Identificador del equipo
+     * @type {number}
+     */
+    this.id=_id;
 
     /**
      * Nombre del equipo
@@ -29,8 +37,7 @@ function Team(_name) {
      * Unidades del equipo
      * @type {Unit[]}
      */
-    this.units = {};
-
+    this.units = [];
 
 
 }
@@ -44,7 +51,13 @@ Team.prototype.addUnit=function(_unit){
 };
 
 
-
+/**
+ * Delete the unit at the _index position
+ * @param {number} _index
+ */
+Team.prototype.removeUnit=function(_index){
+    delete this.units[_index];
+};
 
 
 
@@ -55,7 +68,7 @@ Team.prototype.addUnit=function(_unit){
 
 /**
  * Devuelve si el equipo sobrevive o no
- * @returns True si está vivo, false si no
+ * @returns {boolean} True si está vivo, false si no
  */
 Team.prototype.isAlive = function () {
     return this.alive;
@@ -79,11 +92,11 @@ Team.prototype.getName = function () {
 
 /**
  * Devulve un tanque por su identificador
- * @param Identificador
- * @returns Tanque
+ * @param _index
+ * @returns {Unit} unit
  */
-Team.prototype.Unit = function (id) {
-    return this.tanks[id];
+Team.prototype.Unit = function (_index) {
+    return this.units[_index];
 };
 
 module.exports = Team;
