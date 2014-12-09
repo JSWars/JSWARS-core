@@ -62,12 +62,27 @@ GridMap.prototype.initializeColMap=function(){
     console.log("Mapa inicializado.");
 };
 
-GridMap.prototype.initializeGraph=function(){
+/**
+ *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
+ */
+GridMap.prototype.initializeGrid=function(){
     this.grid=new PF.Grid(this.width,this.height,this.colMap);
-    var finder = new PF.AStarFinder();
-    var path=finder.findPath(10,2,16,23,this.grid);
 
 };
+
+/**
+ *
+ * Calcula la ruta desde _posIni hasta _posFin y devuelve un array con las posiciones de la ruta
+ * @param {Point2D} _posIni
+ * @param {Point2D} _posFin
+ * @returns {Array.<number|number[]>}
+ */
+GridMap.prototype.getPath=function(_posIni,_posFin){
+    var finder = new PF.AStarFinder();
+    var path=finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y,this.grid);
+
+    return path;
+}
 
 /**
  * Crea un muro entre las coordenadas introducidas, tomadas como esquinas del rectángulo que definirá el muro.

@@ -63,6 +63,12 @@ function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
     this.moveTo=[];
 
     /**
+     * Array con los movimientos de la unidad desde su posición actual hasta el siguiente destino de moveTo
+     * @type {Array.<number|number[]}
+     */
+    this.path=[];
+
+    /**
      *
      * @type {Array}
      */
@@ -73,11 +79,28 @@ function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
 }
 
 
+
+Unit.prototype.updatePosition=function(){
+    if(this.path.length()!=0){
+
+        //Asignamos la nueva posicion
+        this.position=new Position(this.path[0][0],this.path[0][1]);
+        //Eliminamos la posición del path
+        this.path.splice(0,1);
+
+        if(this.path.length()===0&&this.moveTo.length!=0){
+            //Si se ha llegado
+            this.moveTo.splice(0,1);
+        }
+    }
+}
+
 /**
  * Para la unidad
  */
 Unit.prototype.stop=function(){
     this.moveTo=[];
+    this.path=[];
 };
 
 /**

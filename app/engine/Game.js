@@ -85,14 +85,17 @@ Game.prototype.updatePositions=function(){
 };
 
 /**
- * Mueve la unidad en la dirección
- * @param _unit
+ * Mueve la unidad
+ * @param {Unit} _unit
  */
 Game.prototype.moveUnit=function(_unit){
-    if(_unit.moveTo.length>0)
+    //Si la unidad no tiene path o ha llegado a su destino.
+    if(_unit.moveTo.length!==0&&_unit.path.length===0)
     {
         var dest = _unit.moveTo[0];
+        _unit.path=this.map.getPath(_unit.position,dest);
     }
+    _unit.updatePosition();
 };
 
 
