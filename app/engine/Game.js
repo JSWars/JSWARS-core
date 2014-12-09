@@ -1,11 +1,12 @@
 "use strict";
-var _,Unit,GridMap,Point2D;
+var _,Unit,GridMap,Point2D,Team;
 
 
 _ = require("underscore");
-Unit = require("./Unit");
+Unit    = require("./Unit");
 GridMap = require("./GridMap");
-Point2D=require('./vendor/Point2D');
+Point2D = require('./vendor/Point2D');
+Team    = require('./Team');
 
 
 /**
@@ -46,10 +47,11 @@ function Game(_map) {
 
 /**
  *
- * @param {Team} _team
+ * @param {String}
+ * @return {Team}
  */
-Game.prototype.addTeam=function(_team){
-    this.teams[_team.id]=(_team);
+Game.prototype.addTeam=function(_name){
+    this.teams[this.totalTeams]=(new Team(this.totalTeams,_name));
     this.totalTeams+=1;
 
 };
@@ -80,8 +82,8 @@ Game.prototype.updatePositions=function(){
         _.each(_team.units,function(_unit){
             //Actualizar posición de las unidades
             this.moveUnit(_unit);
-        });
-    });
+        },this);
+    },this);
 };
 
 /**
@@ -108,13 +110,23 @@ Game.prototype.checkPosition=function(_position){
     if (!_position instanceof Point2D) {
         throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
     }
+    return this.checkPositionUnit(_position)||this.map.isOnCollision(_position);
+};
 
-    _.each(this.units,function(_unit){
-        if(_unit.position===_position){
-            return true;
-        }
+/**
+ *
+ * @param {Point2D}_position
+ * @returns {boolean}
+ */
+Game.prototype.checkPositionUnit=function(_position){
+    _.each(this.teams,function(_team){
+        _.each(_team.units,function(_unit){
+            if(_unit.getPosition().x === _position.x && _unit.getPosition().y === _position.y){
+                return true;
+            }
+        });
     });
-    return this.map.isOnCollision;
+    return false;
 };
 
 
@@ -124,12 +136,7 @@ Game.prototype.checkPosition=function(_position){
  */
 Game.prototype.createRandomUnit=function(){
 
-    //Posicion aleatoria
-    var rx=Math.random()*this.map.width;
-    var ry=Math.random()*this.map.height;
-    if(this.checkPosition(new Point2D(rx,ry))){
-        this.createRandomUnit();
-    }
+
 
     //inicializamos factores de la unidad aleatoriamente
     // _speed,_armor, _damage, _fireRate, _fireDistance
@@ -138,8 +145,23 @@ Game.prototype.createRandomUnit=function(){
     var uDamage=Math.random()*2+1;
     var uFireRate=10;
     var uFireDist=Math.random()*3+1;
-    return new Unit(new Point2D(rx,ry),uSpeed,uArmor,uDamage,uFireRate,uFireDist);
+    return new Unit(this.getRandomFreeCell(),uSpeed,uArmor,uDamage,uFireRate,uFireDist);
 
+};
+
+
+/**
+ * Obtiene una posicion libre del mapa
+ * @returns {Point2D}
+ */
+Game.prototype.getRandomFreeCell=function(){
+    //Posicion aleatoria
+    var rx=Math.floor(Math.random()*this.map.width);
+    var ry=Math.floor(Math.random()*this.map.height);
+    if(this.checkPosition(new Point2D(rx,ry))){
+        this.getRandomFreeCell();
+    }
+    return new Point2D(rx,ry);
 };
 
 
@@ -153,9 +175,19 @@ Game.prototype.createRandomUnit=function(){
 Game.prototype.render=function(){
     //this.map.render();
     var render="";
+    var renderMap = this.map.colMap.slice(0);
+    _.each(this.teams,function(_team){
+        _.each(_team.units,function(_unit){
+            renderMap[_unit.position.x][_unit.position.y]=2;
+        });
+    });
+
+
     for(var i=0;i<this.map.width;i+=1){
         for(var j=0;j<this.map.height;j+=1) {
-            render+=" "+this.map.getBlockAscii(this.map.colMap[i][j])+" ";
+            {
+                render+=" "+this.map.getBlockAscii(renderMap[i][j])+" ";
+            }
         }
         render+="\n";
     }

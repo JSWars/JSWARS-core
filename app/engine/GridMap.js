@@ -10,10 +10,9 @@ PF = require('pathfinding');
  * Constants
  */
 var TYPE={
-
     AIR:0,
-    BLOCK:1
-
+    BLOCK:1,
+    UNIT:2
 };
 
 /**
@@ -27,12 +26,37 @@ function GridMap(_name){
     // Map Attributes
     this.name   = _name;
     this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
-    this.grid  =null;
+    this.grid  = null;
     this.width  = 25;//_colMap.length(); //_colMap.width();
     this.height = 25;//_colMap.length[0](); //_colMap.height();
     this.scale  = 1;
-    //this.initializeColMap();
 }
+
+
+/**
+ *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
+ */
+GridMap.prototype.initializeGrid=function(){
+    this.grid=new PF.Grid(this.width,this.height,this.colMap);
+
+};
+
+/**
+ *
+ * Calcula la ruta desde _posIni hasta _posFin y devuelve un array con las posiciones de la ruta
+ * @param {Point2D} _posIni
+ * @param {Point2D} _posFin
+ * @returns {Array.<number|number[]>}
+ */
+GridMap.prototype.getPath=function(_posIni,_posFin){
+    var finder = new PF.AStarFinder();
+
+    //TODO ESTOY BLOQUEADO AQUI, NO FUNKA
+    return finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y,this.grid);
+
+};
+
+
 
 /**
  * Inicializa un mapa de colisiones en blanco con muros en los bordes.
@@ -56,33 +80,12 @@ GridMap.prototype.initializeColMap=function(){
     }
 
     //Ponemos algun murico
-    this.setHorizontalWall(new Point2D(5,5),15);
-    this.setHorizontalWall(new Point2D(20,5),15);
+    //this.setHorizontalWall(new Point2D(5,5),15);
+    //this.setHorizontalWall(new Point2D(20,5),15);
 
     console.log("Mapa inicializado.");
 };
 
-/**
- *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
- */
-GridMap.prototype.initializeGrid=function(){
-    this.grid=new PF.Grid(this.width,this.height,this.colMap);
-
-};
-
-/**
- *
- * Calcula la ruta desde _posIni hasta _posFin y devuelve un array con las posiciones de la ruta
- * @param {Point2D} _posIni
- * @param {Point2D} _posFin
- * @returns {Array.<number|number[]>}
- */
-GridMap.prototype.getPath=function(_posIni,_posFin){
-    var finder = new PF.AStarFinder();
-    var path=finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y,this.grid);
-
-    return path;
-}
 
 /**
  * Crea un muro entre las coordenadas introducidas, tomadas como esquinas del rectángulo que definirá el muro.
@@ -110,7 +113,6 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
 
 
 /**
- *
  * @param {Point2D} _ini
  * @param {Point2D} _fin
  */
@@ -136,7 +138,16 @@ GridMap.prototype.saveColMap=function(_name){
 };
 
 GridMap.prototype.getBlockAscii=function(_block){
-    return _block===TYPE.BLOCK?"#":" ";
+    switch(_block){
+        case TYPE.BLOCK:
+            return "#";
+        case TYPE.AIR:
+            return " ";
+        case TYPE.UNIT:
+            return "@";
+        default:
+            return "%";
+    }
 };
 
 
@@ -172,7 +183,7 @@ GridMap.prototype.isOnCollision=function(_point){
         throw "Can't check this point, is not a valid Point2D";
     }
     var point=this.getMapCell(_point);
-    if(!this.isOutsideBounds(point))
+    if(!this.isOutsideBounds(_point))
     {
         return this.isObstacle(this.getColMap()[point.x][point.y]);
     }
@@ -200,18 +211,6 @@ GridMap.prototype.isOutsideBounds=function(_point){
 };
 
 
-/**
- * Checks if, between two positions, there is no obstacle, taking into account the radius of the ship.
- * @param _posIni {Point2D}
- * @param _posFin {Point2D}
- * @param _object {Unit}
- * @param _radius {number}
- *
- * @return {boolean}
- */
-GridMap.prototype.checkObsFree = function(_posIni, _posFin, _object, _radius){
-    return (this.checkObsFreeDistance(_posIni,_posFin, _object, _radius) === -1);
-};
 
 /**
  * Checks if, betweeen two positions, there is no obstacle, taking into account the radius of the ship.
@@ -222,6 +221,8 @@ GridMap.prototype.checkObsFree = function(_posIni, _posFin, _object, _radius){
  * @param _radius {number}
  */
 GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius){
+
+    //TODO FUNCTION UNTESTED AND UNUSUED, FUTURE IMPLEMENTATION
     var increment=_radius;
     /** @type {Vector2D}*/
     var posIni=_posIni.clone();
@@ -238,12 +239,13 @@ GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius)
     dir.multiply(increment);
 
     var acum=increment;
-    while(acum<increment){
+    while(acum<distance){
         posIni.add(dir);
-        //todo El objeto tanque debe tener este método para comprobar las colisiones y así saber si desde el punto origen puede llegar hasta el punto final sin chocarse con ningún objeto.
+
         if(_object.checkCollisionInPosition(posIni)){
             return acum;
         }
+        acum+=increment;
 
     }
 
