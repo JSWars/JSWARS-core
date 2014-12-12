@@ -95,7 +95,8 @@ Game.prototype.moveUnit=function(_unit){
     if(_unit.moveTo.length!==0&&_unit.path.length===0)
     {
         var dest = _unit.moveTo[0];
-        _unit.path=this.map.getPath(_unit.position,dest);
+        _unit.path=this.map.getPath(_unit.position.clone(),dest.clone());
+        console.log();
     }
     _unit.updatePosition();
 };
@@ -159,7 +160,7 @@ Game.prototype.getRandomFreeCell=function(){
     var rx=Math.floor(Math.random()*this.map.width);
     var ry=Math.floor(Math.random()*this.map.height);
     if(this.checkPosition(new Point2D(rx,ry))){
-        this.getRandomFreeCell();
+        return this.getRandomFreeCell();
     }
     return new Point2D(rx,ry);
 };
@@ -192,6 +193,27 @@ Game.prototype.render=function(){
         render+="\n";
     }
     console.log(render);
+
+    //render player stats
+    this.renderPlayerStats();
+};
+
+
+/**
+ *
+ * @return {String}
+ */
+Game.prototype.renderPlayerStats=function(){
+    var turn="";
+    _.each(this.teams,function(_team){
+        _.each(_team.units,function(_unit){
+            turn+="\nPosition: "+_unit.position;
+            turn+="\nDest: "+_unit.moveTo;
+            turn+="\nPath: "+_unit.path;
+
+        },this);
+    },this);
+    console.log(turn);
 };
 
 

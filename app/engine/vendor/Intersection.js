@@ -1477,7 +1477,7 @@ Intersection.intersectPolygonPolygon = function(points1, points2) {
     var result = new Intersection("No Intersection");
     var length = points1.length;
 
-    for ( var i = 0; i < length; i++ ) {
+    for ( var i = 0; i < length; i+=1 ) {
         var a1 = points1[i];
         var a2 = points1[(i+1) % length];
         var inter = Intersection.intersectLinePolygon(a1, a2, points2);

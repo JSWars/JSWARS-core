@@ -1,11 +1,11 @@
 "use strict";
-var Point2D,Vector2D,Graph,PF;
+var Point2D,Vector2D,Graph,PF,_;
 
 Point2D = require("./vendor/Point2D");
 Vector2D = require("./vendor/Vector2D");
 Graph = require('./vendor/astar');
 PF = require('pathfinding');
-
+_ = require('underscore');
 /**
  * Constants
  */
@@ -14,7 +14,7 @@ var TYPE={
     BLOCK:1,
     UNIT:2
 };
-
+var GRID=null;
 /**
  * Esta clase se encargará de todos los aspectos relativos al mapa del juego, muros, colisiones, etc.
  *
@@ -27,6 +27,7 @@ function GridMap(_name){
     this.name   = _name;
     this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
     this.grid  = null;
+    this.finder = null;
     this.width  = 25;//_colMap.length(); //_colMap.width();
     this.height = 25;//_colMap.length[0](); //_colMap.height();
     this.scale  = 1;
@@ -37,22 +38,24 @@ function GridMap(_name){
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
  */
 GridMap.prototype.initializeGrid=function(){
-    this.grid=new PF.Grid(this.width,this.height,this.colMap);
+    this.grid=new PF.Grid(this.width,this.height, _.extend(this.colMap,{}));
+    GRID= _.extend(this.grid,{});
+    this.finder=new PF.AStarFinder();
 
 };
 
 /**
- *
  * Calcula la ruta desde _posIni hasta _posFin y devuelve un array con las posiciones de la ruta
  * @param {Point2D} _posIni
  * @param {Point2D} _posFin
  * @returns {Array.<number|number[]>}
  */
 GridMap.prototype.getPath=function(_posIni,_posFin){
-    var finder = new PF.AStarFinder();
 
-    //TODO ESTOY BLOQUEADO AQUI, NO FUNKA
-    return finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y,this.grid);
+    //TODO ESTOY BLOQUEADO AQUI, NO FUNKA CAGO EN LA HOSTIA YA
+    var test = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, _.extend(GRID,{}));
+    //console.log(test);
+    return test;
 
 };
 
@@ -162,8 +165,6 @@ GridMap.prototype.getBlockAscii=function(_block){
  */
 GridMap.prototype.getMapCell=function(_point){
     var point=_point.clone();
-    //Transformamos el punto a la escala del mapa
-    point.multiply(1/this.scale);
     point.x=Math.floor(point.x);
     point.x=Math.floor(point.y);
 
@@ -182,10 +183,9 @@ GridMap.prototype.isOnCollision=function(_point){
     {
         throw "Can't check this point, is not a valid Point2D";
     }
-    var point=this.getMapCell(_point);
     if(!this.isOutsideBounds(_point))
     {
-        return this.isObstacle(this.getColMap()[point.x][point.y]);
+        return this.isObstacle(this.getColMap()[_point.x][_point.y]);
     }
 
     //Si el punto está fuera del mapa devolvemos true.
