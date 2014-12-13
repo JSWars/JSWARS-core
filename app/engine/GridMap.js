@@ -52,9 +52,8 @@ GridMap.prototype.initializeGrid=function(){
  */
 GridMap.prototype.getPath=function(_posIni,_posFin){
 
-    //TODO ESTOY BLOQUEADO AQUI, NO FUNKA CAGO EN LA HOSTIA YA
-    var test = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, _.extend(GRID,{}));
-    //console.log(test);
+    var gridClone=this.grid.clone();
+    var test = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, gridClone);
     return test;
 
 };

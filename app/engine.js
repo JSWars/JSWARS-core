@@ -1,5 +1,5 @@
 "use strict";
-var GridMap,Game,Runner,Team,Unit,Point2D, _,readline;
+var GridMap,Game,Runner,Team,Unit,Point2D, _,readline, PF;
 
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
@@ -9,7 +9,7 @@ Point2D=require("./engine/vendor/Point2D");
 Unit=require("./engine/Unit");
 _=require("underscore");
 readline = require('readline');
-
+PF=require("pathfinding");
 
 
 
@@ -42,30 +42,18 @@ _.each(game.teams,function(_team){
 
     });
 });
-console.log("Path: "+game.map.getPath(game.teams[0].units[0].position,game.teams[0].units[0].moveTo[0]));
-console.log("Path: "+game.map.getPath(game.teams[0].units[0].position,game.teams[0].units[0].moveTo[0]));
-console.log("Path: "+game.map.getPath(game.teams[0].units[0].position,game.teams[0].units[0].moveTo[0]));
+
+
+
 
     var r1 =readline.createInterface({
         input:process.stdin,
         output:process.stdout
     });
 
-    //r1.on("line",function(){
-        game.render();
+    r1.on("line",function(){
         game.tick();
         game.render();
-        game.tick();
-game.render();
-game.tick();
-game.render();
-game.tick();
-game.render();
-game.tick();
-game.render();
-game.tick();
-game.render();
-game.tick();
-game.render();
-game.tick();
-    //})
+
+
+    })
