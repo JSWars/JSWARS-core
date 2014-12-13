@@ -18,7 +18,7 @@ GLOBAL.config = require("./engine/Config");
 //Crear mapa. Todo: Sacar desde fichero
 var testMap = new GridMap("TestMap");
 testMap.initializeColMap();
-testMap.initializeGrid();
+testMap.initializePathfinding();
 
 
 

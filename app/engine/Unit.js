@@ -74,6 +74,12 @@ function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
      */
     this.attackTo=[];
 
+    /**
+     * Instancia del juego.
+     * @type {Game}
+     */
+    this.m_game=null;
+
 
 
 }

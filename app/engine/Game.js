@@ -136,16 +136,13 @@ Game.prototype.checkPositionUnit=function(_position){
  * @returns {Unit}
  */
 Game.prototype.createRandomUnit=function(){
-
-
-
     //inicializamos factores de la unidad aleatoriamente
     // _speed,_armor, _damage, _fireRate, _fireDistance
-    var uSpeed=Math.random()*2+1;
+    var uSpeed=1;
     var uArmor=1;
-    var uDamage=Math.random()*2+1;
-    var uFireRate=10;
-    var uFireDist=Math.random()*3+1;
+    var uDamage=1;
+    var uFireRate=5;
+    var uFireDist=2;
     return new Unit(this.getRandomFreeCell(),uSpeed,uArmor,uDamage,uFireRate,uFireDist);
 
 };

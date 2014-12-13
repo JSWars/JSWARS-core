@@ -24,12 +24,41 @@ var GRID=null;
  */
 function GridMap(_name){
     // Map Attributes
+    /**
+     * Name of the map
+     * {String}
+     */
     this.name   = _name;
-    this.colMap = []; //Rellenar con el colmap que venga de fichero o de cualquier sitio
+    /**
+     * Array con las colisiones del mapa
+     * @type {int[][]}
+     */
+    this.colMap = [];
+    /**
+     * Grid from pathfindingjs
+     * @type {Grid}
+     */
     this.grid  = null;
+    /**
+     * Astar finder from pathfindingjs
+     * @type {AStarFinder}
+     */
     this.finder = null;
-    this.width  = 25;//_colMap.length(); //_colMap.width();
-    this.height = 25;//_colMap.length[0](); //_colMap.height();
+
+    /**
+     * Ancho del mapa
+     * @type {number}
+     */
+    this.width  = 25;
+    /**
+     * Alto del mapa
+     * @type {number}
+     */
+    this.height = 25;
+    /**
+     * Escala del mapa, para futuras implementaciones
+     * @type {number}
+     */
     this.scale  = 1;
 }
 
@@ -37,11 +66,14 @@ function GridMap(_name){
 /**
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
  */
-GridMap.prototype.initializeGrid=function(){
+GridMap.prototype.initializePathfinding=function(){
     this.grid=new PF.Grid(this.width,this.height, _.extend(this.colMap,{}));
     GRID= _.extend(this.grid,{});
-    this.finder=new PF.AStarFinder();
-
+    this.finder=new PF.AStarFinder({
+        allowDiagonal: true,
+        dontCrossCorners: true
+    }
+    );
 };
 
 /**
@@ -164,6 +196,7 @@ GridMap.prototype.getBlockAscii=function(_block){
  */
 GridMap.prototype.getMapCell=function(_point){
     var point=_point.clone();
+    point.multiply(1/this.scale);
     point.x=Math.floor(point.x);
     point.x=Math.floor(point.y);
 
