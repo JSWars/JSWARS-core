@@ -11,6 +11,8 @@ Config = require("./Config");
 /**
  * Representa un controlador que se ocupará de gestionar todos los movimientos del juego en
  * función a los controladores
+ *
+ * Runner will manage all game and agents controller interaction
  * @param {Game} _game
  * @param {number} _fps
  * @constructor
@@ -28,6 +30,11 @@ function Runner(_game, _fps) {
 
 
 }
+
+/**
+ * States of the current game
+ * @type {{INITIALIZING: number, RUNNING: number, PAUSED: number, ENDED: number}}
+ */
 Runner.STATES = {
     INITIALIZING: 0,
     RUNNING: 1,
@@ -35,6 +42,10 @@ Runner.STATES = {
     ENDED: 3
 };
 
+/**
+ * Agent type
+ * @type {{AGENT: number, REMOTE: number}}
+ */
 Runner.CONTROLLER_TYPE = {
     AGENT: 1,
     REMOTE: 2 //Unused

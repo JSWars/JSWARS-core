@@ -5,8 +5,22 @@ Point2D=require("./vendor/Point2D");
 
 
 /**
+ * Default properties
+ * @type {{_position: null, _speed: number, _armor: number, _damage: number, _fireRate: number, _fireDistance: number}}
+ */
+var defaultProperties={
+    position:null,//OBLIGATORIO
+    radius:0.1,
+    speed:0.1,
+    armor:0,
+    damage:1,
+    fireRate:10,
+    fireDistance:5
+};
+/**
  * Representa un Tanque.
  * @constructor
+ * @param {Game} _game Instancia del juego
  * @param {Point2D} _position Posicion del centro dla entidad.
  * @param {number} _speed
  * @param {number} _armor
@@ -15,78 +29,140 @@ Point2D=require("./vendor/Point2D");
  * @param {number} _fireDistance
  * @constructor
  */
-function Unit(_position, _speed,_armor, _damage, _fireRate, _fireDistance) {
+//function Unit(_game,_position, _speed, _armor, _damage, _fireRate, _fireDistance) {
+function Unit(_game,_properties){
+    //TODO CAMBIAR VARIABLES DE UNIT POR UN PROPERTIES EN EL QUE LOS VALORES PUEDAN SER OPCIONALES
+    /**
+     * Instancia del juego
+     * @type {Game}
+     */
+    this.game=_game;
+
+
     /**
      * Indica si la unidad está viva
      * @type {boolean}
      */
     this.alive = true;
+
+
+    /**
+     * PROPERTIES OF THE UNIT
+     * TODO FOR FUTURE IMPLEMENTATIONS AND SCALABLE DO A FUNCTION THAT LOADS AND SETS ALL THE PROPERTIES AND DEFAULT PROPERTIES
+     */
+
     /**
      * Posición de la unidad
+     *
+     * Units position
      * @type {Point2D}
      */
-    this.position = _position;
+    if(_properties.position)
+    {
+        this.position = _properties.position;
+    }else{
+        this.position = defaultProperties.position;
+    }
+
+    /**
+     * Radio de la unidad
+     * Unit's radius for collisions and future implementations
+     * @type {number}
+     */
+    if(_properties.radius){
+        this.radius=_properties.radius;
+    }else{
+        this.radius=defaultProperties.radius;
+    }
+
     /**
      * Velocidad de movimiento de la unidad
      * @type {number}
      */
-    this.speed = _speed;
+    if(_properties.speed){
+        this.speed = _properties.speed;
+    }else{
+        this.speed = defaultProperties.speed;
+    }
     /**
      * Armadura de la unidad
      * @type {number}
      */
-    this.armor = _armor;
+    if(_properties.armor){
+
+        this.armor = _properties.armor;
+    }else{
+        this.armor = defaultProperties.armor;
+    }
 
     /**
      * Daño de la unidad
      * @type {number}
      */
-    this.damage=_damage;
+    if(_properties.damage)
+    {
+        this.damage=_properties.damage;
+    }else{
+        this.damage=defaultProperties.damage;
+    }
 
     /**
      * Cadencia de tiro
+     * Fire Rate of the unit
      * @type {number}
      */
-    this.fireRate=_fireRate;
+    if(_properties.fireRate)
+    {
+        this.fireRate=_properties.fireRate;
+    }else{
+        this.fireRate= defaultProperties.fireRate;
+    }
 
     /**
      * Alcance del disparo
      * @type {number}
      */
-    this.fireDistance=_fireDistance;
+    if(_properties.fireDistance)
+    {
+        this.fireDistance=_properties.fireDistance;
+    }else{
+        this.fireDistance= defaultProperties.fireDistance;
+    }
 
 
     /**
+     * UNIT'S ACTIONS ATTRIBUTES
+     */
+
+    /**
      * Array con las órdenes de movimiento de la unidad
+     * Array with the move actions of the unit
      *@type {Point2D[]}
      */
     this.moveTo=[];
 
     /**
      * Array con los movimientos de la unidad desde su posición actual hasta el siguiente destino de moveTo
+     *
+     * Array with the units moves from his position to the next position destiny indicate in moveTo
      * @type {Array.<number|number[]}
      */
     this.path=[];
 
     /**
-     *
+     * Units attack order to the position
      * @type {Point2D[]}
      */
     this.attackTo=[];
-
-    /**
-     * Instancia del juego.
-     * @type {Game}
-     */
-    this.m_game=null;
-
 
 
 }
 
 
 /**
+ * Actualiza la posición de la unidad usando path y moveTo
  *
+ * Update the unit's position using path and moveTo
  */
 Unit.prototype.updatePosition=function(){
     if(this.path.length!==0){
@@ -105,6 +181,7 @@ Unit.prototype.updatePosition=function(){
 
 /**
  * Para la unidad
+ * Stops the unit
  */
 Unit.prototype.stop=function(){
     this.moveTo=[];
@@ -113,6 +190,8 @@ Unit.prototype.stop=function(){
 
 /**
  * Añade un destino de movimiento al array moveTo
+ *
+ * Adds a destiny point to the array moveTo
  * @param {Point2D} _position
  */
 Unit.prototype.addDestination=function(_position){

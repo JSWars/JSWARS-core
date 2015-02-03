@@ -12,7 +12,15 @@ Entity = require("./Unit");
  * @param {string} _name Nombre del equipo
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
-function Team(_id,_name) {
+function Team(_id,_name,_game) {
+
+    /**
+     * Variable del juego
+     *
+     * Intance of the game
+     */
+    this.game=_game;
+
 
     /**
      * Indica si el equipo entero sigue vivo
@@ -43,7 +51,17 @@ function Team(_id,_name) {
 }
 
 /**
+ * Apply the inputs from a agent of this current iteration
+ * @param _inputs
+ */
+Team.prototype.applyInputs=function(_inputs){
+
+};
+
+/**
  * Añade una unidad al equipo
+ *
+ * Adds a unit to the team
  * @param {Unit} _unit
  */
 Team.prototype.addUnit=function(_unit){
@@ -52,6 +70,8 @@ Team.prototype.addUnit=function(_unit){
 
 
 /**
+ * Elimina la unitad de la posición indicada
+ *
  * Delete the unit at the _index position
  * @param {number} _index
  */

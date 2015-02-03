@@ -10,24 +10,20 @@ Team    = require('./Team');
 
 
 /**
- * Representa un juego
- * @param {GridMap} _map Mapa sobre el que se va a presentar el juego
+ * Representa una instancia de juego
  * @constructor
  */
-function Game(_map) {
-    //Checks
-    if (!_map instanceof GridMap) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Map'.";
-    }
-
+function Game() {
     /**
-     *
+     * Mapa del juego
+     * Map of the game
      * @type {GridMap}
      */
-    this.map = _map;
+    this.map = null;
 
     /**
-     *
+     * Equipos
+     * Teams
      * @type {Team{}}
      */
     this.teams = {};
@@ -38,44 +34,71 @@ function Game(_map) {
      */
     this.totalTeams=0;
 
-    //todo futuras implementaciones
+
+    this.initMap();
+
+    //todo Next implementations...
     this.gameObjects=[];
 
     this.totalTime=0;
+
+
 
 }
 
 /**
  *
- * @param {String}
- * @return {Team}
  */
-Game.prototype.addTeam=function(_name){
-    this.teams[this.totalTeams]=(new Team(this.totalTeams,_name));
+Game.prototype.initMap=function(){
+    this.map=new GridMap("MapTest",this);
+    this.map.initializeColMapDefault();
+};
+
+
+
+/**
+ * Create a team by _id
+ * @param {String} _id of the team
+ */
+Game.prototype.addTeam=function(_id){
+
+    this.teams[this.totalTeams]=(new Team(this.totalTeams,_id,this));
     this.totalTeams+=1;
+
+
 
 };
 
 /**
  * Elimina el equipo con el identificador indicado por parámetro
+ *
+ * Deletes the team by the id
  * @param {number} _id
  */
 Game.prototype.removeTeam=function(_id){
-  delete this.teams[_id];
+    delete this.teams[_id];
+    this.totalTeams-=1;
+
 };
-
-
 
 
 /**
  * Realiza una iteracción del juego.
+ *
+ * Do a game iteration
  */
 Game.prototype.tick=function(){
+
+    //Apply inputs
+    //Update positions
+    //Checks collisions
     this.updatePositions();
 };
 
 /**
  * Actualiza las posiciones
+ *
+ * Update all the players creatures positions
  */
 Game.prototype.updatePositions=function(){
     _.each(this.teams,function(_team){
@@ -88,6 +111,8 @@ Game.prototype.updatePositions=function(){
 
 /**
  * Mueve la unidad
+ *
+ * Move the unit
  * @param {Unit} _unit
  */
 Game.prototype.moveUnit=function(_unit){
@@ -111,7 +136,7 @@ Game.prototype.checkPosition=function(_position){
     if (!_position instanceof Point2D) {
         throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
     }
-    return this.checkPositionUnit(_position)||this.map.isOnCollision(_position);
+    return this.map.isOnCollision(_position);
 };
 
 /**
@@ -120,6 +145,10 @@ Game.prototype.checkPosition=function(_position){
  * @returns {boolean}
  */
 Game.prototype.checkPositionUnit=function(_position){
+    //TODO HACER DE NUEVO COLISIONES ENTRE UNIDADES
+    /**
+     * DEPRECATED COMO UNA CASA
+     */
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
             if(_unit.getPosition().x === _position.x && _unit.getPosition().y === _position.y){
@@ -132,11 +161,10 @@ Game.prototype.checkPositionUnit=function(_position){
 
 
 /**
- * Crea una unidad con valores aleatorios
+ * Crea una unidad con valores por defecto
  * @returns {Unit}
  */
-Game.prototype.createRandomUnit=function(){
-    //inicializamos factores de la unidad aleatoriamente
+Game.prototype.createDefaultUnit=function(){
     // _speed,_armor, _damage, _fireRate, _fireDistance
     var uSpeed=1;
     var uArmor=1;
@@ -161,6 +189,19 @@ Game.prototype.getRandomFreeCell=function(){
     }
     return new Point2D(rx,ry);
 };
+
+
+/**
+ * AGENT FUNCTIONS
+ */
+
+/**
+ * Returns the agents inputs for a game iteration
+ */
+Game.prototype.applyAgentInputs=function(){
+    //TODO PEDIR AL AGENTE REALIZAR UNA ACCIÓN
+};
+
 
 
 /**

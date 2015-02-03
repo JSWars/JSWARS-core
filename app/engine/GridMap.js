@@ -15,15 +15,34 @@ var TYPE={
     UNIT:2
 };
 var GRID=null;
+
+
+/**
+ * Defaults GridMap Attributes
+ */
+var defaultOptions={
+    height:25,
+    width:25,
+    cellSize:20
+};
+
+
+
 /**
  * Esta clase se encargará de todos los aspectos relativos al mapa del juego, muros, colisiones, etc.
  *
- * @param name {String} Nombre del mapa.
- * @param colMap {int[][]} Array que representa el estado del mapa
+ * {String} _name Name of the map
+ * {Game} Instance of the game
  * @constructor
  */
-function GridMap(_name){
+function GridMap(_name,_game){
     // Map Attributes
+    /**
+     * Instance of the game
+     * {Game}
+     */
+    this.game = _game;
+
     /**
      * Name of the map
      * {String}
@@ -31,9 +50,12 @@ function GridMap(_name){
     this.name   = _name;
     /**
      * Array con las colisiones del mapa
+     * Collision map
      * @type {int[][]}
      */
     this.colMap = [];
+
+
     /**
      * Grid from pathfindingjs
      * @type {Grid}
@@ -57,6 +79,8 @@ function GridMap(_name){
     this.height = 25;
     /**
      * Escala del mapa, para futuras implementaciones
+     *
+     * GridMap scale
      * @type {number}
      */
     this.scale  = 1;
@@ -65,6 +89,8 @@ function GridMap(_name){
 
 /**
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
+ *
+ * Ini
  */
 GridMap.prototype.initializePathfinding=function(){
     this.grid=new PF.Grid(this.width,this.height, _.extend(this.colMap,{}));
@@ -83,21 +109,23 @@ GridMap.prototype.initializePathfinding=function(){
  * @returns {Array.<number|number[]>}
  */
 GridMap.prototype.getPath=function(_posIni,_posFin){
-
+    //clonamos el objeto grid antes de recorrerlo.
     var gridClone=this.grid.clone();
-    var test = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, gridClone);
-    return test;
+    var pathResult = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, gridClone);
+    return pathResult;
 
 };
 
-
+GridMap.prototype.initializeColMapDefault = function(){
+    this.loadColMap(defaultMap);
+};
 
 /**
  * Inicializa un mapa de colisiones en blanco con muros en los bordes.
  * -=1-=1
  * Initialize a blank col map with walls in the boundaries.
  */
-GridMap.prototype.initializeColMap=function(){
+GridMap.prototype.initializeColMap = function(){
 
     //Rellenamos los bordes con bloques
     for(var i=0;i<this.width;i+=1){
@@ -137,12 +165,6 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
         throw 'Some of the points is outside bounds of the map';
     }
 
-    //TODO ESTO DE AQUI ABAJO NO FUNKA
-    //for(var i=_posIni.x;(_posIni.x<_posFin.x)?i<_posFin.x:i>_posFin.x;(_posIni.x<_posFin.x)?i+=1:i-=1){
-    //    for(var j=_posIni.y;(_posIni.y<_posFin.y)?j<_posFin.y:j>_posFin.y;(_posIni.y<_posFin.y)?j+=1:j-=1){
-    //        this.getColMap()[i][j]=TYPE.BLOCK;
-    //    }
-    //}
 };
 
 
@@ -156,11 +178,97 @@ GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
     }
 };
 
+
+
+
+var defaultMap={ "height":20,
+    "layers":[
+        {
+            "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            "height":20,
+            "name":"GridMap",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":20,
+            "x":0,
+            "y":0
+        }],
+    "nextobjectid":1,
+    "orientation":"orthogonal",
+    "properties":
+    {
+
+    },
+    "renderorder":"left-up",
+    "tileheight":20,
+    "tilesets":[
+        {
+            "firstgid":1,
+            "image":"fondo.jpg",
+            "imageheight":20,
+            "imagewidth":40,
+            "margin":0,
+            "name":"Blocks",
+            "properties":
+            {
+
+            },
+            "spacing":0,
+            "tileheight":20,
+            "tileproperties":
+            {
+                "0":
+                {
+                    "cellSize":"20"
+                }
+            },
+            "tilewidth":20
+        }],
+    "tilewidth":20,
+    "version":1,
+    "width":20
+};
+
+
 /**
  *  todo Lee el mapa de colisiones de un fichero o de base de datos
  */
-GridMap.prototype.loadColMap=function(_name){
+GridMap.prototype.loadColMap=function(_map){
+    //TODO FUNCTION THAT LOADS THE MAP FROM A FILE BY THE _name
+    this.scale=_map.width;
 
+    /**
+     * Load collision map
+     */
+    for (var layerIdx = 0; layerIdx < _map.layers.length; layerIdx+=1) {
+        if (_map.layers[layerIdx].type !== "tilelayer") {
+            continue;
+        }
+        var layer = _map.layers[layerIdx];
+        var name  = layer.name;
+        this.width=layer.width;
+        this.height=layer.height;
+        //todo crear especificaciones de nombres para las capas de los mapas
+        if(name === "GridMap"){
+
+            this.width=layer.width;
+            this.height=layer.height;
+
+
+            for(var i=0;i<layer.width;i+=1){
+                this.colMap[i]=[];
+                for(var j=0;j<layer.height;j+=1){
+                    var cellType=layer.data[i*layer.width+j];
+                    if(cellType!==0){
+                        this.colMap[i][j] = TYPE.BLOCK;
+                    }else{
+                        this.colMap[i][j] = TYPE.AIR;
+                    }
+                }
+            }
+        }
+    }
 
 };
 
@@ -168,9 +276,16 @@ GridMap.prototype.loadColMap=function(_name){
  * todo Guarda el mapa de colisiones en un fichero o base de datos.
  */
 GridMap.prototype.saveColMap=function(_name){
-
+    //TODO Futura implementacion para guardar mapas con editor de mapas o similar
 };
 
+
+/**
+ * Function for debug drawing..
+ *
+ * @param _block
+ * @returns {string}
+ */
 GridMap.prototype.getBlockAscii=function(_block){
     switch(_block){
         case TYPE.BLOCK:
@@ -190,7 +305,7 @@ GridMap.prototype.getBlockAscii=function(_block){
 /**
  * Obtiene el tipo de celda del mapa de colisiones de un punto dado.
  * ----
- * Get the cell type in the collision map array
+ * Get the cell type in the collision map array, if the position giving is a double they will be apply Math.floor function
  * @param _point {Point2D}
  * @returns {int}
  */
@@ -226,6 +341,8 @@ GridMap.prototype.isOnCollision=function(_point){
 
 /**
  * Comprueba si el tipo de bloque indicado por parámetro es un obstaculo.
+ *
+ * Checks the block type give by parameter returns true if is an obstacle.
  * @param _block {int}
  * @returns {boolean}
  */
@@ -235,6 +352,8 @@ GridMap.prototype.isObstacle=function(_block){
 
 /**
  * Comprueba que el punto especificado por parámetro se encuentra dentro del mapa.
+ *
+ * Checks if the position give by parameter is inside the gridmap bounds
  * @param _point {Point2D}
  */
 GridMap.prototype.isOutsideBounds=function(_point){
