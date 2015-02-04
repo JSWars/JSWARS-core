@@ -118,6 +118,8 @@ GridMap.prototype.getPath=function(_posIni,_posFin){
 
 GridMap.prototype.initializeColMapDefault = function(){
     this.loadColMap(defaultMap);
+    this.initializePathfinding();
+
 };
 
 /**
@@ -235,7 +237,6 @@ var defaultMap={ "height":20,
  *  todo Lee el mapa de colisiones de un fichero o de base de datos
  */
 GridMap.prototype.loadColMap=function(_map){
-    //TODO FUNCTION THAT LOADS THE MAP FROM A FILE BY THE _name
     this.scale=_map.width;
 
     /**

@@ -37,14 +37,14 @@ _.each(game.teams,function(_team){
 
 
 
-var r1 =readline.createInterface({
-    input:process.stdin,
-    output:process.stdout
-});
-
-r1.on("line",function(){
     game.tick();
     game.render();
 
+game.tick();
+game.render();
 
-})
+game.tick();
+game.render();
+
+game.tick();
+game.render();

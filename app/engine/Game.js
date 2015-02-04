@@ -166,12 +166,17 @@ Game.prototype.checkPositionUnit=function(_position){
  */
 Game.prototype.createDefaultUnit=function(){
     // _speed,_armor, _damage, _fireRate, _fireDistance
-    var uSpeed=1;
-    var uArmor=1;
-    var uDamage=1;
-    var uFireRate=5;
-    var uFireDist=2;
-    return new Unit(this.getRandomFreeCell(),uSpeed,uArmor,uDamage,uFireRate,uFireDist);
+
+    var properties={
+        position:this.getRandomFreeCell(),//OBLIGATORIO
+        radius:0.1,
+        speed:0.1,
+        armor:0,
+        damage:1,
+        fireRate:10,
+        fireDistance:5
+    };
+    return new Unit(this,properties);
 
 };
 
