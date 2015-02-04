@@ -36,15 +36,7 @@ _.each(game.teams,function(_team){
 
 
 
-
+for(var i=0;i<100;i+=1){
     game.tick();
     game.render();
-
-game.tick();
-game.render();
-
-game.tick();
-game.render();
-
-game.tick();
-game.render();
+}

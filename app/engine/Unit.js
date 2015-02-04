@@ -8,7 +8,7 @@ Point2D=require("./vendor/Point2D");
  * Default properties
  * @type {{_position: null, _speed: number, _armor: number, _damage: number, _fireRate: number, _fireDistance: number}}
  */
-var defaultProperties={
+var defaultProperties = {
     position:null,//OBLIGATORIO
     radius:0.1,
     speed:0.1,
@@ -44,6 +44,18 @@ function Unit(_game,_properties){
      * @type {boolean}
      */
     this.alive = true;
+
+    /**
+     *
+     * @type {Array[Point2D]}
+     */
+    this.collSphereRelative=[];
+
+    /**
+     * Numero de puntos para el collsphere
+     * @type {number}
+     */
+    this.numPointsCollSphere=8;
 
 
     /**
@@ -157,6 +169,29 @@ function Unit(_game,_properties){
 
 
 }
+
+Unit.prototype.createCollSphere=function(){
+    //double angle = 2.0 * Math.PI / numPoints;
+    //m_collSphereRelative = new Vector2d[numPoints];
+    //m_collSphere = new Vector2d[numPoints];
+    //m_collPotentialSphere = new Vector2d[numPoints];
+    //
+    //m_collSphereRelative[0] = d.copy();
+    //m_collSphereRelative[0].mul(1.5*radius);
+    //m_collSphere[0] = new Vector2d();
+    //m_collPotentialSphere[0] = new Vector2d();
+    //for(int i = 1; i < m_collSphereRelative.length; ++i)
+    //{
+    //    m_collSphereRelative[i] = m_collSphereRelative[i-1].copy();
+    //    m_collSphereRelative[i].rotate(angle);
+    //    m_collSphere[i] = new Vector2d();
+    //    m_collPotentialSphere[i] = new Vector2d();
+    //}
+
+    var angle= 2.0 * Math.PI / this.numPointsCollSphere;
+    //TODO MAÑANA SEGUIR AQUI
+
+};
 
 
 /**
@@ -293,4 +328,15 @@ Unit.prototype.getFireRate=function(){
 Unit.prototype.setFireRate=function(_fireRate){
     this.fireRate=_fireRate;
 };
+
+
+/**
+ *
+ * @type {Point2D}
+ */
+Unit.prototype.checkCollisionInPosition=function(_position){
+    return this.game.checkPosition(_position);
+
+};
+
 module.exports = Unit;

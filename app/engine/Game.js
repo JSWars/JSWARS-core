@@ -222,7 +222,7 @@ Game.prototype.render=function(){
     var renderMap = this.map.colMap.slice(0);
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
-            renderMap[_unit.position.x][_unit.position.y]=2;
+            renderMap[_unit.position.y][_unit.position.x]=2;
         });
     });
 

@@ -1,5 +1,5 @@
 "use strict";
-var Point2D,Vector2D,Graph,PF,_;
+var Point2D,Vector2D,Graph,PF, _,defaultOptions,defaultMap;
 
 Point2D = require("./vendor/Point2D");
 Vector2D = require("./vendor/Vector2D");
@@ -20,13 +20,60 @@ var GRID=null;
 /**
  * Defaults GridMap Attributes
  */
-var defaultOptions={
+defaultOptions={
     height:25,
     width:25,
     cellSize:20
 };
 
+defaultMap={ "height":20,
+    "layers":[
+        {
+            "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            "height":20,
+            "name":"GridMap",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":20,
+            "x":0,
+            "y":0
+        }],
+    "nextobjectid":1,
+    "orientation":"orthogonal",
+    "properties":
+    {
 
+    },
+    "renderorder":"left-up",
+    "tileheight":20,
+    "tilesets":[
+        {
+            "firstgid":1,
+            "image":"fondo.jpg",
+            "imageheight":20,
+            "imagewidth":40,
+            "margin":0,
+            "name":"Blocks",
+            "properties":
+            {
+
+            },
+            "spacing":0,
+            "tileheight":20,
+            "tileproperties":
+            {
+                "0":
+                {
+                    "cellSize":"20"
+                }
+            },
+            "tilewidth":20
+        }],
+    "tilewidth":20,
+    "version":1,
+    "width":20
+};
 
 /**
  * Esta clase se encargará de todos los aspectos relativos al mapa del juego, muros, colisiones, etc.
@@ -43,6 +90,11 @@ function GridMap(_name,_game){
      */
     this.game = _game;
 
+    /**
+     * TiledMap
+     * @type {null}
+     */
+    this.tiledMap = null;
     /**
      * Name of the map
      * {String}
@@ -183,60 +235,14 @@ GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
 
 
 
-var defaultMap={ "height":20,
-    "layers":[
-        {
-            "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            "height":20,
-            "name":"GridMap",
-            "opacity":1,
-            "type":"tilelayer",
-            "visible":true,
-            "width":20,
-            "x":0,
-            "y":0
-        }],
-    "nextobjectid":1,
-    "orientation":"orthogonal",
-    "properties":
-    {
 
-    },
-    "renderorder":"left-up",
-    "tileheight":20,
-    "tilesets":[
-        {
-            "firstgid":1,
-            "image":"fondo.jpg",
-            "imageheight":20,
-            "imagewidth":40,
-            "margin":0,
-            "name":"Blocks",
-            "properties":
-            {
-
-            },
-            "spacing":0,
-            "tileheight":20,
-            "tileproperties":
-            {
-                "0":
-                {
-                    "cellSize":"20"
-                }
-            },
-            "tilewidth":20
-        }],
-    "tilewidth":20,
-    "version":1,
-    "width":20
-};
 
 
 /**
  *  todo Lee el mapa de colisiones de un fichero o de base de datos
  */
 GridMap.prototype.loadColMap=function(_map){
+    this.tiledMap=_map;
     this.scale=_map.width;
 
     /**
