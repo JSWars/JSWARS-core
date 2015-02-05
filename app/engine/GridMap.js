@@ -1,7 +1,7 @@
 "use strict";
-var Point2D,Vector2D,Graph,PF, _,defaultOptions,defaultMap;
+var Vector2D,Vector2D,Graph,PF, _,defaultOptions,defaultMap;
 
-Point2D = require("./vendor/Point2D");
+Vector2D = require("./vendor/Vector2D");
 Vector2D = require("./vendor/Vector2D");
 Graph = require('./vendor/astar');
 PF = require('pathfinding');
@@ -156,8 +156,8 @@ GridMap.prototype.initializePathfinding=function(){
 
 /**
  * Calcula la ruta desde _posIni hasta _posFin y devuelve un array con las posiciones de la ruta
- * @param {Point2D} _posIni
- * @param {Point2D} _posFin
+ * @param {Vector2D} _posIni
+ * @param {Vector2D} _posFin
  * @returns {Array.<number|number[]>}
  */
 GridMap.prototype.getPath=function(_posIni,_posFin){
@@ -171,6 +171,8 @@ GridMap.prototype.getPath=function(_posIni,_posFin){
 GridMap.prototype.initializeColMapDefault = function(){
     this.loadColMap(defaultMap);
     this.initializePathfinding();
+
+    console.log(this.colMap);
 
 };
 
@@ -196,8 +198,8 @@ GridMap.prototype.initializeColMap = function(){
     }
 
     //Ponemos algun murico
-    //this.setHorizontalWall(new Point2D(5,5),15);
-    //this.setHorizontalWall(new Point2D(20,5),15);
+    //this.setHorizontalWall(new Vector2D(5,5),15);
+    //this.setHorizontalWall(new Vector2D(20,5),15);
 
     console.log("Mapa inicializado.");
 };
@@ -206,13 +208,13 @@ GridMap.prototype.initializeColMap = function(){
 /**
  * Crea un muro entre las coordenadas introducidas, tomadas como esquinas del rectángulo que definirá el muro.
  *
- * @param {Point2D} _posIni
- * @param {Point2D} _posFin
+ * @param {Vector2D} _posIni
+ * @param {Vector2D} _posFin
  */
 GridMap.prototype.setWall=function(_posIni,_posFin){
-    if(!(_posIni instanceof Point2D)||!(_posFin instanceof Point2D))
+    if(!(_posIni instanceof Vector2D)||!(_posFin instanceof Vector2D))
     {
-        throw 'Cant check parameters, they re not a valid Point2D';
+        throw 'Cant check parameters, they re not a valid Vector2D';
     }
     if(this.isOutsideBounds(_posIni)||this.isOutsideBounds(_posFin))
     {
@@ -223,8 +225,8 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
 
 
 /**
- * @param {Point2D} _ini
- * @param {Point2D} _fin
+ * @param {Vector2D} _ini
+ * @param {Vector2D} _fin
  */
 GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
     for(var i=_posIni.y;i<(_posIni.y+_lenght);i+=1){
@@ -313,7 +315,7 @@ GridMap.prototype.getBlockAscii=function(_block){
  * Obtiene el tipo de celda del mapa de colisiones de un punto dado.
  * ----
  * Get the cell type in the collision map array, if the position giving is a double they will be apply Math.floor function
- * @param _point {Point2D}
+ * @param _point {Vector2D}
  * @returns {int}
  */
 GridMap.prototype.getMapCell=function(_point){
@@ -329,13 +331,13 @@ GridMap.prototype.getMapCell=function(_point){
  * Comprueba si la posición indicada se encuentra en colision con algun objeto del mapa
  * -=1-=1-=1
  * Function that checks the point especified is a collision type
- * @param _point {Point2D}
+ * @param _point {Vector2D}
  * @returns {boolean}
  */
 GridMap.prototype.isOnCollision=function(_point){
-    if(!(_point instanceof Point2D))
+    if(!(_point instanceof Vector2D))
     {
-        throw "Can't check this point, is not a valid Point2D";
+        throw "Can't check this point, is not a valid Vector2D";
     }
     if(!this.isOutsideBounds(_point))
     {
@@ -361,7 +363,7 @@ GridMap.prototype.isObstacle=function(_block){
  * Comprueba que el punto especificado por parámetro se encuentra dentro del mapa.
  *
  * Checks if the position give by parameter is inside the gridmap bounds
- * @param _point {Point2D}
+ * @param _point {Vector2D}
  */
 GridMap.prototype.isOutsideBounds=function(_point){
     var point=this.getMapCell(_point);
@@ -373,8 +375,8 @@ GridMap.prototype.isOutsideBounds=function(_point){
 /**
  * Checks if, betweeen two positions, there is no obstacle, taking into account the radius of the ship.
  * Returns the distance to the fist obstacle found, or -1 if no obstacle.
- * @param _posIni {Point2D}
- * @param _posFin {Point2D}
+ * @param _posIni {Vector2D}
+ * @param _posFin {Vector2D}
  * @param _object {Unit}
  * @param _radius {number}
  */

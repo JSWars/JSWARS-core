@@ -39,6 +39,16 @@ Vector2D.prototype.length = function() {
 
 
 /*****
+ *
+ *   mag
+ *
+ *****/
+Vector2D.prototype.mag = function() {
+    return Math.sqrt(this.x*this.x + this.y*this.y);
+};
+
+
+/*****
 *
 *   dot
 *
@@ -233,6 +243,17 @@ Vector2D.fromPoints = function(p1, p2) {
         p2.x - p1.x,
         p2.y - p1.y
     );
+};
+
+
+
+/*****
+ *
+ *   clone
+ *
+ *****/
+Vector2D.prototype.clone = function() {
+    return new Vector2D(this.x, this.y);
 };
 
 module.exports = Vector2D;

@@ -1,7 +1,7 @@
 "use strict";
-var Point2D;
+var Vector2D;
 
-Point2D=require("./vendor/Point2D");
+Vector2D=require("./vendor/Vector2D");
 
 
 /**
@@ -21,7 +21,7 @@ var defaultProperties = {
  * Representa un Tanque.
  * @constructor
  * @param {Game} _game Instancia del juego
- * @param {Point2D} _position Posicion del centro dla entidad.
+ * @param {Vector2D} _position Posicion del centro dla entidad.
  * @param {number} _speed
  * @param {number} _armor
  * @param {number} _damage
@@ -47,7 +47,7 @@ function Unit(_game,_properties){
 
     /**
      *
-     * @type {Array[Point2D]}
+     * @type {Array[Vector2D]}
      */
     this.collSphereRelative=[];
 
@@ -67,7 +67,7 @@ function Unit(_game,_properties){
      * Posición de la unidad
      *
      * Units position
-     * @type {Point2D}
+     * @type {Vector2D}
      */
     if(_properties.position)
     {
@@ -149,7 +149,7 @@ function Unit(_game,_properties){
     /**
      * Array con las órdenes de movimiento de la unidad
      * Array with the move actions of the unit
-     *@type {Point2D[]}
+     *@type {Vector2D[]}
      */
     this.moveTo=[];
 
@@ -163,7 +163,7 @@ function Unit(_game,_properties){
 
     /**
      * Units attack order to the position
-     * @type {Point2D[]}
+     * @type {Vector2D[]}
      */
     this.attackTo=[];
 
@@ -188,24 +188,62 @@ Unit.prototype.createCollSphere=function(){
     //    m_collPotentialSphere[i] = new Vector2d();
     //}
 
-    var angle= 2.0 * Math.PI / this.numPointsCollSphere;
-    //TODO MAÑANA SEGUIR AQUI
+    var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
+    //TODO HACER COLLSPHERE
+
+
+
+
+
 
 };
 
 
-/**
- * Actualiza la posición de la unidad usando path y moveTo
- *
- * Update the unit's position using path and moveTo
- */
-Unit.prototype.updatePosition=function(){
-    if(this.path.length!==0){
 
-        //Asignamos la nueva posicion
-        this.position=new Point2D(this.path[0][0],this.path[0][1]);
-        //Eliminamos la posición del path
-        this.path.splice(0,1);
+/**
+ * Mueve la unidad
+ *
+ * Move the unit
+ * @param {Unit} _unit
+ */
+Unit.prototype.move=function(){
+    //Si la unidad no tiene path o no ha llegado a su destino.
+    if(this.moveTo.length!==0&&this.path.length===0)
+    {
+        //Obtenemos destino y calculamos path
+        this.path=this.game.map.getPath(this.position.clone(),this.moveTo[0].clone());
+        console.log();
+    }
+
+    /**
+     * Actualiza la posición de la unidad usando path y moveTo
+     *
+     * Update the unit's position using path and moveTo
+     */
+    if(this.path.length!==0){
+        var nextPos,vNextPos,moveDistance;
+
+        nextPos = new Vector2D(this.path[0][0],this.path[0][1]);
+
+        vNextPos= nextPos.subtract(this.position);
+
+        moveDistance=this.speed;
+
+        while(vNextPos.mag()<this.speed){
+            //Asignamos la nueva posicion
+            this.position=new Vector2D(this.path[0][0],this.path[0][1]);
+            //Eliminamos la posición del path
+            this.path.splice(0,1);
+
+            moveDistance-=vNextPos.mag();
+
+            nextPos = new Vector2D(this.path[0][0],this.path[0][1]);
+
+            vNextPos= nextPos.subtract(this.position);
+        }
+
+        this.position=this.position.add(vNextPos.normalize().multiply(moveDistance));
+
 
         if(this.path.length===0&&this.moveTo.length!==0){
             //Si se ha llegado
@@ -227,22 +265,22 @@ Unit.prototype.stop=function(){
  * Añade un destino de movimiento al array moveTo
  *
  * Adds a destiny point to the array moveTo
- * @param {Point2D} _position
+ * @param {Vector2D} _position
  */
 Unit.prototype.addDestination=function(_position){
-    if (!_position instanceof Point2D) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
+    if (!_position instanceof Vector2D) {
+        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
     }
     this.moveTo.push(_position);
 };
 
 /**
  * Elimina los destinos anteriores de la unidad y añade un único destino
- * @param {Point2D} _position
+ * @param {Vector2D} _position
  */
 Unit.prototype.moveTo=function(_position){
-    if (!_position instanceof Point2D) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Point2D'.";
+    if (!_position instanceof Vector2D) {
+        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
     }
     this.stop();
     this.addDestination(_position);
@@ -251,7 +289,7 @@ Unit.prototype.moveTo=function(_position){
 
 /**
  * Realiza un ataque a la posición
- * @param {Point2D} _position
+ * @param {Vector2D} _position
  */
 Unit.prototype.attackTo=function(_position){
     this.attackTo=[];
@@ -276,7 +314,7 @@ Unit.prototype.isAlive = function () {
 
 /**
  * Devuelve la posicion actual como 2DVector
- * @returns {Point2D} con la posición actual
+ * @returns {Vector2D} con la posición actual
  */
 Unit.prototype.getPosition = function () {
     return this.position;
@@ -332,7 +370,7 @@ Unit.prototype.setFireRate=function(_fireRate){
 
 /**
  *
- * @type {Point2D}
+ * @type {Vector2D}
  */
 Unit.prototype.checkCollisionInPosition=function(_position){
     return this.game.checkPosition(_position);

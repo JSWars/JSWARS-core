@@ -7,7 +7,7 @@
 *   copyright 2001-2002, Kevin Lindsey
 *
 *****/
-
+//TODO ESTA PUTA MIERDA YA NO SE USA PERO IGUAL ALGUNO METODO SIRVE VORRAR MAS TARDE SI NO ES HGUTIL
 /*****
 *
 *   Point2D

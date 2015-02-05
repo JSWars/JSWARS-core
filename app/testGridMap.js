@@ -40,3 +40,5 @@ for(var i=0;i<100;i+=1){
     game.tick();
     game.render();
 }
+
+console.log(JSON.stringify(game.chunk));

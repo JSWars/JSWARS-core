@@ -1,9 +1,9 @@
 "use strict";
-var Vector2D,Point2D,Entity;
+var Vector2D,Vector2D,Entity;
 
 
 Vector2D = require("./vendor/Vector2D");
-Point2D = require("./vendor/Point2D");
+Vector2D = require("./vendor/Vector2D");
 Entity = require("./Unit");
 
 /**
@@ -33,7 +33,7 @@ function Team(_id,_name,_game) {
      * Identificador del equipo
      * @type {number}
      */
-    this.id=_id;
+    this.id = _id;
 
     /**
      * Nombre del equipo
