@@ -207,48 +207,55 @@ Unit.prototype.createCollSphere=function(){
  * @param {Unit} _unit
  */
 Unit.prototype.move=function(){
-    //Si la unidad no tiene path o no ha llegado a su destino.
-    if(this.moveTo.length!==0&&this.path.length===0)
-    {
-        //Obtenemos destino y calculamos path
-        this.path=this.game.map.getPath(this.position.clone(),this.moveTo[0].clone());
-        console.log();
-    }
 
+    var moveDistance;
+
+    moveDistance=this.speed;
     /**
      * Actualiza la posición de la unidad usando path y moveTo
      *
      * Update the unit's position using path and moveTo
      */
-    if(this.path.length!==0){
-        var nextPos,vNextPos,moveDistance;
+    //Mientras
+    while(moveDistance>0&&this.moveTo.length!==0){
+        //Si la unidad no tiene path o no ha llegado a su destino.
+        if(this.path.length===0)
+        {
+            //Obtenemos destino y calculamos path
+            this.path=this.game.map.getPath(this.position.clone(),this.moveTo[0].clone());
 
-        nextPos = new Vector2D(this.path[0][0],this.path[0][1]);
+            if(this.path.length===0){
+                console.log("ERROR DE LA MUERTEEEEE");
+            }
+        }
 
-        vNextPos= nextPos.subtract(this.position);
 
-        moveDistance=this.speed;
 
-        while(vNextPos.mag()<this.speed){
-            //Asignamos la nueva posicion
-            this.position=new Vector2D(this.path[0][0],this.path[0][1]);
-            //Eliminamos la posición del path
-            this.path.splice(0,1);
-
-            moveDistance-=vNextPos.mag();
-
+        if(this.path.length>0){
+            var nextPos,vNextPos;
             nextPos = new Vector2D(this.path[0][0],this.path[0][1]);
 
             vNextPos= nextPos.subtract(this.position);
+
+            //Si con moveDistance llegamos al siguiente path avanzamos hasta el siguiente path.
+            if(vNextPos.mag()<moveDistance) {
+                //Asignamos la nueva posicion
+                this.position = new Vector2D(this.path[0][0], this.path[0][1]);
+                //Eliminamos la posición del path
+                this.path.splice(0, 1);
+
+                //FIX ULTRAMIERDER
+                if(this.path.length===0){
+                    this.moveTo.splice(0,1);
+                }
+
+            }else{
+                this.position=this.position.add(vNextPos.normalize().multiply(moveDistance));
+            }
+
+            moveDistance -= vNextPos.mag();
         }
 
-        this.position=this.position.add(vNextPos.normalize().multiply(moveDistance));
-
-
-        if(this.path.length===0&&this.moveTo.length!==0){
-            //Si se ha llegado
-            this.moveTo.splice(0,1);
-        }
     }
 };
 

@@ -145,7 +145,7 @@ function GridMap(_name,_game){
  * Ini
  */
 GridMap.prototype.initializePathfinding=function(){
-    this.grid=new PF.Grid(this.width,this.height, _.extend(this.colMap,{}));
+    this.grid=new PF.Grid(this.width,this.height, this.colMap);
     GRID= _.extend(this.grid,{});
     this.finder=new PF.AStarFinder({
         allowDiagonal: true,
@@ -210,6 +210,7 @@ GridMap.prototype.initializeColMap = function(){
  *
  * @param {Vector2D} _posIni
  * @param {Vector2D} _posFin
+ * @DEPRECATED
  */
 GridMap.prototype.setWall=function(_posIni,_posFin){
     if(!(_posIni instanceof Vector2D)||!(_posFin instanceof Vector2D))
@@ -227,6 +228,7 @@ GridMap.prototype.setWall=function(_posIni,_posFin){
 /**
  * @param {Vector2D} _ini
  * @param {Vector2D} _fin
+ * @DEPRECATED
  */
 GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
     for(var i=_posIni.y;i<(_posIni.y+_lenght);i+=1){
@@ -322,7 +324,7 @@ GridMap.prototype.getMapCell=function(_point){
     var point=_point.clone();
     point.multiply(1/this.scale);
     point.x=Math.floor(point.x);
-    point.x=Math.floor(point.y);
+    point.y=Math.floor(point.y);
 
     return point;
 };
@@ -341,7 +343,7 @@ GridMap.prototype.isOnCollision=function(_point){
     }
     if(!this.isOutsideBounds(_point))
     {
-        return this.isObstacle(this.getColMap()[_point.x][_point.y]);
+        return this.isObstacle(this.colMap[_point.y][_point.x]);
     }
 
     //Si el punto está fuera del mapa devolvemos true.

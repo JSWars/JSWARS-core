@@ -203,7 +203,7 @@ Game.prototype.getGameFrame=function(){
         var teamPicked=_.pick(_team,"id","name");
         teamPicked.units=[];
         _.each(_team.units,function(_unit){
-            var unitPicked= _.pick(_unit,"alive","speed","radius","speed","damage","fireRate","fireDistance","moveTo","path","attackTo");
+            var unitPicked= _.pick(_unit,"alive","position","speed","radius","speed","damage","fireRate","fireDistance","moveTo","path","attackTo");
             //var unitPicked= _.omit(_unit,"game");
             teamPicked.units.push(unitPicked);
         });
