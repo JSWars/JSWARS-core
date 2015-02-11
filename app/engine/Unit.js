@@ -233,14 +233,18 @@ Unit.prototype.move=function(){
 
         if(this.path.length>0){
             var nextPos,vNextPos;
-            nextPos = new Vector2D(this.path[0][0],this.path[0][1]);
+            nextPos = new Vector2D(this.path[0][0]+0.5,this.path[0][1]+0.5);
+            //CALCULAR SIGUIENTE POSICION DEL PATH QUE checkObsFreeDistance !=-1
+
+
+
 
             vNextPos= nextPos.subtract(this.position);
 
             //Si con moveDistance llegamos al siguiente path avanzamos hasta el siguiente path.
             if(vNextPos.mag()<moveDistance) {
                 //Asignamos la nueva posicion
-                this.position = new Vector2D(this.path[0][0], this.path[0][1]);
+                this.position = new Vector2D(this.path[0][0]+0.5, this.path[0][1]+0.5);
                 //Eliminamos la posición del path
                 this.path.splice(0, 1);
 

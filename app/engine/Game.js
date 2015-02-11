@@ -200,7 +200,7 @@ Game.prototype.applyAgentInputs=function(){
 Game.prototype.getGameFrame=function(){
     var teams=[];
     _.each(this.teams,function(_team){
-        var teamPicked=_.pick(_team,"id","name");
+        var teamPicked=_.pick(_team,"id","name","color");
         teamPicked.units=[];
         _.each(_team.units,function(_unit){
             var unitPicked= _.pick(_unit,"alive","position","speed","radius","speed","damage","fireRate","fireDistance","moveTo","path","attackTo");

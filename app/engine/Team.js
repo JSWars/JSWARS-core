@@ -6,6 +6,17 @@ Vector2D = require("./vendor/Vector2D");
 Vector2D = require("./vendor/Vector2D");
 Entity = require("./Unit");
 
+
+function get_random_color() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i+=1 ) {
+        color += letters[Math.round(Math.random() * 15)];
+    }
+    return color;
+}
+
+
 /**
  * Representa un equipo
  * @param {number} _id Identificador del equipo
@@ -47,8 +58,16 @@ function Team(_id,_name,_game) {
      */
     this.units = [];
 
+    /**
+     *
+     * @type {string}
+     */
+    this.color=get_random_color();
+
 
 }
+
+
 
 /**
  * Apply the inputs from a agent of this current iteration

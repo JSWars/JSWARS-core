@@ -22,6 +22,12 @@ var game = new Game();
 game.addTeam("Luis");
 
 game.teams[0].addUnit(game.createDefaultUnit());
+game.teams[0].addUnit(game.createDefaultUnit());
+
+game.addTeam("Marcos");
+
+game.teams[1].addUnit(game.createDefaultUnit());
+game.teams[1].addUnit(game.createDefaultUnit());
 
 _.each(game.teams,function(_team){
     _.each(_team.units,function(_unit){
@@ -37,7 +43,7 @@ _.each(game.teams,function(_team){
 
 
 
-for(var i=0;i<100;i+=1){
+for(var i=0;i<1000;i+=1){
     game.tick();
     game.render();
 }
