@@ -335,8 +335,10 @@ GridMap.prototype.isOnCollision=function(_point){
     {
         throw "Can't check this point, is not a valid Vector2D";
     }
+    _point=_point.floor();
     if(!this.isOutsideBounds(_point))
     {
+
         return this.isObstacle(this.colMap[_point.y][_point.x]);
     }
 

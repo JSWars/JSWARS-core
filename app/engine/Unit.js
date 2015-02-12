@@ -384,7 +384,7 @@ Unit.prototype.setFireRate=function(_fireRate){
  * @type {Vector2D}
  */
 Unit.prototype.checkCollisionInPosition=function(_position){
-    return this.game.checkPosition(_position.floor());
+    return this.game.checkPosition(_position);
 
 };
 
