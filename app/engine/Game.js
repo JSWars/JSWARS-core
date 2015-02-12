@@ -126,6 +126,7 @@ Game.prototype.checkPosition=function(_position){
     if (!_position instanceof Vector2D) {
         throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
     }
+
     return this.map.isOnCollision(_position);
 };
 

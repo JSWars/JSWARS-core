@@ -41,9 +41,9 @@ _.each(game.teams,function(_team){
     });
 });
 
+game.map.checkObsFreeDistance(new Vector2D(2.5,2.5),new Vector2D(2.5,4.5),game.createDefaultUnit(),0.1);
 
-
-for(var i=0;i<1000;i+=1){
+for(var i=0;i<10;i+=1){
     game.tick();
     game.render();
 }

@@ -380,23 +380,24 @@ GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius)
 
     //TODO FUNCTION UNTESTED AND UNUSUED, FUTURE IMPLEMENTATION
     var increment=_radius;
-    /** @type {Vector2D}*/
+    /**
+     * {Vector2D}
+     */
+
     var posIni=_posIni.clone();
-    /** @type {Vector2D}*/
-    var posFin=_posFin.clone();
     /** @type {Vector2D}*/
     var dir = _posFin.subtract(_posIni);
 
     //Guardamos la distancia al punto de destino
-    var distance = dir.length();
+    var distance = dir.mag();
 
     //Normalizamos el vector de dirección al destino.
-    dir.normalize();
-    dir.multiply(increment);
+    dir=dir.normalize();
+    dir=dir.multiply(increment);
 
     var acum=increment;
     while(acum<distance){
-        posIni.add(dir);
+        posIni=posIni.add(dir);
 
         if(_object.checkCollisionInPosition(posIni)){
             return acum;

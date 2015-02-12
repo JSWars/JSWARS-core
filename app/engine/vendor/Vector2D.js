@@ -68,6 +68,16 @@ Vector2D.prototype.normalize = function(){
 };
 
 /*****
+ *
+ * FLOOR
+ *
+ *****/
+Vector2D.prototype.floor=function(){
+    return new Vector2D(Math.floor(this.x),Math.floor(this.y));
+};
+
+
+/*****
 *
 *   cross
 *
