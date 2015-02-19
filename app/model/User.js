@@ -13,7 +13,8 @@ User = new Mongoose.Schema({
     email: String,
     created: Date,
     avatar: String,
-    country: String
+    country: String,
+    githubId: Number
 });
 
 //User.methods.validPassword = function (password) {
@@ -43,6 +44,6 @@ User = new Mongoose.Schema({
 //}
 
 
-module.exports = User;
+module.exports = Mongoose.model(ModelName, User);
 
 
