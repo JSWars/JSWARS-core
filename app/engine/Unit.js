@@ -12,6 +12,7 @@ var defaultProperties = {
     position:null,//OBLIGATORIO
     radius:0.1,
     speed:0.1,
+    health:5,
     armor:0,
     damage:1,
     fireRate:10,
@@ -31,7 +32,6 @@ var defaultProperties = {
  */
 //function Unit(_game,_position, _speed, _armor, _damage, _fireRate, _fireDistance) {
 function Unit(_game,_properties){
-    //TODO CAMBIAR VARIABLES DE UNIT POR UN PROPERTIES EN EL QUE LOS VALORES PUEDAN SER OPCIONALES
     /**
      * Instancia del juego
      * @type {Game}
@@ -45,6 +45,10 @@ function Unit(_game,_properties){
      */
     this.alive = true;
 
+
+
+
+    this.cooldown=0;
     /**
      *
      * @type {Array[Vector2D]}
@@ -141,6 +145,15 @@ function Unit(_game,_properties){
         this.fireDistance= defaultProperties.fireDistance;
     }
 
+    /**
+     *
+     */
+    if(_properties.health){
+        this.health=_properties.health;
+    }else{
+        this.health=defaultProperties.health;
+    }
+
 
     /**
      * UNIT'S ACTIONS ATTRIBUTES
@@ -163,7 +176,7 @@ function Unit(_game,_properties){
 
     /**
      * Units attack order to the position
-     * @type {Vector2D[]}
+     * @type {Unit[]}
      */
     this.attackTo=[];
 
@@ -198,6 +211,68 @@ Unit.prototype.createCollSphere=function(){
 
 };
 
+/**
+ *
+ * @param {Unit} _enemyUnit
+ */
+Unit.prototype.addAttackOrder = function(_enemyUnit){
+    if (!_enemyUnit instanceof Unit) {
+        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
+    }
+    this.attackTo.push(_enemyUnit);
+};
+
+Unit.prototype.stopAttack = function(){
+    this.attackTo=[];
+};
+
+Unit.prototype.attack=function(){
+
+    if(this.attackTo.length===0){
+        return;
+    }
+
+    this.path=[];
+
+    //Si el objetivo está vivo
+    if(this.attackTo[0].alive){
+        this.addDestination(this.attackTo[0].position.floor());
+
+        //Si el objetivo está a la vista ,a distancia y sin cooldown
+        var dist=this.position.subtract(this.attackTo[0].position);
+        if(dist.mag()<=this.fireDistance&&this.game.map.checkObsFreeDistance(this.position,this.attackTo[0].position,this,this.radius)===-1&&this.cooldown===0){
+            this.attackTo[0].hurt(this.damage);
+            this.cooldown=this.fireRate;
+        }
+
+
+    }else{
+        this.attackTo.splice(0,1);
+    }
+
+
+
+
+
+
+};
+
+Unit.prototype.update=function(){
+    this.attack();
+    this.move();
+};
+
+/**
+ *
+ * @param _damage
+ */
+Unit.prototype.hurt=function(_damage){
+    this.health-=_damage;
+    if(this.health<=0){
+        this.alive=false;
+    }
+};
+
 
 
 /**
@@ -206,7 +281,7 @@ Unit.prototype.createCollSphere=function(){
  * Move the unit
  * @param {Unit} _unit
  */
-Unit.prototype.move=function(){
+Unit.prototype.move = function(){
 
     var moveDistance;
 
@@ -222,7 +297,7 @@ Unit.prototype.move=function(){
         if(this.path.length===0)
         {
             //Obtenemos destino y calculamos path
-            this.path=this.game.map.getPath(this.position.clone(),this.moveTo[0].clone());
+            this.path=this.game.map.getPath(this.position.clone().floor(),this.moveTo[0].clone());
 
             if(this.path.length===0){
                 console.log("ERROR DE LA MUERTEEEEE");
@@ -236,9 +311,6 @@ Unit.prototype.move=function(){
             nextPos = new Vector2D(this.path[0][0]+0.5,this.path[0][1]+0.5);
             //CALCULAR SIGUIENTE POSICION DEL PATH QUE checkObsFreeDistance !=-1
 
-
-
-
             vNextPos= nextPos.subtract(this.position);
 
             //Si con moveDistance llegamos al siguiente path avanzamos hasta el siguiente path.
@@ -248,7 +320,7 @@ Unit.prototype.move=function(){
                 //Eliminamos la posición del path
                 this.path.splice(0, 1);
 
-                //FIX ULTRAMIERDER
+
                 if(this.path.length===0){
                     this.moveTo.splice(0,1);
                 }

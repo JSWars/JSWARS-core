@@ -39,6 +39,12 @@ function Game() {
      */
     this.totalTeams=0;
 
+    /**
+     * Total units
+     * @type {number}
+     */
+    this.totalUnits=0;
+
 
     this.initMap();
 
@@ -50,6 +56,7 @@ function Game() {
 
 
 }
+
 
 /**
  *
@@ -110,7 +117,7 @@ Game.prototype.updatePositions=function(){
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
             //Actualizar posición de las unidades
-            _unit.move();
+            _unit.update();
         },this);
     },this);
 };
