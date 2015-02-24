@@ -3,10 +3,13 @@ var Vector2D;
 
 Vector2D=require("./vendor/Vector2D");
 
-
+var TYPE={
+    RANGE:0,
+    BODY:1
+};
 /**
  * Default properties
- * @type {{_position: null, _speed: number, _armor: number, _damage: number, _fireRate: number, _fireDistance: number}}
+ *
  */
 var defaultProperties = {
     position:null,//OBLIGATORIO
@@ -16,27 +19,32 @@ var defaultProperties = {
     armor:0,
     damage:1,
     fireRate:10,
-    fireDistance:5
+    fireDistance:5,
+    type:TYPE.RANGE
 };
+
+
+
 /**
  * Representa un Tanque.
  * @constructor
  * @param {Game} _game Instancia del juego
- * @param {Vector2D} _position Posicion del centro dla entidad.
- * @param {number} _speed
- * @param {number} _armor
- * @param {number} _damage
- * @param {number} _fireRate
- * @param {number} _fireDistance
+ * @param {Team} _team Equipo enemigo.
+ * @param _properties
  * @constructor
  */
 //function Unit(_game,_position, _speed, _armor, _damage, _fireRate, _fireDistance) {
-function Unit(_game,_properties){
+function Unit(_game,_team,_properties){
     /**
      * Instancia del juego
      * @type {Game}
      */
     this.game=_game;
+
+    /**
+     * Instancia del equipo al que pertenece la unidad
+     */
+    this.team=_team;
 
 
     /**
@@ -46,9 +54,13 @@ function Unit(_game,_properties){
     this.alive = true;
 
 
-
-
+    /**
+     * Attack cooldown of the unit, set the firerate when shoot and decrease 1 per tick
+     * @type {number}
+     */
     this.cooldown=0;
+
+
     /**
      *
      * @type {Array[Vector2D]}
@@ -64,7 +76,6 @@ function Unit(_game,_properties){
 
     /**
      * PROPERTIES OF THE UNIT
-     * TODO FOR FUTURE IMPLEMENTATIONS AND SCALABLE DO A FUNCTION THAT LOADS AND SETS ALL THE PROPERTIES AND DEFAULT PROPERTIES
      */
 
     /**
@@ -73,86 +84,58 @@ function Unit(_game,_properties){
      * Units position
      * @type {Vector2D}
      */
-    if(_properties.position)
-    {
-        this.position = _properties.position;
-    }else{
-        this.position = defaultProperties.position;
-    }
+    this.position = (_properties.position)?_properties.position:defaultProperties.position;
+
 
     /**
      * Radio de la unidad
      * Unit's radius for collisions and future implementations
      * @type {number}
      */
-    if(_properties.radius){
-        this.radius=_properties.radius;
-    }else{
-        this.radius=defaultProperties.radius;
-    }
+    this.radius = (_properties.radius)?_properties.radius:defaultProperties.radius;
+
 
     /**
      * Velocidad de movimiento de la unidad
      * @type {number}
      */
-    if(_properties.speed){
-        this.speed = _properties.speed;
-    }else{
-        this.speed = defaultProperties.speed;
-    }
+    this.speed = (_properties.speed)?_properties.speed:defaultProperties.speed;
+
     /**
      * Armadura de la unidad
      * @type {number}
      */
-    if(_properties.armor){
+    this.armor = (_properties.armor)?_properties.armor:defaultProperties.armor;
 
-        this.armor = _properties.armor;
-    }else{
-        this.armor = defaultProperties.armor;
-    }
 
     /**
      * Daño de la unidad
      * @type {number}
      */
-    if(_properties.damage)
-    {
-        this.damage=_properties.damage;
-    }else{
-        this.damage=defaultProperties.damage;
-    }
+    this.damage = (_properties.damage)?_properties.damage:defaultProperties.damage;
+
 
     /**
      * Cadencia de tiro
      * Fire Rate of the unit
      * @type {number}
      */
-    if(_properties.fireRate)
-    {
-        this.fireRate=_properties.fireRate;
-    }else{
-        this.fireRate= defaultProperties.fireRate;
-    }
+    this.fireRate = (_properties.fireRate)?_properties.fireRate:defaultProperties.fireRate;
+
 
     /**
      * Alcance del disparo
      * @type {number}
      */
-    if(_properties.fireDistance)
-    {
-        this.fireDistance=_properties.fireDistance;
-    }else{
-        this.fireDistance= defaultProperties.fireDistance;
-    }
+    this.fireDistance  =(_properties.fireDistance)?_properties.fireDistance:defaultProperties.fireDistance;
+
 
     /**
-     *
+     * Health of the unit
+     * @type {number}
      */
-    if(_properties.health){
-        this.health=_properties.health;
-    }else{
-        this.health=defaultProperties.health;
-    }
+    this.health = (_properties.health)?_properties.health:defaultProperties.health;
+
 
 
     /**
@@ -176,13 +159,15 @@ function Unit(_game,_properties){
 
     /**
      * Units attack order to the position
-     * @type {Unit[]}
+     * @type {Vector2D}
      */
-    this.attackTo=[];
-
+    this.attackTo = null;
 
 }
 
+/**
+ *
+ */
 Unit.prototype.createCollSphere=function(){
     //double angle = 2.0 * Math.PI / numPoints;
     //m_collSphereRelative = new Vector2d[numPoints];
@@ -202,75 +187,55 @@ Unit.prototype.createCollSphere=function(){
     //}
 
     var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
-    //TODO HACER COLLSPHERE
 
-
-
-
-
+    this.collSphereRelative[0]=new Vector2D(1,0);
+    for(var i=1;i<this.numPointsCollSphere;i+=1){
+        this.collSphereRelative[i]=this.collSphereRelative[i-1];
+        this.collSphereRelative[i]=this.collSphereRelative[i].rotate(angle);
+    }
 
 };
 
 /**
- *
- * @param {Unit} _enemyUnit
+ * Attack to position
+ * @param {Vector2D} _position
  */
-Unit.prototype.addAttackOrder = function(_enemyUnit){
-    if (!_enemyUnit instanceof Unit) {
+Unit.prototype.addAttackOrder = function(_position){
+    if (!Vector2D instanceof Unit) {
         throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
     }
-    this.attackTo.push(_enemyUnit);
+    this.attackTo=_position;
 };
 
-Unit.prototype.stopAttack = function(){
-    this.attackTo=[];
-};
+/**
+ *
+ */
+Unit.prototype.attack = function(){
+    if(this.cooldown===0&&this.attackTo!==null){
 
-Unit.prototype.attack=function(){
-
-    if(this.attackTo.length===0){
-        return;
     }
-
-    this.path=[];
-
-    //Si el objetivo está vivo
-    if(this.attackTo[0].alive){
-        this.addDestination(this.attackTo[0].position.floor());
-
-        //Si el objetivo está a la vista ,a distancia y sin cooldown
-        var dist=this.position.subtract(this.attackTo[0].position);
-        if(dist.mag()<=this.fireDistance&&this.game.map.checkObsFreeDistance(this.position,this.attackTo[0].position,this,this.radius)===-1&&this.cooldown===0){
-            this.attackTo[0].hurt(this.damage);
-            this.cooldown=this.fireRate;
-        }
-
-
-    }else{
-        this.attackTo.splice(0,1);
-    }
-
-
-
-
-
-
 };
 
-Unit.prototype.update=function(){
+
+/**
+ *
+ */
+Unit.prototype.update = function(){
     this.attack();
     this.move();
 };
 
 /**
- *
- * @param _damage
+ * Deal _damage to the unit. Set alive to false if the health<=0
+ * @param {number} _damage
  */
-Unit.prototype.hurt=function(_damage){
+Unit.prototype.hurt = function(_damage){
+
     this.health-=_damage;
     if(this.health<=0){
         this.alive=false;
     }
+
 };
 
 
@@ -304,14 +269,16 @@ Unit.prototype.move = function(){
             }
         }
 
-
-
         if(this.path.length>0){
             var nextPos,vNextPos;
+            /**
+             * Obtenemos la siguiente posición del path que está a la vista.
+             * @type {Vector2D}
+             */
             nextPos = new Vector2D(this.path[0][0]+0.5,this.path[0][1]+0.5);
-            //CALCULAR SIGUIENTE POSICION DEL PATH QUE checkObsFreeDistance !=-1
 
-            vNextPos= nextPos.subtract(this.position);
+            //CALCULAR SIGUIENTE POSICION DEL PATH QUE checkObsFreeDistance !=-1
+            vNextPos = nextPos.subtract(this.position);
 
             //Si con moveDistance llegamos al siguiente path avanzamos hasta el siguiente path.
             if(vNextPos.mag()<moveDistance) {

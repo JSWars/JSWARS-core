@@ -1,10 +1,10 @@
 "use strict";
-var Vector2D,Vector2D,Entity;
+var Vector2D,Vector2D,Unit;
 
 
 Vector2D = require("./vendor/Vector2D");
 Vector2D = require("./vendor/Vector2D");
-Entity = require("./Unit");
+Unit = require("./Unit");
 
 
 function get_random_color() {
@@ -85,6 +85,27 @@ Team.prototype.applyInputs=function(_inputs){
  */
 Team.prototype.addUnit=function(_unit){
   this.units.push(_unit);
+};
+
+
+
+/**
+ * Crea una unidad con valores por defecto
+ * @returns {Unit}
+ */
+Team.prototype.addDefaultUnit=function(){
+    // _speed,_armor, _damage, _fireRate, _fireDistance
+
+    var properties={
+        position:this.getRandomFreeCell(),//OBLIGATORIO
+        radius:0.1,
+        speed:0.1,
+        armor:0,
+        damage:1,
+        fireRate:10,
+        fireDistance:5
+    };
+    this.units.push (new Unit(this.game,this,properties));
 };
 
 

@@ -21,11 +21,11 @@ var game = new Game();
 
 game.addTeam("Luis");
 
-game.teams[0].addUnit(game.createDefaultUnit());
+game.teams[0].addDefaultUnit();
 
 game.addTeam("Marcos");
 
-game.teams[1].addUnit(game.createDefaultUnit());
+game.teams[1].addDefaultUnit();
 
 
 game.teams[0].units[0].addAttackOrder(game.teams[1].units[0]);

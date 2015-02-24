@@ -158,25 +158,7 @@ Game.prototype.checkPositionUnit=function(_position){
 };
 
 
-/**
- * Crea una unidad con valores por defecto
- * @returns {Unit}
- */
-Game.prototype.createDefaultUnit=function(){
-    // _speed,_armor, _damage, _fireRate, _fireDistance
 
-    var properties={
-        position:this.getRandomFreeCell(),//OBLIGATORIO
-        radius:0.1,
-        speed:0.1,
-        armor:0,
-        damage:1,
-        fireRate:10,
-        fireDistance:5
-    };
-    return new Unit(this,properties);
-
-};
 
 
 /**
