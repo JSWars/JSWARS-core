@@ -17,6 +17,7 @@ module.exports = function (grunt) {
 
 
     grunt.loadNpmTasks('grunt-exec');
+
     grunt.registerTask('mongo-start', ['exec:mongo-start']);
     grunt.registerTask('mongo-stop', ['exec:mongo-stop']);
     grunt.registerTask('install', ['exec:moncha-install']);

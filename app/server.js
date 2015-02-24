@@ -1,4 +1,4 @@
-var Path, Config, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, conn, server;
+var Path, Config, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, conn, server;
 
 //Node Modules
 Path = require('path');
@@ -15,6 +15,7 @@ Mongoose = require('mongoose');
 //Passport Dependencies
 Passport = require('Passport');
 GithubStrategy = require('Passport-github').Strategy;
+User = require('./model/User');
 
 
 Mongoose.connect(Config.db.url);
@@ -56,26 +57,15 @@ var EnsureAuthentication = require('./filters/EnsureAuthenticated');
 //---------------------------
 //          ROUTES
 //---------------------------
+
+//Session Routes
 server.get(Config.path + '/session', EnsureAuthentication, require('./routes/Session'));
+server.get(Config.path + '/login/github', require('./routes/login/github/Entry'));
+server.get(Config.path + '/login/github/callback', Passport.authenticate('github'), require('./routes/login/github/Callback'));
+server.get(Config.path + '/logout', require('./routes/Logout'));
 
-
-server.get(Config.path + '/', function (req, res) {
-    console.log("homepage", req.user)
-});
-server.get(Config.path + '/login/github',
-    Passport.authenticate('github'),
-    function (req, res) {
-    });
-server.get(Config.path + '/login/github/callback',
-    Passport.authenticate('github', {failureRedirect: '/'}),
-    function (req, res) {
-        res.redirect(Config.path + '/session');
-    });
-server.get(Config.path + '/logout', function (req, res) {
-    console.log("logout");
-    req.logout();
-    res.redirect('/');
-});
+//Data Routes
+server.get(Config.path + '/users/:username', require('./routes/User'));
 
 
 //Start listening!

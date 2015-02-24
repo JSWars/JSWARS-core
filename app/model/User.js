@@ -6,15 +6,15 @@ Mongoose = require('mongoose');
 PasswordHashing = require('./../utils/PasswordHashing');
 
 User = new Mongoose.Schema({
-    id: {type: Number, index: true},
     name: String,
-    username: String,
+    username: {type: String, index: true, unique:true },
     password: String,
     email: String,
     created: Date,
     avatar: String,
+    gravatar: String,
     country: String,
-    githubId: Number
+    github: Object
 });
 
 //User.methods.validPassword = function (password) {
