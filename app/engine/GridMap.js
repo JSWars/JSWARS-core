@@ -12,7 +12,8 @@ _ = require('underscore');
 var TYPE={
     AIR:0,
     BLOCK:1,
-    UNIT:2
+    UNIT:2,
+    BULLET:3
 };
 var GRID=null;
 
@@ -299,6 +300,8 @@ GridMap.prototype.getBlockAscii=function(_block){
             return " ";
         case TYPE.UNIT:
             return "@";
+        case TYPE.BULLET:
+            return "*";
         default:
             return "%";
     }

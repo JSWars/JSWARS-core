@@ -1,8 +1,9 @@
 "use strict";
-var _,Vector2D;
+var _,Vector2D,Bullet;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
+Bullet = require("./Bullet");
 
 var TYPE={
     RANGE:0,
@@ -162,7 +163,9 @@ function Unit(_game,_team,_properties){
      * Units attack order to the position
      * @type {Vector2D}
      */
-    this.attackTo = null;
+    this.attackOrder = true;
+
+
 
 }
 
@@ -196,8 +199,11 @@ Unit.prototype.addAttackOrder = function(_position){
  *
  */
 Unit.prototype.attack = function(){
-    if(this.cooldown===0&&this.attackTo!==null){
 
+    if(this.cooldown===0&&this.attackOrder===true){
+        var _angle=0;
+        var b = new Bullet(this.game,this.position,0,_angle,2,1,1);
+        this.game.addBullet(b);
     }
 };
 

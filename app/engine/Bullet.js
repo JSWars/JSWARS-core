@@ -3,12 +3,22 @@ var _,Vector2D;
 
 _ = require("underscore");
 Vector2D = require('./vendor/Vector2D');
+
+
+var _defaultProperties={
+
+};
+
+
 /**
  *
+ * @param _game
  * @param _position
+ * @param _teamId
  * @param _angle
  * @param _speed
  * @param _damage
+ * @param _radius
  * @constructor
  */
 function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
@@ -47,6 +57,10 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
      */
     this.radius=_radius;
 
+    /**
+     *
+     * @type {Array[Vector2D]}
+     */
     this.collSphereRelative=[];
 
     this.createCollSphere();
@@ -82,7 +96,7 @@ Bullet.prototype.checkCollisions=function(){
     if(this.game.map.isOnCollision(this.position)){
         return true;
     }
-    for(var i=0;i<this.collSphereRelative.length;i++){
+    for(var i=0;i<this.collSphereRelative.length;i+=1){
         if(this.game.map.isOnCollision(this.position.add(this.collSphereRelative[i]))){
             return true;
         }
@@ -91,3 +105,5 @@ Bullet.prototype.checkCollisions=function(){
     return false;
     //TODO AHORA MISMO TAN SÓLO SE ESTÁ COMPROBANDO LA COLISION EN CADA ITERACIÓN, FALTARÍA COMPROBAR EN TODOS LOS ESTADOS ENTRE LAPOSICIÓN ACTUAL Y LA ANTERIOR
 };
+
+module.exports = Bullet;

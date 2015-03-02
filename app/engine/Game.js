@@ -146,13 +146,13 @@ Game.prototype.updatePositions=function(){
 Game.prototype.updateBullets=function(){
     _.each(this.bullets,function(_bullet){
         _bullet.update();
-    })
+    });
 
     //Delete the bullets in collision
     this.bullets=_.filter(this.bullets,function(_bullet){
         return !_bullet.checkCollisions();
     });
-}
+};
 
 
 
@@ -185,6 +185,7 @@ Game.prototype.checkPositionUnit=function(_position){
                 return true;
             }
         });
+
     });
     return false;
 };
@@ -225,14 +226,25 @@ Game.prototype.getGameFrame=function(){
         var teamPicked=_.pick(_team,"id","name","color");
         teamPicked.units=[];
         _.each(_team.units,function(_unit){
-            var unitPicked= _.pick(_unit,"alive","position","speed","radius","speed","damage","fireRate","fireDistance","moveTo","path","attackTo");
+            var unitPicked= _.pick(_unit,"alive","position","radius");
             //var unitPicked= _.omit(_unit,"game");
             teamPicked.units.push(unitPicked);
         });
         teams.push(teamPicked);
     });
 
-    this.chunk.push(teams);
+    var bullets=[];
+    _.each(this.bullets,function(_bullet){
+        var bulletPicked= _.pick(_bullet,"position","radius");
+
+    });
+
+    var chunk={
+       "teams":teams,
+        "bullets":bullets
+    };
+
+    this.chunk.push(chunk);
 };
 
 
@@ -247,12 +259,15 @@ Game.prototype.render=function(){
     //this.map.render();
     var render="";
     var renderMap = this.map.colMap.slice(0);
+
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
-            renderMap[_unit.position.y|0][_unit.position.x|0]=2;
+            renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)]=2;
         });
     });
-
+    _.each(this.bullets,function(_bullet){
+        renderMap[Math.floor(_bullet.position.x)][Math.floor(_bullet.position.y)]=3;
+    });
 
     for(var i=0;i<this.map.width;i+=1){
         for(var j=0;j<this.map.height;j+=1) {
@@ -262,6 +277,9 @@ Game.prototype.render=function(){
         }
         render+="\n";
     }
+
+
+
     console.log(render);
 
     //render player stats

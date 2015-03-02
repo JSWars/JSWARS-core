@@ -41,11 +41,10 @@ game.teams[0].units[0].addAttackOrder(game.teams[1].units[0]);
 //    });
 //});
 
-game.map.checkObsFreeDistance(new Vector2D(2.5,2.5),new Vector2D(2.5,4.5),game.createDefaultUnit(),0.1);
 
 for(var i=0;i<100;i+=1){
     game.tick();
     game.render();
 }
 
-//console.log(JSON.stringify(game.chunk));
+console.log(JSON.stringify(game.chunk));

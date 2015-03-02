@@ -1,10 +1,10 @@
 "use strict";
-var Vector2D,Vector2D,Unit;
+var Vector2D,Bullet,Unit;
 
 
-Vector2D = require("./vendor/Vector2D");
 Vector2D = require("./vendor/Vector2D");
 Unit = require("./Unit");
+Bullet  = require('./Bullet');
 
 
 function get_random_color() {
@@ -97,7 +97,7 @@ Team.prototype.addDefaultUnit=function(){
     // _speed,_armor, _damage, _fireRate, _fireDistance
 
     var properties={
-        position:this.getRandomFreeCell(),//OBLIGATORIO
+        position:this.game.getRandomFreeCell(),//OBLIGATORIO
         radius:0.1,
         speed:0.1,
         armor:0,
