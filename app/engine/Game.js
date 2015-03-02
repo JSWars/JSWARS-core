@@ -1,5 +1,5 @@
 "use strict";
-var _,Unit,GridMap,Vector2D,Team;
+var _,Unit,GridMap,Vector2D,Team,Bullet;
 
 
 _ = require("underscore");
@@ -7,6 +7,7 @@ Unit    = require("./Unit");
 GridMap = require("./GridMap");
 Vector2D = require('./vendor/Vector2D');
 Team    = require('./Team');
+Bullet  = require('./Bullet');
 
 
 /**
@@ -34,6 +35,11 @@ function Game() {
     this.teams = {};
 
     /**
+     *
+     * @type {Array[Bullet]}
+     */
+    this.bullets=[];
+    /**
      * Total de equipos
      * @type {number}
      */
@@ -45,21 +51,36 @@ function Game() {
      */
     this.totalUnits=0;
 
+    /**
+     *
+     * @type {number}
+     */
+    this.totalTime=0;
+
+
 
     this.initMap();
 
     //todo Next implementations...
     this.gameObjects=[];
 
-    this.totalTime=0;
+
 
 
 
 }
 
+/**
+ * Add's a bullet to the game
+ * @param {Bullet} _bullet
+ */
+Game.prototype.addBullet=function(_bullet){
+    this.bullets.push(_bullet);
+};
+
 
 /**
- *
+ * Initialize the map
  */
 Game.prototype.initMap=function(){
     this.map=new GridMap("MapTest",this);
@@ -121,6 +142,17 @@ Game.prototype.updatePositions=function(){
         },this);
     },this);
 };
+
+Game.prototype.updateBullets=function(){
+    _.each(this.bullets,function(_bullet){
+        _bullet.update();
+    })
+
+    //Delete the bullets in collision
+    this.bullets=_.filter(this.bullets,function(_bullet){
+        return !_bullet.checkCollisions();
+    });
+}
 
 
 

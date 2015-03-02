@@ -1,7 +1,8 @@
 "use strict";
-var Vector2D;
+var _,Vector2D;
 
-Vector2D=require("./vendor/Vector2D");
+_ = require("underscore");
+Vector2D = require("./vendor/Vector2D");
 
 var TYPE={
     RANGE:0,
@@ -169,22 +170,6 @@ function Unit(_game,_team,_properties){
  *
  */
 Unit.prototype.createCollSphere=function(){
-    //double angle = 2.0 * Math.PI / numPoints;
-    //m_collSphereRelative = new Vector2d[numPoints];
-    //m_collSphere = new Vector2d[numPoints];
-    //m_collPotentialSphere = new Vector2d[numPoints];
-    //
-    //m_collSphereRelative[0] = d.copy();
-    //m_collSphereRelative[0].mul(1.5*radius);
-    //m_collSphere[0] = new Vector2d();
-    //m_collPotentialSphere[0] = new Vector2d();
-    //for(int i = 1; i < m_collSphereRelative.length; ++i)
-    //{
-    //    m_collSphereRelative[i] = m_collSphereRelative[i-1].copy();
-    //    m_collSphereRelative[i].rotate(angle);
-    //    m_collSphere[i] = new Vector2d();
-    //    m_collPotentialSphere[i] = new Vector2d();
-    //}
 
     var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
 
@@ -401,8 +386,8 @@ Unit.prototype.getFireDistance=function(){
 Unit.prototype.setFireDistance=function(_fireDistance){
     this.fireDistance=_fireDistance;
 };
+
 /**
- *
  * @returns {number}
  */
 Unit.prototype.getFireRate=function(){
