@@ -5,7 +5,6 @@ GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
 Runner = require("./engine/Runner");
 Team = require("./engine/Team");
-Point2D=require("./engine/vendor/Point2D");
 Unit=require("./engine/Unit");
 _=require("underscore");
 readline = require('readline');

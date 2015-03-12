@@ -1,5 +1,5 @@
 "use strict";
-var _,Unit,GridMap,Vector2D,Team,Bullet;
+var _,Unit,GridMap,Vector2D,Team,Bullet,Util;
 
 
 _ = require("underscore");
@@ -8,6 +8,7 @@ GridMap = require("./GridMap");
 Vector2D = require('./vendor/Vector2D');
 Team    = require('./Team');
 Bullet  = require('./Bullet');
+Util = require('./vendor/Util');
 
 
 /**
@@ -160,11 +161,10 @@ Game.prototype.updateBullets=function(){
  * Comprueba si la posición especificada por parámetro encuentra colisión con otro jugador o bloque del mapa
  *
  * @param {Vector2D} _position
+ * @return {boolean} if the position is on collision returns true
  */
 Game.prototype.checkPosition=function(_position){
-    if (!_position instanceof Vector2D) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
-    }
+    Util.isInstance(_position,Vector2D);
 
     return this.map.isOnCollision(_position);
 };
@@ -265,9 +265,9 @@ Game.prototype.render=function(){
             renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)]=2;
         });
     });
-    _.each(this.bullets,function(_bullet){
-        renderMap[Math.floor(_bullet.position.x)][Math.floor(_bullet.position.y)]=3;
-    });
+    //_.each(this.bullets,function(_bullet){
+    //    renderMap[Math.floor(_bullet.position.x)][Math.floor(_bullet.position.y)]=3;
+    //});
 
     for(var i=0;i<this.map.width;i+=1){
         for(var j=0;j<this.map.height;j+=1) {

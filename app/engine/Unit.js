@@ -1,14 +1,17 @@
 "use strict";
-var _,Vector2D,Bullet;
+var _,Vector2D,Angle,Bullet,Util;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
+Angle = require("./vendor/Angle");
 Bullet = require("./Bullet");
+Util=require("./vendor/Util");
 
 var TYPE={
     RANGE:0,
     BODY:1
 };
+
 /**
  * Default properties
  *
@@ -145,35 +148,25 @@ function Unit(_game,_team,_properties){
      */
 
     /**
-     * Array con las órdenes de movimiento de la unidad
-     * Array with the move actions of the unit
-     *@type {Vector2D[]}
+     * Unit's direction angle
+     * @type {Angle}
      */
-    this.moveTo=[];
+    this.direction = new Angle(0,false);
 
     /**
-     * Array con los movimientos de la unidad desde su posición actual hasta el siguiente destino de moveTo
-     *
-     * Array with the units moves from his position to the next position destiny indicate in moveTo
-     * @type {Array.<number|number[]}
+     * Unit's direction attack
+     * @type {Angle}
      */
-    this.path=[];
-
-    /**
-     * Units attack order to the position
-     * @type {Vector2D}
-     */
-    this.attackOrder = true;
-
+    this.attackTo = new Angle(0,false);
+    //TODO create a specific class to Attacks
 
 
 }
 
 /**
- *
+ * Create a relative collsphere
  */
 Unit.prototype.createCollSphere=function(){
-
     var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
 
     this.collSphereRelative[0]=new Vector2D(1,0);
@@ -186,30 +179,25 @@ Unit.prototype.createCollSphere=function(){
 
 /**
  * Attack to position
- * @param {Vector2D} _position
+ * @param {Angle} _attack
  */
-Unit.prototype.addAttackOrder = function(_position){
-    if (!Vector2D instanceof Unit) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
-    }
-    this.attackTo=_position;
+Unit.prototype.addAttackOrder = function(_attack){
+    Util.isInstance(_attack,Angle);
+    this.attackTo=_attack;
 };
 
 /**
- *
+ * Do an attack
  */
 Unit.prototype.attack = function(){
-
-    if(this.cooldown===0&&this.attackOrder===true){
-        var _angle=0;
-        var b = new Bullet(this.game,this.position,0,_angle,2,1,1);
+    if(this.cooldown===0&&this.attackTo.action){
+        var b = new Bullet(this.game,this.position,0,this.attackTo,2,1,1);
         this.game.addBullet(b);
     }
 };
 
-
 /**
- *
+ * Unit's update
  */
 Unit.prototype.update = function(){
     this.attack();
@@ -221,121 +209,46 @@ Unit.prototype.update = function(){
  * @param {number} _damage
  */
 Unit.prototype.hurt = function(_damage){
-
     this.health-=_damage;
     if(this.health<=0){
         this.alive=false;
     }
-
 };
 
-
-
-/**
- * Mueve la unidad
- *
- * Move the unit
- * @param {Unit} _unit
- */
-Unit.prototype.move = function(){
-
-    var moveDistance;
-
-    moveDistance=this.speed;
-    /**
-     * Actualiza la posición de la unidad usando path y moveTo
-     *
-     * Update the unit's position using path and moveTo
-     */
-    //Mientras
-    while(moveDistance>0&&this.moveTo.length!==0){
-        //Si la unidad no tiene path o no ha llegado a su destino.
-        if(this.path.length===0)
-        {
-            //Obtenemos destino y calculamos path
-            this.path=this.game.map.getPath(this.position.clone().floor(),this.moveTo[0].clone());
-
-            if(this.path.length===0){
-                console.log("ERROR DE LA MUERTEEEEE");
-            }
-        }
-
-        if(this.path.length>0){
-            var nextPos,vNextPos;
-            /**
-             * Obtenemos la siguiente posición del path que está a la vista.
-             * @type {Vector2D}
-             */
-            nextPos = new Vector2D(this.path[0][0]+0.5,this.path[0][1]+0.5);
-
-            //CALCULAR SIGUIENTE POSICION DEL PATH QUE checkObsFreeDistance !=-1
-            vNextPos = nextPos.subtract(this.position);
-
-            //Si con moveDistance llegamos al siguiente path avanzamos hasta el siguiente path.
-            if(vNextPos.mag()<moveDistance) {
-                //Asignamos la nueva posicion
-                this.position = new Vector2D(this.path[0][0]+0.5, this.path[0][1]+0.5);
-                //Eliminamos la posición del path
-                this.path.splice(0, 1);
-
-
-                if(this.path.length===0){
-                    this.moveTo.splice(0,1);
-                }
-
-            }else{
-                this.position=this.position.add(vNextPos.normalize().multiply(moveDistance));
-            }
-
-            moveDistance -= vNextPos.mag();
-        }
-
-    }
-};
-
-/**
- * Para la unidad
- * Stops the unit
- */
-Unit.prototype.stop=function(){
-    this.moveTo=[];
-    this.path=[];
-};
-
-/**
- * Añade un destino de movimiento al array moveTo
- *
- * Adds a destiny point to the array moveTo
- * @param {Vector2D} _position
- */
-Unit.prototype.addDestination=function(_position){
-    if (!_position instanceof Vector2D) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
-    }
-    this.moveTo.push(_position);
-};
 
 /**
  * Elimina los destinos anteriores de la unidad y añade un único destino
- * @param {Vector2D} _position
+ * @param {Angle} _direction
  */
-Unit.prototype.moveTo=function(_position){
-    if (!_position instanceof Vector2D) {
-        throw "El parámetro 'map' debe ser un objeto válido 'Vector2D'.";
-    }
-    this.stop();
-    this.addDestination(_position);
+Unit.prototype.moveTo=function(_direction){
+    Util.isInstance(_direction,Angle);
+
+    this.direction=_direction;
     return true;
 };
 
+
+
 /**
- * Realiza un ataque a la posición
- * @param {Vector2D} _position
+ * Move the unit in the direction give by this.direction attribute
  */
-Unit.prototype.attackTo=function(_position){
-    this.attackTo=[];
-    this.attackTo.push(_position);
+Unit.prototype.move=function(){
+    //If action is false, do nothing
+    if(!this.direction.action){
+        return;
+    }
+
+    var dir=this.direction.toVector2D();
+    if(!this.game.checkPosition(this.position.add(dir.multiply(this.speed)))){
+        //if the next position is free, update the unit's position
+        this.position=this.position.add(dir.multiply(this.speed));
+    }else{
+        console.log("patos: "+this.position);
+    }
 };
+
+
+
 
 
 
@@ -344,13 +257,12 @@ Unit.prototype.attackTo=function(_position){
  */
 
 /**
- * Devuelve si la entidad está viva
- * @returns {boolean}
+ * Checks if the unit's is alive
+ * @returns {boolean} returns true if the unit is alive
  */
 Unit.prototype.isAlive = function () {
     return this.alive;
 };
-
 
 
 /**

@@ -1,8 +1,9 @@
 "use strict";
-var _,Vector2D;
+var _,Vector2D,Angle;
 
 _ = require("underscore");
 Vector2D = require('./vendor/Vector2D');
+Angle = require('./vendor/Angle');
 
 
 var _defaultProperties={
@@ -12,13 +13,13 @@ var _defaultProperties={
 
 /**
  *
- * @param _game
- * @param _position
- * @param _teamId
- * @param _angle
- * @param _speed
- * @param _damage
- * @param _radius
+ * @param {Game} _game
+ * @param {Vector2D} _position
+ * @param {number} _teamId
+ * @param {Angle} _angle
+ * @param {number} _speed
+ * @param {number} _damage
+ * @param {number} _radius
  * @constructor
  */
 function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
@@ -40,7 +41,7 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
     this._teamId=_teamId;
 
     /**
-     * @type {number}
+     * @type {Angle}
      */
     this.angle=_angle;
     /**
@@ -53,13 +54,13 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
     this.damage=_damage;
 
     /**
-     * @type{radius}
+     * @type{number}
      */
     this.radius=_radius;
 
     /**
      *
-     * @type {Array[Vector2D]}
+     * @type {Vector2D[]}
      */
     this.collSphereRelative=[];
 
@@ -80,17 +81,17 @@ Bullet.prototype.createCollSphere=function(){
 };
 
 /**
- *
+ * Updates the bullet position
  */
 Bullet.prototype.update=function(){
     //Actualizar la posición de la bala.
-    var vDir=new Vector2D(Math.cos(this.angle),Math.sin(this.x));
+    var vDir= this.angle.toVector2D();
     this.position=this.position.add(vDir.multiply(this.speed));
 };
 
 
 /**
- *
+ * Checks the bullet collision
  */
 Bullet.prototype.checkCollisions=function(){
     if(this.game.map.isOnCollision(this.position)){
