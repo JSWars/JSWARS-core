@@ -127,6 +127,7 @@ Game.prototype.tick=function(){
     //Update positions
     //Checks collisions
     this.updatePositions();
+    this.updateBullets();
     this.getGameFrame();
 };
 
@@ -265,9 +266,9 @@ Game.prototype.render=function(){
             renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)]=2;
         });
     });
-    //_.each(this.bullets,function(_bullet){
-    //    renderMap[Math.floor(_bullet.position.x)][Math.floor(_bullet.position.y)]=3;
-    //});
+    _.each(this.bullets,function(_bullet){
+        renderMap[Math.floor(_bullet.position.y)][Math.floor(_bullet.position.x)]=3;
+    });
 
     for(var i=0;i<this.map.width;i+=1){
         for(var j=0;j<this.map.height;j+=1) {
@@ -296,8 +297,7 @@ Game.prototype.renderPlayerStats=function(){
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
             turn+="\nPosition: "+_unit.position;
-            turn+="\nDest: "+_unit.moveTo;
-            turn+="\nPath: "+_unit.path;
+            turn+="\nDest: "+_unit.direction.angle;
 
         },this);
     },this);
