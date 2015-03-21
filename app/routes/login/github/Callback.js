@@ -16,15 +16,11 @@ function CallbackRoute(req, res) {
                 //Something going wrong during database call :(
                 res.status(500).end();
             }
-            if (user === null) {
-                //Create user
+            if (user === null) { //Create user
 
                 var newUser = new User();
                 newUser.name = githubData.name;
                 newUser.username = githubData.login;
-                newUser.email = githubData.email;
-                newUser.created = new Date();
-                newUser.gravatar = githubData.gravatar_id;
                 newUser.github = githubData;
 
                 //User is not registered
@@ -37,13 +33,13 @@ function CallbackRoute(req, res) {
 
                     var ret = req.session.return;
                     delete req.session.return;
-                    req.session.username = newUser.username;
+                    req.session.internalUser = newUser;
                     res.redirect(ret.replace(':username', newUser.username));
                 });
             } else {
                 var ret = req.session.return;
                 delete req.session.return;
-                req.session.username = user.username;
+                req.session.internalUser = user;
                 res.redirect(ret.replace(':username', user.username));
             }
         }, function () {

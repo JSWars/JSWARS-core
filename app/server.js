@@ -64,8 +64,15 @@ server.get(Config.path + '/login/github', require('./routes/login/github/Entry')
 server.get(Config.path + '/login/github/callback', Passport.authenticate('github'), require('./routes/login/github/Callback'));
 server.get(Config.path + '/logout', require('./routes/Logout'));
 
-//Data Routes
+//Users
 server.get(Config.path + '/users/:username', require('./routes/User'));
+server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/UserUpdate'));
+
+//Agents
+server.get(Config.path + '/users/:username/agents', require('./routes/user/AgentList'));
+server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
+server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
+server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 
 
 //Start listening!
