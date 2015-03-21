@@ -1,16 +1,13 @@
-var ModelName, _, Mongoose, Agent;
+var ModelName, _, Mongoose, AgentVersion;
 
-ModelName = 'Agent';
+ModelName = 'AgentVersion';
 _ = require('underscore');
 Mongoose = require('mongoose');
 
-Agent = new Mongoose.Schema({
-    id: {type: Number, index: true},
-    name: String,
-    file: String,
-    moment: Date
+AgentVersion = new Mongoose.Schema({
+    code: {type: String, required: true},
+    moment: {type: Date, required: true, default: new Date()},
+    agent: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}
 });
 
-module.exports = Agent;
-
-
+module.exports = Mongoose.model(ModelName, AgentVersion);

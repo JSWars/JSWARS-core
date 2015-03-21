@@ -1,18 +1,18 @@
-var ModelName, _, Mongoose, Agent;
+var ModelName, _, Mongoose, Battle;
 
-ModelName = 'Agent';
+ModelName = 'Battle';
 _ = require('underscore');
 Mongoose = require('mongoose');
 
-Agent = new Mongoose.Schema({
+Battle = new Mongoose.Schema({
     id: {type: Number, index: true},
     agents: [
         {type: Mongoose.Schema.Types.ObjectId, ref: 'AgentVersion'}
     ],
-    moment: Date,
-    duration: Number
+    moment: {type: Date, required: true, default: new Date()},
+    duration: {type: Number, required: false}
 });
 
-module.exports = Agent;
+module.exports = Mongoose.model(ModelName, Battle);
 
 

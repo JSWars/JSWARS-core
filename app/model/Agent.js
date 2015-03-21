@@ -5,13 +5,10 @@ _ = require('underscore');
 Mongoose = require('mongoose');
 
 Agent = new Mongoose.Schema({
-    id: {type: Number, index: true},
-    name: String,
-    versions: [
-        {type: Mongoose.Schema.Types.ObjectId, ref: 'AgentVersion'}
-    ]
+    name: {type: String, required: true},
+    user: {type: Mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    moment: {type:Date, required: true, default: new Date()}
 });
 
-module.exports = Agent;
-
+module.exports = Mongoose.model(ModelName, Agent);
 
