@@ -177,6 +177,7 @@ Game.prototype.checkPosition=function(_position){
 Game.prototype.checkUnitHit=function(_bullet){
 
 
+	var hit=false;
 	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
@@ -187,12 +188,12 @@ Game.prototype.checkUnitHit=function(_bullet){
 			  //If the object is closest than the two radius return collision
 			  if(vDist.mag()<=minDist){
 				  _unit.hurt(_bullet.damage);
-				  return true;
+				  hit=true;
 			  }
         });
 
     });
-    return false;
+    return hit;
 };
 
 

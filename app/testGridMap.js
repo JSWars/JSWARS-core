@@ -38,7 +38,7 @@ _.each(game.teams,function(_team){
         var p=game.getRandomFreeCell();
         //var p = new Vector2D(15,13);
         _unit.stop();
-        _unit.addAttackOrder(new Angle(Math.random()*2*Math.PI,true));
+        _unit.addAttackOrder(new Angle(Math.PI/2,true));
     });
 });
 
