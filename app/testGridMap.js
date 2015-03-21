@@ -36,15 +36,14 @@ _.each(game.teams,function(_team){
         //var p = new Vector2D(15,13);
         _unit.moveTo(new Angle(0,true));
         _unit.addAttackOrder(new Angle(Math.PI/2,true));
-        console.log("Pos: " + _unit.position);
-        console.log("Dest: "+ _unit.moveTo[0]);
     });
 });
 
 
 for(var i=0;i<100;i+=1){
     game.tick();
-    game.render();
+    //game.render();
 }
+
 
 console.log(JSON.stringify(game.chunk));

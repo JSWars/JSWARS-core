@@ -75,7 +75,8 @@ server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, re
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 
 //Battle
-server.get(Config.path + 'battle/:id/map',require('.routes/battle/Map'))
+server.get(Config.path + '/battle/:id/map',require('./routes/battle/Map'));
+server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'))
 
 
 //Start listening!

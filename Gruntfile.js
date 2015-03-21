@@ -11,7 +11,7 @@ module.exports = function (grunt) {
 			'mongo-stop': 'mongod --shutdown',
 			'moncha-install': 'npm install -g mocha',
 			'test': 'mocha',
-			'test-map': 'node testGridMap.js'
+			'test-map': 'node app/testGridMap.js > app/resources/chunk.json'
 		}
 
 	});

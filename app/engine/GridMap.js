@@ -167,8 +167,6 @@ GridMap.prototype.initializeColMapDefault = function(){
     this.loadColMap(defaultMap);
     this.initializePathfinding();
 
-    console.log(this.colMap);
-
 };
 
 /**
