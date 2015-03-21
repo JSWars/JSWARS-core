@@ -14,10 +14,6 @@ readline = require('readline');
 PF=require("pathfinding");
 
 
-
-
-
-
 // Inicializamos el juego
 var game = new Game();
 
