@@ -180,17 +180,19 @@ Game.prototype.checkUnitHit=function(_bullet){
 	var hit=false;
 	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
     _.each(this.teams,function(_team){
-        _.each(_team.units,function(_unit){
-			  //Calculate the distance to the object
-			  var vDist,minDist;
-			  vDist = _unit.position.subtract(_bullet.position);
-			  minDist = _bullet.radius+_unit.radius;
-			  //If the object is closest than the two radius return collision
-			  if(vDist.mag()<=minDist){
-				  _unit.hurt(_bullet.damage);
-				  hit=true;
-			  }
-        });
+		 if(_team.id!==_bullet.id){
+			  _.each(_team.units,function(_unit){
+				  //Calculate the distance to the object
+				  var vDist,minDist;
+				  vDist = _unit.position.subtract(_bullet.position);
+				  minDist = _bullet.radius+_unit.radius;
+				  //If the object is closest than the two radius return collision
+				  if(vDist.mag()<=minDist){
+					  _unit.hurt(_bullet.damage);
+					  hit=true;
+				  }
+			  });
+		 }
 
     });
     return hit;
@@ -232,7 +234,7 @@ Game.prototype.getGameFrame=function(){
         var teamPicked=_.pick(_team,"id","name","color");
         teamPicked.units=[];
         _.each(_team.units,function(_unit){
-            var unitPicked= _.pick(_unit,"alive","position","radius");
+            var unitPicked= _.pick(_unit,"health","alive","position","radius");
             //var unitPicked= _.omit(_unit,"game");
             teamPicked.units.push(unitPicked);
         });

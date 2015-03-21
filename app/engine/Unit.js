@@ -23,7 +23,7 @@ var defaultProperties = {
     health:5,
     armor:0,
     damage:1,
-    fireRate:100,
+    fireRate:10,
     fireDistance:5,
     type:TYPE.RANGE
 };
@@ -49,7 +49,7 @@ function Unit(_game,_team,_properties){
     /**
      * Instancia del equipo al que pertenece la unidad
      */
-    this.team=_team;
+    this.teamId=_team;
 
 
     /**
@@ -194,7 +194,7 @@ Unit.prototype.attack = function(){
     this.cooldown--;
     if(this.cooldown<=0&&this.attackTo.action){
 
-        var b = new Bullet(this.game,this.position,0,this.attackTo,0.2,1,0.25);
+        var b = new Bullet(this.game,this.position,this.teamId,this.attackTo,0.2,1,0.25);
         this.game.addBullet(b);
         this.cooldown=this.fireRate;
     }

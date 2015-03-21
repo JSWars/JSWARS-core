@@ -84,6 +84,7 @@ Team.prototype.applyInputs=function(_inputs){
  * @param {Unit} _unit
  */
 Team.prototype.addUnit=function(_unit){
+	_unit.teamId=this.id;
   this.units.push(_unit);
 };
 
