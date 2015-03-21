@@ -50,18 +50,17 @@ var properties={
 game.teams[1].addUnit(new Unit(game,this,properties));
 
 
-
 _.each(game.teams,function(_team){
     _.each(_team.units,function(_unit){
         var p=game.getRandomFreeCell();
         //var p = new Vector2D(15,13);
-        _unit.moveTo(new Angle(Math.PI,true));
-        _unit.addAttackOrder(new Angle(Math.PI/2,true));
+        //_unit.moveTo(new Angle(Math.PI,true));
+        _unit.addAttackOrder(new Angle(Math.random()*2*Math.PI,true));
     });
 });
 
 
-for(var i=0;i<100;i+=1){
+for(var i=0;i<800;i+=1){
     game.tick();
     //game.render();
 }

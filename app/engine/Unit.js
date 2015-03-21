@@ -193,7 +193,7 @@ Unit.prototype.attack = function(){
     this.cooldown--;
     if(this.cooldown<=0&&this.attackTo.action){
 
-        var b = new Bullet(this.game,this.position,0,this.attackTo,2,1,0.25);
+        var b = new Bullet(this.game,this.position,0,this.attackTo,0.5,1,0.25);
         this.game.addBullet(b);
         this.cooldown=this.fireRate;
     }
