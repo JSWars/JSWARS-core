@@ -69,6 +69,8 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
      */
     this.collSphereRelative=[];
 
+	this.numPointsCollSphere=8;
+
     this.createCollSphere();
 
 }
@@ -77,7 +79,7 @@ Bullet.prototype.createCollSphere=function(){
 
     var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
 
-    this.collSphereRelative[0]=(new Vector2D(1,0)).multiply(this.radius);
+    this.collSphereRelative[0]=(new Vector2D(this.radius,0)).multiply(this.radius);
     for(var i=1;i<this.numPointsCollSphere;i+=1){
         this.collSphereRelative[i]=this.collSphereRelative[i-1];
         this.collSphereRelative[i]=this.collSphereRelative[i].rotate(angle);

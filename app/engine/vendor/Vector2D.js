@@ -157,6 +157,13 @@ Vector2D.prototype.subtractEquals = function(that) {
 };
 
 
+Vector2D.prototype.rotate = function(angle){
+	var newX = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+	var newY = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+	return new Vector2D(newX,newY);
+}
+
+
 /*****
 *
 *   multiply

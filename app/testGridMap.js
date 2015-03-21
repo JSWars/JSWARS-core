@@ -25,27 +25,14 @@ game.addTeam("Luis");
 
 
 var properties={
-	position:new Vector2D(3,3),//OBLIGATORIO
-	radius:0.5,
-	speed:0.1,
-	armor:0,
-	damage:1,
-	fireRate:10,
-	fireDistance:5
+	position:new Vector2D(3,3)//OBLIGATORIO
 };
 game.teams[0].addUnit(new Unit(game,this,properties));
 
 game.addTeam("Marcos");
 
-
 var properties={
-	position:new Vector2D(3,12),//OBLIGATORIO
-	radius:0.5,
-	speed:0.1,
-	armor:0,
-	damage:1,
-	fireRate:10,
-	fireDistance:5
+	position:new Vector2D(3,12)//OBLIGATORIO
 };
 game.teams[1].addUnit(new Unit(game,this,properties));
 
@@ -54,7 +41,7 @@ _.each(game.teams,function(_team){
     _.each(_team.units,function(_unit){
         var p=game.getRandomFreeCell();
         //var p = new Vector2D(15,13);
-        //_unit.moveTo(new Angle(Math.PI,true));
+        _unit.stop();
         _unit.addAttackOrder(new Angle(Math.random()*2*Math.PI,true));
     });
 });

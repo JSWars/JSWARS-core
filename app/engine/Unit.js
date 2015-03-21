@@ -160,6 +160,7 @@ function Unit(_game,_team,_properties){
     this.attackTo = new Angle(0,false);
     //TODO create a specific class to Attacks
 
+	this.createCollSphere();
 
 }
 
@@ -169,7 +170,7 @@ function Unit(_game,_team,_properties){
 Unit.prototype.createCollSphere=function(){
     var angle= (2.0 * Math.PI) / this.numPointsCollSphere;
 
-    this.collSphereRelative[0]=new Vector2D(1,0);
+    this.collSphereRelative[0]=new Vector2D(this.radius,0);
     for(var i=1;i<this.numPointsCollSphere;i+=1){
         this.collSphereRelative[i]=this.collSphereRelative[i-1];
         this.collSphereRelative[i]=this.collSphereRelative[i].rotate(angle);
@@ -193,7 +194,7 @@ Unit.prototype.attack = function(){
     this.cooldown--;
     if(this.cooldown<=0&&this.attackTo.action){
 
-        var b = new Bullet(this.game,this.position,0,this.attackTo,0.5,1,0.25);
+        var b = new Bullet(this.game,this.position,0,this.attackTo,0.2,1,0.25);
         this.game.addBullet(b);
         this.cooldown=this.fireRate;
     }
@@ -231,13 +232,16 @@ Unit.prototype.moveTo=function(_direction){
 };
 
 
+Unit.prototype.stop=function(){
+	this.direction=new Angle(0,false);
+};
 
 /**
  * Move the unit in the direction give by this.direction attribute
  */
 Unit.prototype.move=function(){
     //If action is false, do nothing
-    if(!this.direction.action){
+    if(this.direction.action===false){
         return;
     }
 

@@ -8,9 +8,9 @@ Util=require('./Util');
  *   constructor
  *
  *****/
-function Angle(_angle) {
+function Angle(_angle,_action) {
     this.angle=_angle;
-    this.action=true;
+    this.action=_action;
 }
 
 /**
