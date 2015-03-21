@@ -241,11 +241,10 @@ Unit.prototype.move=function(){
     }
 
     var dir=this.direction.toVector2D();
+
     if(!this.game.checkPosition(this.position.add(dir.multiply(this.speed)))){
         //if the next position is free, update the unit's position
         this.position=this.position.add(dir.multiply(this.speed));
-    }else{
-        console.log("patos: "+this.position);
     }
 };
 
