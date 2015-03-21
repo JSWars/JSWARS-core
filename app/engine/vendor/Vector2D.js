@@ -11,7 +11,7 @@
 /**
  * http://www.kevlindev.com/
  *
- * 
+ *
  *
 */
 
@@ -46,6 +46,8 @@ Vector2D.prototype.length = function() {
 Vector2D.prototype.mag = function() {
     return Math.sqrt(this.x*this.x + this.y*this.y);
 };
+
+
 
 
 /*****

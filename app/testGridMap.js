@@ -23,11 +23,32 @@ var game = new Game();
 
 game.addTeam("Luis");
 
-game.teams[0].addDefaultUnit();
+
+var properties={
+	position:new Vector2D(3,3),//OBLIGATORIO
+	radius:0.5,
+	speed:0.1,
+	armor:0,
+	damage:1,
+	fireRate:10,
+	fireDistance:5
+};
+game.teams[0].addUnit(new Unit(game,this,properties));
 
 game.addTeam("Marcos");
 
-game.teams[1].addDefaultUnit();
+
+var properties={
+	position:new Vector2D(3,12),//OBLIGATORIO
+	radius:0.5,
+	speed:0.1,
+	armor:0,
+	damage:1,
+	fireRate:10,
+	fireDistance:5
+};
+game.teams[1].addUnit(new Unit(game,this,properties));
+
 
 
 _.each(game.teams,function(_team){

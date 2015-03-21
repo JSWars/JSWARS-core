@@ -73,9 +73,6 @@ function Game() {
     this.gameObjects=[];
 
 
-
-
-
 }
 
 /**
@@ -102,12 +99,7 @@ Game.prototype.initMap=function(){
  * @param {String} _id of the team
  */
 Game.prototype.addTeam=function(_id){
-
-    this.teams[this.totalTeams]=(new Team(this.totalTeams,_id,this));
-    this.totalTeams+=1;
-
-
-
+	this.teams[this.totalTeams]=(new Team(this.totalTeams+=1,_id,this));
 };
 
 /**
@@ -178,20 +170,25 @@ Game.prototype.checkPosition=function(_position){
 };
 
 /**
- *
- * @param {Vector2D}_position
+ * Check if the bullet hit an unit
+ * @param {Bullet} _bullet
  * @returns {boolean}
  */
-Game.prototype.checkPositionUnit=function(_position){
-    //TODO HACER DE NUEVO COLISIONES ENTRE UNIDADES
-    /**
-     * DEPRECATED COMO UNA CASA
-     */
+Game.prototype.checkUnitHit=function(_bullet){
+
+
+	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
     _.each(this.teams,function(_team){
         _.each(_team.units,function(_unit){
-            if(_unit.getPosition().x === _position.x && _unit.getPosition().y === _position.y){
-                return true;
-            }
+			  //Calculate the distance to the object
+			  var vDist,minDist;
+			  vDist = _unit.position.subtract(_bullet.position);
+			  minDist = _bullet.radius+_unit.radius;
+			  //If the object is closest than the two radius return collision
+			  if(vDist.mag()<=minDist){
+				  _unit.hurt(_bullet.damage);
+				  return true;
+			  }
         });
 
     });
@@ -265,7 +262,6 @@ Game.prototype.getGameFrame=function(){
  * Dibuja el mapa en la consola
  */
 Game.prototype.render=function(){
-    //this.map.render();
     var render="";
     var renderMap = this.map.colMap.slice(0);
 
@@ -286,8 +282,6 @@ Game.prototype.render=function(){
         }
         render+="\n";
     }
-
-
 
     console.log(render);
 
@@ -319,7 +313,7 @@ Game.prototype.renderPlayerStats=function(){
 
 /**
  * Devuelve el mapa que se está usando en el juego
- * @returns {Map} Mapa
+ * @returns {GridMap} Mapa
  */
 Game.prototype.getMap = function () {
     return this.map;

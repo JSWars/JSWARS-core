@@ -32,7 +32,7 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
 	/**
 	 * @type {number}
 	 */
-	 this.id=this.game.totalBullets+=1;
+	 this.id=_game.totalBullets+=1;
 
     /**
      * @type {Vector2D}
@@ -108,8 +108,18 @@ Bullet.prototype.checkCollisions=function(){
         }
     }
 
+	if(this.game.checkUnitHit(this)){
+		return true;
+	}
+
+
+	//TODO AHORA MISMO TAN SÓLO SE ESTÁ COMPROBANDO LA COLISION EN CADA ITERACIÓN, FALTARÍA COMPROBAR EN TODOS LOS ESTADOS ENTRE LAPOSICIÓN ACTUAL Y LA ANTERIOR
     return false;
-    //TODO AHORA MISMO TAN SÓLO SE ESTÁ COMPROBANDO LA COLISION EN CADA ITERACIÓN, FALTARÍA COMPROBAR EN TODOS LOS ESTADOS ENTRE LAPOSICIÓN ACTUAL Y LA ANTERIOR
+
+};
+
+Bullet.prototype.checkUnitHit=function(){
+
 };
 
 module.exports = Bullet;

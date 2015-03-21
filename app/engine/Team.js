@@ -98,14 +98,14 @@ Team.prototype.addDefaultUnit=function(){
 
     var properties={
         position:this.game.getRandomFreeCell(),//OBLIGATORIO
-        radius:0.1,
+        radius:0.5,
         speed:0.1,
         armor:0,
         damage:1,
         fireRate:10,
         fireDistance:5
     };
-    this.units.push (new Unit(this.game,this,properties));
+    this.units.push(new Unit(this.game,this,properties));
 };
 
 

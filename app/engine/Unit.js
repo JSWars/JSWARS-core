@@ -18,7 +18,7 @@ var TYPE={
  */
 var defaultProperties = {
     position:null,//OBLIGATORIO
-    radius:0.1,
+    radius:0.5,
     speed:0.1,
     health:5,
     armor:0,
@@ -192,7 +192,8 @@ Unit.prototype.addAttackOrder = function(_attack){
 Unit.prototype.attack = function(){
     this.cooldown--;
     if(this.cooldown<=0&&this.attackTo.action){
-        var b = new Bullet(this.game,this.position,0,this.attackTo,2,1,1);
+
+        var b = new Bullet(this.game,this.position,0,this.attackTo,2,1,0.25);
         this.game.addBullet(b);
         this.cooldown=this.fireRate;
     }
@@ -242,13 +243,28 @@ Unit.prototype.move=function(){
 
     var dir=this.direction.toVector2D();
 
-    if(!this.game.checkPosition(this.position.add(dir.multiply(this.speed)))){
+    if(!this.checkPosition(this.position.add(dir.multiply(this.speed)))){
         //if the next position is free, update the unit's position
         this.position=this.position.add(dir.multiply(this.speed));
     }
+
 };
 
 
+
+Unit.prototype.checkPosition=function(){
+
+	if(this.game.map.isOnCollision(this.position)){
+		return true;
+	}
+	for(var i=0;i<this.collSphereRelative.length;i+=1){
+		if(this.game.map.isOnCollision(this.position.add(this.collSphereRelative[i]))){
+			return true;
+		}
+	}
+
+	return false;
+};
 
 
 
