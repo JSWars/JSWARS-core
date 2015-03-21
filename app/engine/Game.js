@@ -52,7 +52,14 @@ function Game() {
      */
     this.totalUnits=0;
 
-    /**
+	/**
+	 * Total units
+	 * @type {number}
+	 */
+	this.totalBullets=0;
+
+
+	/**
      *
      * @type {number}
      */
@@ -236,13 +243,14 @@ Game.prototype.getGameFrame=function(){
 
     var bullets=[];
     _.each(this.bullets,function(_bullet){
-        var bulletPicked= _.pick(_bullet,"position","radius");
+        var bulletPicked= _.pick(_bullet,"id","teamId","position","radius");
+		  bullets.push(bulletPicked);
 
     });
 
     var chunk={
        "teams":teams,
-        "bullets":bullets
+		 "bullets":bullets
     };
 
     this.chunk.push(chunk);

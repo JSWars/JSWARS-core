@@ -29,6 +29,11 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
      */
     this.game=_game;
 
+	/**
+	 * @type {number}
+	 */
+	 this.id=this.game.totalBullets+=1;
+
     /**
      * @type {Vector2D}
      */
