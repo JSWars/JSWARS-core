@@ -1,5 +1,5 @@
 "use strict";
-var _,Unit,GridMap,Vector2D,Team,Bullet,Util;
+var _,Unit,GridMap,Vector2D,Team,Bullet,Util,Action;
 
 
 _ = require("underscore");
@@ -9,6 +9,7 @@ Vector2D = require('./vendor/Vector2D');
 Team    = require('./Team');
 Bullet  = require('./Bullet');
 Util = require('./vendor/Util');
+Action = require('./Action');
 
 
 /**
@@ -34,6 +35,12 @@ function Game() {
      * @type {Team{}}
      */
     this.teams = {};
+
+	/**
+	 * Agents
+	 * @type {Agent}
+	 */
+	this.agents = [];
 
     /**
      *
@@ -74,6 +81,16 @@ function Game() {
 
 
 }
+
+Game.prototype.initialize=function(){
+	_.each(this.agents,function(_agent){
+		_agent.initialize();
+	});
+};
+
+Game.prototype.addAgent=function(_agent){
+	this.agents.push(_agent);
+};
 
 /**
  * Add's a bullet to the game
@@ -125,9 +142,23 @@ Game.prototype.tick=function(){
     //Apply inputs
     //Update positions
     //Checks collisions
+	 this.getAgentActions();
     this.updatePositions();
     this.updateBullets();
     this.getGameFrame();
+};
+
+Game.prototype.getAgentActions=function(){
+
+	//TODO ARREGLAR ESTA MIERDA
+	var context=this;
+	_.each(this.agents,function(_agent,_idAgent){
+		var action=_agent.getAction();
+		_.each(action,function(_action,_idUnit){
+			context.teams[_idAgent].units[_idUnit].moveTo(_action.move);
+			context.teams[_idAgent].units[_idUnit].addAttackOrder(_action.attack);
+		});
+	});
 };
 
 /**

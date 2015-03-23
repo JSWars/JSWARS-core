@@ -1,3 +1,35 @@
+"use strict";
+var Unit,Action,Angle, _,Vector2D,Bullet,Util;
+
+_ = require("underscore");
+Vector2D = require("./vendor/Vector2D");
+Angle = require("./vendor/Angle");
+Bullet = require("./Bullet");
+Util=require("./vendor/Util");
+Action=require("./Action");
+
+function Agent(_game,_teamId){
+	this.game=_game;
+	this.teamId=_teamId;
+
+	this.unitsAction=[];
+
+}
+
+Agent.prototype.initialize=function(){
+	var context=this;
+	var defaultAction=new Action(new Angle(0,true),new Angle(0,true));
+	_.each(this.game.teams[this.teamId].units,function(_unit,_idx){
+		context.unitsAction[_idx]=defaultAction;
+	});
+};
+
+
+Agent.prototype.getAction=function(){
+	return this.unitsAction;
+};
+
+
 /**
  * Mueve la unidad
  *
@@ -58,3 +90,6 @@ Agent.prototype.move = function(){
 
     }
 };
+
+
+module.exports=Agent;
