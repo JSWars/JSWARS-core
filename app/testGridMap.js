@@ -43,7 +43,6 @@ game.initialize();
 
 for(var i=0;i<800;i+=1){
     game.tick();
-    //game.render();
 }
 
 

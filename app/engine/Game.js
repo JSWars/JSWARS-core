@@ -1,13 +1,13 @@
 "use strict";
-var _,Unit,GridMap,Vector2D,Team,Bullet,Util,Action;
+var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action;
 
 
 _ = require("underscore");
-Unit    = require("./Unit");
+Unit = require("./Unit");
 GridMap = require("./GridMap");
 Vector2D = require('./vendor/Vector2D');
-Team    = require('./Team');
-Bullet  = require('./Bullet');
+Team = require('./Team');
+Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 Action = require('./Action');
 
@@ -17,24 +17,24 @@ Action = require('./Action');
  * @constructor
  */
 function Game() {
-    /**
-     * Mapa del juego
-     * Map of the game
-     * @type {GridMap}
-     */
-    this.map = null;
+	/**
+	 * Mapa del juego
+	 * Map of the game
+	 * @type {GridMap}
+	 */
+	this.map = null;
 
-    /**
-     * Chunk
-     */
-    this.chunk=[];
+	/**
+	 * Chunk
+	 */
+	this.chunk = [];
 
-    /**
-     * Equipos
-     * Teams
-     * @type {Team{}}
-     */
-    this.teams = {};
+	/**
+	 * Equipos
+	 * Teams
+	 * @type {Team{}}
+	 */
+	this.teams = {};
 
 	/**
 	 * Agents
@@ -42,81 +42,88 @@ function Game() {
 	 */
 	this.agents = [];
 
-    /**
-     *
-     * @type {Array[Bullet]}
-     */
-    this.bullets=[];
-    /**
-     * Total de equipos
-     * @type {number}
-     */
-    this.totalTeams=0;
-
-    /**
-     * Total units
-     * @type {number}
-     */
-    this.totalUnits=0;
+	/**
+	 *
+	 * @type {Array[Bullet]}
+	 */
+	this.bullets = [];
+	/**
+	 * Total de equipos
+	 * @type {number}
+	 */
+	this.totalTeams = 0;
 
 	/**
 	 * Total units
 	 * @type {number}
 	 */
-	this.totalBullets=0;
+	this.totalUnits = 0;
+
+	/**
+	 * Total units
+	 * @type {number}
+	 */
+	this.totalBullets = 0;
 
 
 	/**
-     *
-     * @type {number}
-     */
-    this.totalTime=0;
+	 *
+	 * @type {number}
+	 */
+	this.totalTicks = 0;
+
+	/**
+	 *
+	 * @type {number}
+	 */
+	this.totalAgents = 0;
 
 
+	this.initMap();
 
-    this.initMap();
-
-    //todo Next implementations...
-    this.gameObjects=[];
+	//todo Next implementations...
+	this.gameObjects = [];
 
 
 }
 
-Game.prototype.initialize=function(){
-	_.each(this.agents,function(_agent){
+Game.prototype.initialize = function () {
+	_.each(this.agents, function (_agent) {
 		_agent.initialize();
 	});
 };
 
-Game.prototype.addAgent=function(_agent){
+Game.prototype.addAgent = function (_agent) {
 	this.agents.push(_agent);
+	this.totalAgents += 1;
 };
 
 /**
  * Add's a bullet to the game
  * @param {Bullet} _bullet
  */
-Game.prototype.addBullet=function(_bullet){
-    this.bullets.push(_bullet);
+Game.prototype.addBullet = function (_bullet) {
+	this.bullets.push(_bullet);
+	this.totalBullets += 1;
 };
 
 
 /**
  * Initialize the map
  */
-Game.prototype.initMap=function(){
-    this.map=new GridMap("MapTest",this);
-    this.map.initializeColMapDefault();
-};
+Game.prototype.initMap = function () {
+	this.map = new GridMap("MapTest", this);
+	this.map.initializeColMapDefault();
 
+};
 
 
 /**
  * Create a team by _id
  * @param {String} _id of the team
  */
-Game.prototype.addTeam=function(_id){
-	this.teams[this.totalTeams]=(new Team(this.totalTeams+=1,_id,this));
+Game.prototype.addTeam = function (_id) {
+	this.teams[this.totalTeams] = (new Team(this.totalTeams += 1, _id, this));
 };
 
 /**
@@ -125,9 +132,9 @@ Game.prototype.addTeam=function(_id){
  * Deletes the team by the id
  * @param {number} _id
  */
-Game.prototype.removeTeam=function(_id){
-    delete this.teams[_id];
-    this.totalTeams-=1;
+Game.prototype.removeTeam = function (_id) {
+	delete this.teams[_id];
+	this.totalTeams -= 1;
 
 };
 
@@ -137,24 +144,52 @@ Game.prototype.removeTeam=function(_id){
  *
  * Do a game iteration
  */
-Game.prototype.tick=function(){
+Game.prototype.tick = function () {
 
-    //Apply inputs
-    //Update positions
-    //Checks collisions
-	 this.getAgentActions();
-    this.updatePositions();
-    this.updateBullets();
-    this.getGameFrame();
+	this.totalTicks += 1;
+
+	//Apply inputs
+	//Update positions
+	//Checks collisions
+
+	this.updateGameAgentsState();
+	this.getAgentActions();
+	this.updatePositions();
+	this.updateBullets();
+
+
+	this.getGameFrame();
+
+	this.checkGameFinish();
 };
 
-Game.prototype.getAgentActions=function(){
+
+/**
+ * Send a new copy of the game to the agents, with updated values of this tick
+ */
+Game.prototype.updateGameAgentsState=function(){
+
+};
+
+/**
+ * Checks if the current game finished
+ *
+ * @return {boolean}
+ */
+Game.prototype.checkGameFinish = function () {
+
+};
+
+/**
+ * Gets the agents actions and apply in the game
+ */
+Game.prototype.getAgentActions = function () {
 
 	//TODO ARREGLAR ESTA MIERDA
-	var context=this;
-	_.each(this.agents,function(_agent,_idAgent){
-		var action=_agent.getAction();
-		_.each(action,function(_action,_idUnit){
+	var context = this;
+	_.each(this.agents, function (_agent, _idAgent) {
+		var action = _agent.getAction();
+		_.each(action, function (_action, _idUnit) {
 			context.teams[_idAgent].units[_idUnit].moveTo(_action.move);
 			context.teams[_idAgent].units[_idUnit].addAttackOrder(_action.attack);
 		});
@@ -166,26 +201,25 @@ Game.prototype.getAgentActions=function(){
  *
  * Update all the players creatures positions
  */
-Game.prototype.updatePositions=function(){
-    _.each(this.teams,function(_team){
-        _.each(_team.units,function(_unit){
-            //Actualizar posición de las unidades
-            _unit.update();
-        },this);
-    },this);
+Game.prototype.updatePositions = function () {
+	_.each(this.teams, function (_team) {
+		_.each(_team.units, function (_unit) {
+			//Actualizar posición de las unidades
+			_unit.update();
+		}, this);
+	}, this);
 };
 
-Game.prototype.updateBullets=function(){
-    _.each(this.bullets,function(_bullet){
-        _bullet.update();
-    });
+Game.prototype.updateBullets = function () {
+	_.each(this.bullets, function (_bullet) {
+		_bullet.update();
+	});
 
-    //Delete the bullets in collision
-    this.bullets=_.filter(this.bullets,function(_bullet){
-        return !_bullet.checkCollisions();
-    });
+	//Delete the bullets in collision
+	this.bullets = _.filter(this.bullets, function (_bullet) {
+		return !_bullet.checkCollisions();
+	});
 };
-
 
 
 /**
@@ -194,10 +228,10 @@ Game.prototype.updateBullets=function(){
  * @param {Vector2D} _position
  * @return {boolean} if the position is on collision returns true
  */
-Game.prototype.checkPosition=function(_position){
-    Util.isInstance(_position,Vector2D);
+Game.prototype.checkPosition = function (_position) {
+	Util.isInstance(_position, Vector2D);
 
-    return this.map.isOnCollision(_position);
+	return this.map.isOnCollision(_position);
 };
 
 /**
@@ -205,46 +239,43 @@ Game.prototype.checkPosition=function(_position){
  * @param {Bullet} _bullet
  * @returns {boolean}
  */
-Game.prototype.checkUnitHit=function(_bullet){
+Game.prototype.checkUnitHit = function (_bullet) {
 
 
-	var hit=false;
+	var hit = false;
 	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
-    _.each(this.teams,function(_team){
-		 if(_team.id!==_bullet.id){
-			  _.each(_team.units,function(_unit){
-				  //Calculate the distance to the object
-				  var vDist,minDist;
-				  vDist = _unit.position.subtract(_bullet.position);
-				  minDist = _bullet.radius+_unit.radius;
-				  //If the object is closest than the two radius return collision
-				  if(vDist.mag()<=minDist){
-					  _unit.hurt(_bullet.damage);
-					  hit=true;
-				  }
-			  });
-		 }
+	_.each(this.teams, function (_team) {
+		if (_team.id !== _bullet.id) {
+			_.each(_team.units, function (_unit) {
+				//Calculate the distance to the object
+				var vDist, minDist;
+				vDist = _unit.position.subtract(_bullet.position);
+				minDist = _bullet.radius + _unit.radius;
+				//If the object is closest than the two radius return collision
+				if (vDist.mag() <= minDist) {
+					_unit.hurt(_bullet.damage);
+					hit = true;
+				}
+			});
+		}
 
-    });
-    return hit;
+	});
+	return hit;
 };
-
-
-
 
 
 /**
  * Obtiene una posicion libre del mapa
  * @returns {Vector2D}
  */
-Game.prototype.getRandomFreeCell=function(){
-    //Posicion aleatoria
-    var rx=Math.floor(Math.random()*this.map.width);
-    var ry=Math.floor(Math.random()*this.map.height);
-    if(this.checkPosition(new Vector2D(rx,ry))){
-        return this.getRandomFreeCell();
-    }
-    return new Vector2D(rx,ry);
+Game.prototype.getRandomFreeCell = function () {
+	//Posicion aleatoria
+	var rx = Math.floor(Math.random() * this.map.width);
+	var ry = Math.floor(Math.random() * this.map.height);
+	if (this.checkPosition(new Vector2D(rx, ry))) {
+		return this.getRandomFreeCell();
+	}
+	return new Vector2D(rx, ry);
 };
 
 
@@ -255,36 +286,71 @@ Game.prototype.getRandomFreeCell=function(){
 /**
  * Returns the agents inputs for a game iteration
  */
-Game.prototype.applyAgentInputs=function(){
-    //TODO PEDIR AL AGENTE REALIZAR UNA ACCIÓN
+Game.prototype.applyAgentInputs = function () {
+	//TODO PEDIR AL AGENTE REALIZAR UNA ACCIÓN
 };
 
-Game.prototype.getGameFrame=function(){
-    var teams=[];
-    _.each(this.teams,function(_team){
-        var teamPicked=_.pick(_team,"id","name","color");
-        teamPicked.units=[];
-        _.each(_team.units,function(_unit){
-            var unitPicked= _.pick(_unit,"health","alive","position","radius");
-            //var unitPicked= _.omit(_unit,"game");
-            teamPicked.units.push(unitPicked);
-        });
-        teams.push(teamPicked);
-    });
+/**
+ * Get the current game state ready to send to the agents
+ */
+Game.prototype.getGameState = function () {
+	var teams = [];
+	_.each(this.teams, function (_team) {
+		var teamPicked = _.pick(_team, "id", "name", "color");
+		teamPicked.units = [];
+		_.each(_team.units, function (_unit) {
+			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
+			//var unitPicked= _.omit(_unit,"game");
+			teamPicked.units.push(unitPicked);
+		});
+		teams.push(teamPicked);
+	});
 
-    var bullets=[];
-    _.each(this.bullets,function(_bullet){
-        var bulletPicked= _.pick(_bullet,"id","teamId","position","radius");
-		  bullets.push(bulletPicked);
+	var bullets = [];
+	_.each(this.bullets, function (_bullet) {
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
+		bullets.push(bulletPicked);
 
-    });
+	});
 
-    var chunk={
-       "teams":teams,
-		 "bullets":bullets
-    };
+	var chunk = {
+		"teams": teams,
+		"bullets": bullets
+	};
 
-    this.chunk.push(chunk);
+	this.chunk.push(chunk);
+};
+
+
+/**
+ * Get the current game state ready to insert in mongodb
+ */
+Game.prototype.getGameFrame = function () {
+	var teams = [];
+	_.each(this.teams, function (_team) {
+		var teamPicked = _.pick(_team, "id", "name", "color");
+		teamPicked.units = [];
+		_.each(_team.units, function (_unit) {
+			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
+			//var unitPicked= _.omit(_unit,"game");
+			teamPicked.units.push(unitPicked);
+		});
+		teams.push(teamPicked);
+	});
+
+	var bullets = [];
+	_.each(this.bullets, function (_bullet) {
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
+		bullets.push(bulletPicked);
+
+	});
+
+	var chunk = {
+		"teams": teams,
+		"bullets": bullets
+	};
+
+	this.chunk.push(chunk);
 };
 
 
@@ -295,32 +361,32 @@ Game.prototype.getGameFrame=function(){
 /**
  * Dibuja el mapa en la consola
  */
-Game.prototype.render=function(){
-    var render="";
-    var renderMap = this.map.colMap.slice(0);
+Game.prototype.render = function () {
+	var render = "";
+	var renderMap = this.map.colMap.slice(0);
 
-    _.each(this.teams,function(_team){
-        _.each(_team.units,function(_unit){
-            renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)]=2;
-        });
-    });
-    _.each(this.bullets,function(_bullet){
-        renderMap[Math.floor(_bullet.position.y)][Math.floor(_bullet.position.x)]=3;
-    });
+	_.each(this.teams, function (_team) {
+		_.each(_team.units, function (_unit) {
+			renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)] = 2;
+		});
+	});
+	_.each(this.bullets, function (_bullet) {
+		renderMap[Math.floor(_bullet.position.y)][Math.floor(_bullet.position.x)] = 3;
+	});
 
-    for(var i=0;i<this.map.width;i+=1){
-        for(var j=0;j<this.map.height;j+=1) {
-            {
-                render+=" "+this.map.getBlockAscii(renderMap[i][j])+" ";
-            }
-        }
-        render+="\n";
-    }
+	for (var i = 0; i < this.map.width; i += 1) {
+		for (var j = 0; j < this.map.height; j += 1) {
+			{
+				render += " " + this.map.getBlockAscii(renderMap[i][j]) + " ";
+			}
+		}
+		render += "\n";
+	}
 
-    console.log(render);
+	console.log(render);
 
-    //render player stats
-    this.renderPlayerStats();
+	//render player stats
+	this.renderPlayerStats();
 };
 
 
@@ -328,16 +394,16 @@ Game.prototype.render=function(){
  *
  * @return {String}
  */
-Game.prototype.renderPlayerStats=function(){
-    var turn="";
-    _.each(this.teams,function(_team){
-        _.each(_team.units,function(_unit){
-            turn+="\nPosition: "+_unit.position;
-            turn+="\nDest: "+_unit.direction.angle;
+Game.prototype.renderPlayerStats = function () {
+	var turn = "";
+	_.each(this.teams, function (_team) {
+		_.each(_team.units, function (_unit) {
+			turn += "\nPosition: " + _unit.position;
+			turn += "\nDest: " + _unit.direction.angle;
 
-        },this);
-    },this);
-    console.log(turn);
+		}, this);
+	}, this);
+	console.log(turn);
 };
 
 
@@ -350,7 +416,7 @@ Game.prototype.renderPlayerStats=function(){
  * @returns {GridMap} Mapa
  */
 Game.prototype.getMap = function () {
-    return this.map;
+	return this.map;
 };
 
 /**
@@ -359,7 +425,7 @@ Game.prototype.getMap = function () {
  * @returns {Team} Equipo
  */
 Game.prototype.getTeam = function (id) {
-    return this.teams[id];
+	return this.teams[id];
 };
 
 
