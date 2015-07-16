@@ -1,53 +1,44 @@
 "use strict";
-var GridMap,Game,Runner,Team,Unit, _,readline, PF, Path,Vector2D,Angle,Agent,AgentController;
+var GridMap, Game, Runner, Team, Unit, _, readline, PF, Path, Vector2D, Angle, Agent, AgentController;
 
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
 Runner = require("./engine/Runner");
 Team = require("./engine/Team");
-Unit=require("./engine/Unit");
-Vector2D=require("./engine/vendor/Vector2D");
-Angle=require("./engine/vendor/Angle");
+Unit = require("./engine/Unit");
+Vector2D = require("./engine/vendor/Vector2D");
+Angle = require("./engine/vendor/Angle");
 
-Agent=require("./engine/Agent");
+Agent = require("./engine/Agent");
 
-AgentController=require('./engine/controllers/AgentController');
+AgentController = require('./engine/controllers/AgentController');
 
-_=require("underscore");
+_ = require("underscore");
 readline = require('readline');
-PF=require("pathfinding");
+PF = require("pathfinding");
 
 
 // Inicializamos el juego
 var game = new Game();
 
-game.addTeam("Luis");
+var luisTeamId = game.addTeam("Luis", new AgentController("./agents/AgentMierder.js"));
+var marcosTeamId = game.addTeam("Marcos", new AgentController("./agents/AgentMierder.js"));
 
-
-var properties={
-	position:new Vector2D(3,3)//OBLIGATORIO
-};
-game.teams[0].addUnit(new Unit(game,game.teams[0],properties));
-
-game.addTeam("Marcos");
-
-var properties={
-	position:new Vector2D(3,12)//OBLIGATORIO
-};
-game.teams[1].addUnit(new Unit(game,game.teams[1],properties));
-
+for (var o = 0; o < 5; o++) {
+	game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
+		position: game.getRandomFreeCell() //Return a vector2d,
+	}));
+	game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
+		position: game.getRandomFreeCell() //Return a vector2d
+	}));
+}
 
 //todo fix ruta
-game.addAgent(new AgentController("./agents/AgentMierder.js"));
-game.addAgent(new AgentController("./agents/AgentMierder.js"));
 
 game.initialize();
 
-
-
-
-for(var i=0;i<800;i+=1){
-    game.tick();
+for (var i = 0; i < 800; i += 1) {
+	game.tick();
 }
 
 

@@ -29,17 +29,14 @@ function AgentController(_agentPath) {
     this.ownerId = undefined;
     this.game = undefined;
     this.timeout = undefined;
-    this.prepared = false;
-
+    this.prepared = true;
 }
 
 AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
 
-    //TODO: Ñapa
-    /*
      if (_game instanceof Game) {
      throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
-     }*/
+     }
 
     this.game = _game;
     this.ownerId = _ownerId;

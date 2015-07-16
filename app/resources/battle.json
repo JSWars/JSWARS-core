@@ -4,7 +4,7 @@
   	"frameCount": 800,
     "chunkSize":300,
     "teams": {
-	  "1":{
+	  "0":{
 		"name": "So Crazy",
 		"user": {
 		  "id": "42",
@@ -14,7 +14,7 @@
 		},
 		"color": "#FF0000"
 		},
-	  "2":{
+	  "1":{
 		  "name": "So Crazy",
 		  "user": {
 			"id": "42",

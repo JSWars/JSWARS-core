@@ -1,5 +1,5 @@
 "use strict";
-var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action,AgentController;
+var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController;
 
 
 _ = require("underscore");
@@ -121,10 +121,11 @@ Game.prototype.initMap = function () {
 
 /**
  * Create a team by _id
- * @param {String} _id of the team
+ * @param {String} _name of the team
  */
-Game.prototype.addTeam = function (_id) {
-	this.teams[this.totalTeams] = (new Team(this.totalTeams += 1, _id, this));
+Game.prototype.addTeam = function (_name, _agent) {
+	this.teams[this.totalTeams] = new Team(this.totalTeams, _name, _agent, this);
+	return this.totalTeams++;
 };
 
 /**
@@ -168,7 +169,7 @@ Game.prototype.tick = function () {
 /**
  * Send a new copy of the game to the agents, with updated values of this tick
  */
-Game.prototype.updateGameAgentsState=function(){
+Game.prototype.updateGameAgentsState = function () {
 
 };
 
@@ -185,13 +186,11 @@ Game.prototype.checkGameFinish = function () {
  * Gets the agents actions and apply in the game
  */
 Game.prototype.getAgentActions = function () {
-
-	var context = this;
-	_.each(this.agents, function (_agent, _idAgent) {
-		var action = _agent.tick();
+	_.each(this.teams, function (team) {
+		var action = team.agent.tick();
 		_.each(action, function (_action, _idUnit) {
-			context.teams[_idAgent].units[_idUnit].moveTo(_action.move);
-			context.teams[_idAgent].units[_idUnit].addAttackOrder(_action.attack);
+			team.units[_idUnit].moveTo(_action.move);
+			team.units[_idUnit].addAttackOrder(_action.attack);
 		});
 	});
 };
@@ -245,7 +244,7 @@ Game.prototype.checkUnitHit = function (_bullet) {
 	var hit = false;
 	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
 	_.each(this.teams, function (_team) {
-		if (_team.id !== _bullet.id) {
+		if (_team.id !== _bullet._teamId) {
 			_.each(_team.units, function (_unit) {
 				//Calculate the distance to the object
 				var vDist, minDist;
@@ -338,7 +337,7 @@ Game.prototype.getGameFrame = function () {
 			//var unitPicked= _.omit(_unit,"game");
 			teamPicked.units.push(unitPicked);
 		});
-		teams[teamPicked.id]=teamPicked;
+		teams[teamPicked.id] = teamPicked;
 	});
 
 	var bullets = [];
