@@ -43,7 +43,7 @@ function Bullet(_game,_position,_teamId,_angle,_speed,_damage,_radius){
      * Bullet team id
      * @type {number}
      */
-    this._teamId=_teamId;
+    this.teamId=_teamId;
 
     /**
      * @type {Angle}

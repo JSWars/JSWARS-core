@@ -18,7 +18,7 @@ var TYPE={
  */
 var defaultProperties = {
     position:null,//OBLIGATORIO
-    radius:0.5,
+    radius:0.2,
     speed:0.1,
     health:5,
     armor:0,
@@ -191,7 +191,7 @@ Unit.prototype.addAttackOrder = function(_attack){
  * Do an attack
  */
 Unit.prototype.attack = function(){
-    this.cooldown--;
+    this.cooldown-=1;
     if(this.cooldown<=0&&this.attackTo.action){
 
         var b = new Bullet(this.game,this.position,this.teamId,this.attackTo,0.2,1,0.25);
@@ -241,9 +241,13 @@ Unit.prototype.stop=function(){
  */
 Unit.prototype.move=function(){
     //If action is false, do nothing
+
+	//TODO: NO MOVER UNIDADES MUERTAS
     if(this.direction.action===false){
         return;
     }
+
+	//TODO ERROR: Cuando chocan con una pared dejan de moverse
 
     var dir=this.direction.toVector2D();
 

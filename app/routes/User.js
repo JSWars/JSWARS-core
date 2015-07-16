@@ -9,7 +9,7 @@ function UserRoute(req, res) {
         }
     ).exec(function (err, user) {
             if(err){
-                //Something going wrong during database call :(
+                //y going wrong during database call :(
                 res.status(500).end();
                 return;
             }
