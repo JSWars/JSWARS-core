@@ -245,7 +245,7 @@ Game.prototype.checkUnitHit = function (_bullet) {
 	var hit = false;
 	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
 	_.each(this.teams, function (_team) {
-		if (_team.id !== _bullet.id) {
+		if (_team.id !== _bullet.teamId) {
 			_.each(_team.units, function (_unit) {
 				//Calculate the distance to the object
 				var vDist, minDist;

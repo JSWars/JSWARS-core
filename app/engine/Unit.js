@@ -18,7 +18,7 @@ var TYPE={
  */
 var defaultProperties = {
     position:null,//OBLIGATORIO
-    radius:0.5,
+    radius:0.2,
     speed:0.1,
     health:5,
     armor:0,
