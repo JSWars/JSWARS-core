@@ -340,10 +340,10 @@ Game.prototype.getGameFrame = function () {
 		teams[teamPicked.id] = teamPicked;
 	});
 
-	var bullets = [];
+	var bullets = {};
 	_.each(this.bullets, function (_bullet) {
 		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
-		bullets.push(bulletPicked);
+		bullets[_bullet.id]=bulletPicked;
 
 	});
 

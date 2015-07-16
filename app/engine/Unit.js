@@ -23,7 +23,7 @@ var defaultProperties = {
     health:5,
     armor:0,
     damage:1,
-    fireRate:10,
+    fireRate:250,
     fireDistance:5,
     type:TYPE.RANGE
 };
