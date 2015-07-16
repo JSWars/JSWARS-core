@@ -1,5 +1,5 @@
 "use strict";
-var GridMap,Game,Runner,Team,Unit, _,readline, PF, Path,Vector2D,Angle,Agent;
+var GridMap,Game,Runner,Team,Unit, _,readline, PF, Path,Vector2D,Angle,Agent,AgentController;
 
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
@@ -9,10 +9,13 @@ Unit=require("./engine/Unit");
 Vector2D=require("./engine/vendor/Vector2D");
 Angle=require("./engine/vendor/Angle");
 
+Agent=require("./engine/Agent");
+
+AgentController=require('./engine/controllers/AgentController');
+
 _=require("underscore");
 readline = require('readline');
 PF=require("pathfinding");
-Agent=require("./engine/Agent");
 
 
 // Inicializamos el juego
@@ -33,8 +36,10 @@ var properties={
 };
 game.teams[1].addUnit(new Unit(game,game.teams[1],properties));
 
-game.addAgent(new Agent(game,0));
-game.addAgent(new Agent(game,1));
+
+//todo fix ruta
+game.addAgent(new AgentController("./agents/AgentMierder.js"));
+game.addAgent(new AgentController("./agents/AgentMierder.js"));
 
 game.initialize();
 

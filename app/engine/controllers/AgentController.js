@@ -10,6 +10,9 @@ var _ = require("underscore");
 var Game = require("../Game");
 var AgentInput = require("./interfaces/AgentInput");
 var AgentOutput = require("./interfaces/AgentOutput");
+var Action = require("../Action");
+var Angle = require("../vendor/Angle");
+var Vector2D = require("../vendor/Vector2D");
 
 /**
  * El controlador de agente usa fragmentos de javascript para calcular los futuros movimientos
@@ -40,7 +43,8 @@ AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
 
     this.game = _game;
     this.ownerId = _ownerId;
-    this.timeout = 1000 / _fps / _.keys(this.game.teams).length;
+    //this.timeout = 1000 / _fps / _.keys(this.game.teams).length;
+	this.prepared=true;
 };
 
 
@@ -62,11 +66,14 @@ AgentController.prototype.tick = function () {
 
     var sandbox = {
         input: new AgentInput(this.game, this.ownerId),
-        output: new AgentOutput()
+        output: new AgentOutput(),
+		 	Action: Action,
+		 Vector2D: Vector2D,
+		 Angle: Angle
     };
 
     try {
-        console.log("Timeout : " + this.timeout);
+        //console.log("Timeout : " + this.timeout);
         this.agent.runInNewContext(sandbox, this.timeout);
     } catch (exception) {
         console.dir(exception);
@@ -74,7 +81,7 @@ AgentController.prototype.tick = function () {
         //TODO: no devolver una exepción, controlar el error correctamente
     }
 
-    return sandbox.output;
+    return sandbox.output.unitsActions;
 
 };
 

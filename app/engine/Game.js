@@ -1,5 +1,5 @@
 "use strict";
-var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action;
+var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action,AgentController;
 
 
 _ = require("underscore");
@@ -10,6 +10,7 @@ Team = require('./Team');
 Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 Action = require('./Action');
+AgentController = require("./controllers/AgentController");
 
 
 /**
@@ -38,7 +39,7 @@ function Game() {
 
 	/**
 	 * Agents
-	 * @type {Agent}
+	 * @type {AgentController}
 	 */
 	this.agents = [];
 
@@ -89,7 +90,7 @@ function Game() {
 
 Game.prototype.initialize = function () {
 	_.each(this.agents, function (_agent) {
-		_agent.initialize();
+		_agent.setGameConfig();
 	});
 };
 
@@ -185,10 +186,9 @@ Game.prototype.checkGameFinish = function () {
  */
 Game.prototype.getAgentActions = function () {
 
-	//TODO ARREGLAR ESTA MIERDA
 	var context = this;
 	_.each(this.agents, function (_agent, _idAgent) {
-		var action = _agent.getAction();
+		var action = _agent.tick();
 		_.each(action, function (_action, _idUnit) {
 			context.teams[_idAgent].units[_idUnit].moveTo(_action.move);
 			context.teams[_idAgent].units[_idUnit].addAttackOrder(_action.attack);
@@ -326,16 +326,19 @@ Game.prototype.getGameState = function () {
  * Get the current game state ready to insert in mongodb
  */
 Game.prototype.getGameFrame = function () {
-	var teams = [];
+	var teams = {};
+
+	//recorremos los equipos
 	_.each(this.teams, function (_team) {
 		var teamPicked = _.pick(_team, "id", "name", "color");
 		teamPicked.units = [];
+		//Recorremos las unidades
 		_.each(_team.units, function (_unit) {
 			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
 			//var unitPicked= _.omit(_unit,"game");
 			teamPicked.units.push(unitPicked);
 		});
-		teams.push(teamPicked);
+		teams[teamPicked.id]=teamPicked;
 	});
 
 	var bullets = [];
@@ -348,6 +351,7 @@ Game.prototype.getGameFrame = function () {
 	var chunk = {
 		"teams": teams,
 		"bullets": bullets
+
 	};
 
 	this.chunk.push(chunk);
