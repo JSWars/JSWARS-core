@@ -24,7 +24,7 @@ var game = new Game();
 var luisTeamId = game.addTeam("Luis", new AgentController("./agents/AgentMierder.js"));
 var marcosTeamId = game.addTeam("Marcos", new AgentController("./agents/AgentMierder.js"));
 
-for (var o = 0; o < 5; o++) {
+for (var o = 0; o < 5; o+=1) {
 	game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
 		position: game.getRandomFreeCell() //Return a vector2d,
 	}));

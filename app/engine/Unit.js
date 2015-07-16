@@ -251,7 +251,7 @@ Unit.prototype.move=function(){
 
     var dir=this.direction.toVector2D();
 
-    if(!this.checkPosition(this.position.add(dir.multiply(this.speed)))){
+    if(!this.checkCollide(this.position.add(dir.multiply(this.speed)))){
         //if the next position is free, update the unit's position
         this.position=this.position.add(dir.multiply(this.speed));
     }
@@ -260,13 +260,13 @@ Unit.prototype.move=function(){
 
 
 
-Unit.prototype.checkPosition=function(){
+Unit.prototype.checkCollide=function(_PUTO_PARAMETRO_DE_MIERDA){
 
-	if(this.game.map.isOnCollision(this.position)){
+	if(this.game.map.isOnCollision(_PUTO_PARAMETRO_DE_MIERDA)){
 		return true;
 	}
 	for(var i=0;i<this.collSphereRelative.length;i+=1){
-		if(this.game.map.isOnCollision(this.position.add(this.collSphereRelative[i]))){
+		if(this.game.map.isOnCollision(_PUTO_PARAMETRO_DE_MIERDA.add(this.collSphereRelative[i]))){
 			return true;
 		}
 	}

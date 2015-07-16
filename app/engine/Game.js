@@ -274,7 +274,7 @@ Game.prototype.getRandomFreeCell = function () {
 	if (this.checkPosition(new Vector2D(rx, ry))) {
 		return this.getRandomFreeCell();
 	}
-	return new Vector2D(rx, ry);
+	return new Vector2D(rx+0.5, ry+0.5);
 };
 
 

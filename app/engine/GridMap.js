@@ -325,29 +325,6 @@ GridMap.prototype.getMapCell=function(_point){
 };
 
 /**
- * Comprueba si la posición indicada se encuentra en colision con algun objeto del mapa
- * -=1-=1-=1
- * Function that checks the point especified is a collision type
- * @param _point {Vector2D}
- * @returns {boolean}
- */
-GridMap.prototype.isOnCollision=function(_point){
-    if(!(_point instanceof Vector2D))
-    {
-        throw "Can't check this point, is not a valid Vector2D";
-    }
-    _point=_point.floor();
-    if(!this.isOutsideBounds(_point))
-    {
-
-        return this.isObstacle(this.colMap[_point.y][_point.x]);
-    }
-
-    //Si el punto está fuera del mapa devolvemos true.
-    return true;
-};
-
-/**
  * Comprueba si el tipo de bloque indicado por parámetro es un obstaculo.
  *
  * Checks the block type give by parameter returns true if is an obstacle.
@@ -356,6 +333,29 @@ GridMap.prototype.isOnCollision=function(_point){
  */
 GridMap.prototype.isObstacle=function(_block){
    return _block===TYPE.BLOCK;
+};
+
+/**
+ * Comprueba si la posición indicada se encuentra en colision con algun objeto del mapa
+ * -=1-=1-=1
+ * Function that checks the point especified is a collision type
+ * @param _point {Vector2D}
+ * @returns {boolean}
+ */
+GridMap.prototype.isOnCollision=function(_point){
+	if(!(_point instanceof Vector2D))
+	{
+		throw "Can't check this point, is not a valid Vector2D";
+	}
+	_point=_point.floor();
+	if(!this.isOutsideBounds(_point))
+	{
+
+		return this.isObstacle(this.colMap[_point.y][_point.x]);
+	}
+
+	//Si el punto está fuera del mapa devolvemos true.
+	return true;
 };
 
 /**
