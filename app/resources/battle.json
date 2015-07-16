@@ -2,31 +2,29 @@
 	"id": 320,
   	"fps": 60,
   	"frameCount": 800,
-    "chunkSize":100,
-	"agents" : [
-		{
-			"id": 44,
-			"name": "So Crazy",
-			"user":{
-				"id": "42",
-				"username": "djwmarcx",
-				"avatar": "img/avatars/Awesome.png",
-				"country": "ES"
-			},
-			"color": "#FF0000"
+    "chunkSize":300,
+    "teams": {
+	  "1":{
+		"name": "So Crazy",
+		"user": {
+		  "id": "42",
+		  "username": "djwmarcx",
+		  "avatar": "img/avatars/Awesome.png",
+		  "country": "ES"
 		},
-		{
-			"id": 34,
-			"name": "So Crazy",
-			"user":{
-				"id": "42",
-				"username": "jucapaman",
-				"avatar": "img/avatars/Awesome.png",
-				"country": "ES"
-			},
-			"color":"#0066FF"
-		}
-	],
+		"color": "#FF0000"
+		},
+	  "2":{
+		  "name": "So Crazy",
+		  "user": {
+			"id": "42",
+			"username": "jucapaman",
+			"avatar": "img/avatars/Awesome.png",
+			"country": "ES"
+		  },
+		  "color":"#0066FF"
+	  }
+	},
 	"map":{
 		"height":30,
 		"layers":[
