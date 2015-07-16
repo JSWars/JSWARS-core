@@ -1,5 +1,8 @@
 {
 	"id": 320,
+  	"fps": 60,
+  	"frameCount": 800,
+    "chunkSize":100,
 	"agents" : [
 		{
 			"id": 44,

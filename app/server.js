@@ -13,8 +13,8 @@ ExpressBodyParser = require('body-parser');
 Mongoose = require('mongoose');
 
 //Passport Dependencies
-Passport = require('Passport');
-GithubStrategy = require('Passport-github').Strategy;
+Passport = require('passport');
+GithubStrategy = require('passport-github').Strategy;
 User = require('./model/User');
 
 

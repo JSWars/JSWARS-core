@@ -7,6 +7,8 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		exec: {
+			'mongo-start-linux': 'mongod --dbpath=/mdbdata/ --port 27017',
+			'mongo-stop-linux': 'mongod --shutdown',
 			'mongo-start': 'mongod --dbpath=c:/mdbdata --port 27017',
 			'mongo-stop': 'mongod --shutdown',
 			'moncha-install': 'npm install -g mocha',
@@ -19,7 +21,9 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-exec');
 
-	grunt.registerTask('test-map', ['exec:test-map'])
+	grunt.registerTask('test-map', ['exec:test-map']);
+	grunt.registerTask('mongo-start-linux', ['exec:mongo-start-linux']);
+	grunt.registerTask('mongo-stop-linux', ['exec:mongo-stop-linux']);
 	grunt.registerTask('mongo-start', ['exec:mongo-start']);
 	grunt.registerTask('mongo-stop', ['exec:mongo-stop']);
 	grunt.registerTask('install', ['exec:moncha-install']);
