@@ -72,10 +72,10 @@ var luisTeamId = game.addTeam("Luis", new AgentController("./agents/AgentDer.js"
 var marcosTeamId = game.addTeam("Marcos", new AgentController("./agents/AgentIzq.js"));
 
 	game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
-		position: new Vector2D(2,5) //Return a vector2d,
+		position: new Vector2D(2,2) //Return a vector2d,
 	}));
 	game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
-		position: new Vector2D(2,10) //Return a vector2d
+		position: new Vector2D(10,2) //Return a vector2d
 	}));
 
 

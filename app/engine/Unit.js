@@ -23,7 +23,7 @@ var defaultProperties = {
     health:100,
     armor:0,
     damage:20,
-    fireRate:250,
+    fireRate:100,
     fireDistance:5,
     type:TYPE.RANGE
 };
@@ -199,7 +199,7 @@ Unit.prototype.attack = function(){
     this.cooldown-=1;
     if(this.cooldown<=0&&this.attackTo.action){
 
-        var b = new Bullet(this.game,this.position,this.teamId,this.attackTo,0.2,1,0.25);
+        var b = new Bullet(this.game,this.position,this.teamId,this.attackTo,0.2,this.damage,0.25);
         this.game.addBullet(b);
         this.cooldown=this.fireRate;
     }

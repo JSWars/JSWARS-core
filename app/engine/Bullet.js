@@ -7,7 +7,7 @@ Angle = require('./vendor/Angle');
 
 
 var _defaultProperties={
-
+	//TODO Poner default properties
 };
 
 
