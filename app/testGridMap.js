@@ -16,6 +16,21 @@ readline = require('readline');
 PF = require("pathfinding");
 
 
+var Battle=require('./model/Battle');
+var BattleFrame=require('./model/BattleFrame');
+
+
+var Config = require('./config.js');
+var Mongoose = require('mongoose');
+
+Mongoose.connect(Config.db.url);
+Mongoose.connection.on('error', function (err) {
+	console.error('MongoDB error: %s', err);
+});
+
+//Creamos partida en mongo
+var newBattle = new Battle();
+
 // Inicializamos el juego
 var game = new Game();
 
@@ -78,17 +93,21 @@ var marcosTeamId = game.addTeam("Marcos", new AgentController("./agents/AgentIzq
 		position: new Vector2D(10,2) //Return a vector2d
 	}));
 
-
-
-
-
-
 //INICIALIZAMOS JUEGO
 game.initialize();
 
 for (var i = 0; i < 800; i += 1) {
-	game.tick();
+	var frame=game.tick();
+
+	newBattle.frames.push(new BattleFrame({
+		battle:newBattle._id,
+		index:i,
+		data:frame
+	}));
 }
 
+newBattle.save();
 
 console.log(JSON.stringify(game.chunk));
+
+Mongoose.connection.close();

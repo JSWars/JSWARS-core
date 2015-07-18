@@ -167,10 +167,11 @@ Game.prototype.tick = function () {
 	this.getAgentActions();
 	this.updatePositions();
 	this.updateBullets();
-	this.getGameFrame();
 
 	this.update();
 	this.checkGameFinish();
+
+	return this.getGameFrame();
 };
 
 Game.prototype.update=function(){
@@ -355,13 +356,12 @@ Game.prototype.getGameFrame = function () {
 
 	});
 
-	var chunk = {
+	var frame = {
 		"teams": teams,
 		"bullets": bullets
 
 	};
-
-	this.chunk.push(chunk);
+	return frame;
 };
 
 

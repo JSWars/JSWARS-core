@@ -6,9 +6,10 @@ Mongoose = require('mongoose');
 
 Battle = new Mongoose.Schema({
     id: {type: Number, index: true},
-    agents: [
-        {type: Mongoose.Schema.Types.ObjectId, ref: 'AgentVersion'}
-    ],
+    //agents: [
+    //    {type: Mongoose.Schema.Types.ObjectId, ref: 'AgentVersion'}
+    //],
+	 frames: [{ type:  Mongoose.Schema.Types.ObjectId, ref: 'BattleFrame' }],
     moment: {type: Date, required: true, default: new Date()},
     duration: {type: Number, required: false}
 });
