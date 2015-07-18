@@ -9,7 +9,6 @@ Battle = new Mongoose.Schema({
     //agents: [
     //    {type: Mongoose.Schema.Types.ObjectId, ref: 'AgentVersion'}
     //],
-	 frames: [{ type:  Mongoose.Schema.Types.ObjectId, ref: 'BattleFrame' }],
     moment: {type: Date, required: true, default: new Date()},
     duration: {type: Number, required: false}
 });

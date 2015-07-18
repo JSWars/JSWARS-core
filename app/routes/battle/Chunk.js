@@ -21,12 +21,19 @@ function Map(req, res) {
 	//});
 
 
-	Battle.findOne({
-		//'frame.index': {$gte: chunkStartFrame, $lt: chunkEndFrame}
-	}, {}, {short: {'moment': -1}})
-		.populate('frames')
+	Battle.findOne({})
+		.sort({'moment': -1})
 		.exec(function (err, battle) {
-			res.json(battle.frames);
+			BattleFrame.find({
+				battle: battle._id,
+				index: {$gte: chunkStartFrame, $lt: chunkEndFrame}
+			})
+				.sort({'index': 1})
+				.select({data: 1})
+				.exec(function (err, frames) {
+					res.json(frames);
+				})
+
 		});
 }
 module.exports = Map;
