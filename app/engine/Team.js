@@ -1,10 +1,11 @@
 "use strict";
-var Vector2D, Bullet, Unit;
+var Vector2D, Bullet, Unit,_;
 
 
 Vector2D = require("./vendor/Vector2D");
 Unit = require("./Unit");
 Bullet = require('./Bullet');
+_=require('underscore');
 
 
 function get_random_color() {
@@ -71,8 +72,26 @@ function Team(_id, _name, _agent, _game) {
 	this.color = get_random_color();
 
 
+	/**
+	 * Health of the team
+	 * @type {number}
+	 */
+
+	this.health=0;
+
 }
 
+
+Team.prototype.update = function(){
+	var totalHealth=0;
+	var maxHealth=0;
+	_.each(this.units,function(_unit){
+		totalHealth=totalHealth+_unit.health;
+		maxHealth=maxHealth+_unit.maxHealth;
+	});
+
+	this.health= (totalHealth/maxHealth)*100;
+};
 
 /**
  * Apply the inputs from a agent of this current iteration

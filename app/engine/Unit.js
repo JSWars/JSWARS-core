@@ -20,9 +20,9 @@ var defaultProperties = {
     position:null,//OBLIGATORIO
     radius:0.2,
     speed:0.1,
-    health:5,
+    health:100,
     armor:0,
-    damage:1,
+    damage:20,
     fireRate:250,
     fireDistance:5,
     type:TYPE.RANGE
@@ -141,6 +141,11 @@ function Unit(_game,_team,_properties){
      */
     this.health = (_properties.health)?_properties.health:defaultProperties.health;
 
+	/**
+	 * Max health of the unit
+	 * @type {number}
+	 */
+	this.maxHealth = (_properties.health)?_properties.health:defaultProperties.health;
 
 
     /**
@@ -242,12 +247,9 @@ Unit.prototype.stop=function(){
 Unit.prototype.move=function(){
     //If action is false, do nothing
 
-	//TODO: NO MOVER UNIDADES MUERTAS
     if(this.direction.action===false){
         return;
     }
-
-	//TODO ERROR: Cuando chocan con una pared dejan de moverse
 
     var dir=this.direction.toVector2D();
 
@@ -260,13 +262,13 @@ Unit.prototype.move=function(){
 
 
 
-Unit.prototype.checkCollide=function(_PUTO_PARAMETRO_DE_MIERDA){
+Unit.prototype.checkCollide=function(_position){
 
-	if(this.game.map.isOnCollision(_PUTO_PARAMETRO_DE_MIERDA)){
+	if(this.game.map.isOnCollision(_position)){
 		return true;
 	}
 	for(var i=0;i<this.collSphereRelative.length;i+=1){
-		if(this.game.map.isOnCollision(_PUTO_PARAMETRO_DE_MIERDA.add(this.collSphereRelative[i]))){
+		if(this.game.map.isOnCollision(_position.add(this.collSphereRelative[i]))){
 			return true;
 		}
 	}

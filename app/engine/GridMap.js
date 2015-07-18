@@ -131,6 +131,10 @@ function GridMap(_name,_game){
      * @type {number}
      */
     this.scale  = 1;
+
+
+
+	//todo setear opciones de los mapas, max equipos para el mapa, zonas de comienzo de cada equipo, etc
 }
 
 
@@ -162,77 +166,6 @@ GridMap.prototype.getPath=function(_posIni,_posFin){
     return pathResult;
 
 };
-
-GridMap.prototype.initializeColMapDefault = function(){
-    this.loadColMap(defaultMap);
-    this.initializePathfinding();
-
-};
-
-/**
- * Inicializa un mapa de colisiones en blanco con muros en los bordes.
- * -=1-=1
- * Initialize a blank col map with walls in the boundaries.
- */
-GridMap.prototype.initializeColMap = function(){
-
-    //Rellenamos los bordes con bloques
-    for(var i=0;i<this.width;i+=1){
-        this.colMap[i]=[];
-        for(var j=0;j<this.height;j+=1){
-            if(i===0||i===this.width-1||j===0||j===this.height-1)
-            {
-                this.colMap[i][j]=TYPE.BLOCK;
-            }else{
-                this.colMap[i][j]=TYPE.AIR;
-            }
-
-        }
-    }
-
-    //Ponemos algun murico
-    //this.setHorizontalWall(new Vector2D(5,5),15);
-    //this.setHorizontalWall(new Vector2D(20,5),15);
-
-    console.log("Mapa inicializado.");
-};
-
-
-/**
- * Crea un muro entre las coordenadas introducidas, tomadas como esquinas del rectángulo que definirá el muro.
- *
- * @param {Vector2D} _posIni
- * @param {Vector2D} _posFin
- * @DEPRECATED
- */
-GridMap.prototype.setWall=function(_posIni,_posFin){
-    if(!(_posIni instanceof Vector2D)||!(_posFin instanceof Vector2D))
-    {
-        throw 'Cant check parameters, they re not a valid Vector2D';
-    }
-    if(this.isOutsideBounds(_posIni)||this.isOutsideBounds(_posFin))
-    {
-        throw 'Some of the points is outside bounds of the map';
-    }
-
-};
-
-
-/**
- * @param {Vector2D} _ini
- * @param {Vector2D} _fin
- * @DEPRECATED
- */
-GridMap.prototype.setHorizontalWall=function(_posIni,_lenght){
-    for(var i=_posIni.y;i<(_posIni.y+_lenght);i+=1){
-        this.colMap[_posIni.x][i]=TYPE.BLOCK;
-    }
-};
-
-
-
-
-
 
 
 /**

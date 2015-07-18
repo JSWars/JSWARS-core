@@ -30,6 +30,7 @@ function Game() {
 	 */
 	this.chunk = [];
 
+
 	/**
 	 * Equipos
 	 * Teams
@@ -80,24 +81,32 @@ function Game() {
 	this.totalAgents = 0;
 
 
-	this.initMap();
-
 	//todo Next implementations...
 	this.gameObjects = [];
+
+	this.timeLeft = 1000000;
 
 
 }
 
 Game.prototype.initialize = function () {
-	_.each(this.agents, function (_agent) {
-		_agent.setGameConfig();
+	_.each(this.teams, function (_team) {
+		_team.update();
 	});
+
 };
 
-Game.prototype.addAgent = function (_agent) {
-	this.agents.push(_agent);
-	this.totalAgents += 1;
+
+/**
+ * Selecciona el mapa donde se va a jugar
+ * @param _map
+ */
+Game.prototype.setMap = function(_map){
+	this.map = new GridMap("MapTest", this);
+	this.map.loadColMap(_map);
+	this.map.initializePathfinding();
 };
+
 
 /**
  * Add's a bullet to the game
@@ -158,19 +167,22 @@ Game.prototype.tick = function () {
 	this.getAgentActions();
 	this.updatePositions();
 	this.updateBullets();
-
-
 	this.getGameFrame();
 
+	this.update();
 	this.checkGameFinish();
 };
 
-
+Game.prototype.update=function(){
+	_.each(this.teams,function(_team){
+		_team.update();
+	});
+};
 /**
  * Send a new copy of the game to the agents, with updated values of this tick
  */
 Game.prototype.updateGameAgentsState = function () {
-
+	//todo En cada iteración actualizar el estado del juego para pasarselo a los agentes
 };
 
 /**
@@ -179,6 +191,7 @@ Game.prototype.updateGameAgentsState = function () {
  * @return {boolean}
  */
 Game.prototype.checkGameFinish = function () {
+	//TODO el juego acaba cuando sólo hay un equipo en pie
 
 };
 
@@ -203,8 +216,11 @@ Game.prototype.getAgentActions = function () {
 Game.prototype.updatePositions = function () {
 	_.each(this.teams, function (_team) {
 		_.each(_team.units, function (_unit) {
-			//Actualizar posición de las unidades
-			_unit.update();
+			//Actualizar posición de las unidades que están vivas
+			if(_unit.alive)
+			{
+				_unit.update();
+			}
 		}, this);
 	}, this);
 };
@@ -242,7 +258,6 @@ Game.prototype.checkUnitHit = function (_bullet) {
 
 
 	var hit = false;
-	//todo falta filtrar los equipos para no golpear a unidades del mismo equipo
 	_.each(this.teams, function (_team) {
 		if (_team.id !== _bullet.teamId) {
 			_.each(_team.units, function (_unit) {
@@ -281,13 +296,6 @@ Game.prototype.getRandomFreeCell = function () {
 /**
  * AGENT FUNCTIONS
  */
-
-/**
- * Returns the agents inputs for a game iteration
- */
-Game.prototype.applyAgentInputs = function () {
-	//TODO PEDIR AL AGENTE REALIZAR UNA ACCIÓN
-};
 
 /**
  * Get the current game state ready to send to the agents
@@ -329,7 +337,7 @@ Game.prototype.getGameFrame = function () {
 
 	//recorremos los equipos
 	_.each(this.teams, function (_team) {
-		var teamPicked = _.pick(_team, "id", "name", "color");
+		var teamPicked = _.pick(_team, "id", "name", "color", "health");
 		teamPicked.units = [];
 		//Recorremos las unidades
 		_.each(_team.units, function (_unit) {
