@@ -9,7 +9,7 @@ function Map(req, res) {
 	var chunkId, chunkSize, chunkStartFrame, chunkEndFrame;
 
 	chunkId = req.params.chunkId;
-	chunkSize = 300;//TOD O QUITAR HARCODED
+	chunkSize = 300;//TODO QUITAR HARCODED
 
 	chunkStartFrame = chunkId * chunkSize;
 	chunkEndFrame = chunkStartFrame + chunkSize;

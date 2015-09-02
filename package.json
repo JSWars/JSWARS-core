@@ -25,7 +25,8 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-exec": "^0.4.6"
+    "grunt-exec": "^0.4.6",
+    "jasmine": "^2.3.2"
   },
   "jshintConfig": {
     "bitwise": true,
