@@ -29,7 +29,7 @@ function CallbackRoute(req, res) {
                         //Database failure
                         res.status(500).end();
                     }
-                    res.json(newUser.toJSON());
+                    //res.json(newUser.toJSON());
 
                     var ret = req.session.return;
                     delete req.session.return;
