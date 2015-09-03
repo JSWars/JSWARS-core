@@ -10,7 +10,7 @@ function AgentUpdateRoute(req, res) {
     var user = req.session.internalUser;
 
     if (user.username !== req.params.username) {
-        res.status(400).end();
+        res.status(401).end();
         return;
     }
 
@@ -42,17 +42,19 @@ function AgentUpdateRoute(req, res) {
                 return;
             }
 
-            AgentVersion.create({
-                agentId: agent._id,
-                code: code
-            })
-                .exec(function (err, agentVersion) {
-                    if(err){
-                        res.status(500).json({error: 'ERROR_CREATING_VERSION'}).end();
-                        return;
-                    }
-                    res.status(201).json(agentVersion);
-                });
+			 var newAgentVersion = new AgentVersion({
+				 agent: agent._id,
+				 code: code
+			 });
+
+			 newAgentVersion.save(function (err) {
+				 if(err){
+					 res.status(500).json({error: 'ERROR_CREATING_VERSION'}).end();
+					 return;
+				 }
+				 res.status(201).json(newAgentVersion);
+			 });
+
         });
 
 }

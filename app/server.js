@@ -71,6 +71,9 @@ server.put(Config.path + '/users/:username', EnsureAuthentication, require('./ro
 //Agents
 server.get(Config.path + '/users/:username/agents', require('./routes/user/AgentList'));
 server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
+server.get(Config.path + '/users/:username/agents/:id/versions/', EnsureAuthentication, require('./routes/user/AgentVersionList'));
+
+server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', EnsureAuthentication, require('./routes/user/AgentVersionDetail'));
 server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 

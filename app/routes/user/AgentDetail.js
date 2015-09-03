@@ -42,18 +42,7 @@ function AgentDetailRoute(req, res) {
                 res.status(404).end();
                 return;
             }
-            var response = agent.toJSON();
-            AgentVersion.find({
-                agent: agentId
-            }).lean()
-                .exec(function (err, versions) {
-                    if (err || versions.length===0) {
-                        res.status(500).json({error: 'ERROR_RECOVERING_AGENT_VERSIONS'}).end();
-                        return;
-                    }
-                    response.versions = versions;
-                    res.json(response);
-                });
+           res.json(agent);
         });
 
 }

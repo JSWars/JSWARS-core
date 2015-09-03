@@ -1,14 +1,14 @@
 "use strict";
-var GridMap,Game,Runner,Team,Unit,Point2D, _,readline, PF, Path;
+var GridMap, Game, Runner, Team, Unit, Point2D, _, readline, PF, Path;
 
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
 Runner = require("./engine/Runner");
 Team = require("./engine/Team");
-Unit=require("./engine/Unit");
-_=require("underscore");
+Unit = require("./engine/Unit");
+_ = require("underscore");
 readline = require('readline');
-PF=require("pathfinding");
+PF = require("pathfinding");
 
 
 ////Crear mapa. Todo: Sacar desde fichero

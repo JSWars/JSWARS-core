@@ -19,7 +19,7 @@ function AgentNewRoute(req, res) {
     var user = req.session.internalUser;
 
     if (user.username !== req.params.username) {
-        res.status(400).end();
+        res.status(401).end();
         return;
     }
 
