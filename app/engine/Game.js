@@ -1,7 +1,7 @@
 "use strict";
-var _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action,AgentController;
+var Q,_, Unit, GridMap, Vector2D, Team, Bullet, Util, Action,AgentController;
 
-
+Q = require('q');
 _ = require("underscore");
 Unit = require("./Unit");
 GridMap = require("./GridMap");
@@ -11,6 +11,7 @@ Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 Action = require('./Action');
 AgentController = require("./controllers/AgentController");
+
 
 
 /**
@@ -89,10 +90,27 @@ function Game() {
 
 }
 
-Game.prototype.initialize = function () {
+Game.prototype.initialize = function (_deferred) {
+	var deferred = _deferred||Q.defer();
+	var _self=this;
+	var ready=true;
 	_.each(this.teams, function (_team) {
-		_team.update();
+		if(!_team.agent.prepared){
+			ready=false;
+		}
+
 	});
+	if(ready){
+		_.each(this.teams, function (_team) {
+			_team.update();
+		});
+		deferred.resolve();
+	}else{
+		setTimeout(function(){
+			_self.initialize(deferred);},100);
+	}
+
+	return deferred.promise;
 
 };
 

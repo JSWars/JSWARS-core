@@ -5,7 +5,6 @@
 
 
 var VM = require("vm");
-var FS = require("fs");
 var _ = require("underscore");
 var Game = require("../Game");
 var AgentInput = require("./interfaces/AgentInput");
@@ -14,22 +13,41 @@ var Action = require("../Action");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
 
+
+var Agent = require('../../model/Agent');
+var AgentVersion = require('../../model/AgentVersion');
+
 /**
  * El controlador de agente usa fragmentos de javascript para calcular los futuros movimientos
  * del equipo.
  * @constructor
  */
-function AgentController(_agentPath) {
-    //Todo: Revisar si el fichero es damasiado grande
-    if (!FS.existsSync(_agentPath)) {
-        throw "La ruta para el agente no es válida";
-    }
+function AgentController(_agentId) {
 
-    this.agent = VM.createScript(FS.readFileSync(_agentPath));
-    this.ownerId = undefined;
-    this.game = undefined;
-    this.timeout = undefined;
-    this.prepared = true;
+	this.ownerId = undefined;
+	this.game = undefined;
+	this.timeout = undefined;
+	this.agent = undefined;
+	this.prepared = false;
+
+	var _self=this;
+	AgentVersion.findOne({agent:_agentId}).sort('-moment')
+		.exec(function (err, agentVersion) {
+			if (err) {
+				console.log("Error recovering agent");
+				return;
+			}
+			if (agentVersion === null) {
+				console.log("Error agent null");
+				return;
+			}
+
+			_self.agent = VM.createScript(agentVersion.code);
+
+			_self.prepared = true;
+
+		});
+
 }
 
 AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
