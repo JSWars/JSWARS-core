@@ -38,26 +38,31 @@ Map.findOne({default: true}, function (err, map) {
 		return;
 	}
 
+	console.log('Map found in DB', map);
+
 	if (map === null) {
-		console.log("Default map not found");
-		FS.readFileSync('resources/maps/_default.json', function (err, mapData) {
-			if(err){
+		console.log("Map not found in DB");
+		FS.readFile('./resources/maps/_default.json', 'utf8', function (err, mapData) {
+			if (err) {
 				console.log(err);
 			}
+			console.log("Loading default map", mapData);
 			var newMap = new Map();
 			newMap.name = "Default Map";
 			newMap.default = true;
-			newMap.data = mapData;
+			newMap.data = JSON.parse(mapData);
 
 			newMap.save(function (err, response) {
 				if (err) {
-					console.log('Error saving new map');
+					console.log(err);
 					return;
 				}
+				console.log("map saved, creating")
 				createGame();
 			})
 		})
 	} else {
+		console.log("map found, creating game")
 		createGame();
 	}
 });
@@ -72,19 +77,19 @@ function createGame() {
 
 	Map.findOne({default: true}, function (err, map) {
 		if (err) {
-			console.log('cant find default map, aborting');
+			console.log(err);
 			return;
 		}
-		game.setMap(map);
+		game.setMap(map.data);
 		createTeams();
 		runGame();
 	});
 
 	//Load map in game
 
-	function createTeams(){
-		var luisTeamId = game.addTeam("Luis", new AgentController("55f1423a2d7abecc233aca51"));
-		var marcosTeamId = game.addTeam("Marcos", new AgentController("55f142802d7abecc233aca53"));
+	function createTeams() {
+		var luisTeamId = game.addTeam("Luis", new AgentController("56004de6f595528b68c8e1f0"));
+		var marcosTeamId = game.addTeam("Marcos", new AgentController("56004df1f595528b68c8e1f2"));
 
 		game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
 			position: new Vector2D(2, 2) //Return a vector2d,
@@ -94,9 +99,10 @@ function createGame() {
 		}));
 	}
 
-	function runGame(){
+	function runGame() {
 		game.initialize()
 			.then(function initializeResolved() {
+
 
 				newBattle.save(function (err) {
 					console.log(err);
