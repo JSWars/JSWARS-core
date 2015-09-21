@@ -1,6 +1,7 @@
-"use strict";
-var GridMap, Game, Runner, Team, Unit, _, readline, PF, Path, Vector2D, Angle, Agent, AgentController;
+var GridMap, Game, Runner, Team, Unit, FS, _, PF, Path, Vector2D, Angle, Agent, AgentController, Map, Battle, BattleFrame, Config, Mongoose;
 
+
+//ENGINE
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
 Runner = require("./engine/Runner");
@@ -11,111 +12,121 @@ Angle = require("./engine/vendor/Angle");
 Agent = require("./engine/Agent");
 AgentController = require('./engine/controllers/AgentController');
 
+//MODEL
+Map = require("./model/Map");
+Battle = require('./model/Battle');
+BattleFrame = require('./model/BattleFrame');
+Config = require('./config.js');
+
+//LIBS
+FS = require("fs");
 _ = require("underscore");
 readline = require('readline');
 PF = require("pathfinding");
+Mongoose = require('mongoose');
 
-
-var Battle = require('./model/Battle');
-var BattleFrame = require('./model/BattleFrame');
-
-
-var Config = require('./config.js');
-var Mongoose = require('mongoose');
-
+//CONNECT TO DATABASE
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {
 	console.error('MongoDB error: %s', err);
 });
 
-//Creamos partida en mongo
-var newBattle = new Battle();
+//FIRST LOAD MAP ON DB
+Map.findOne({default: true}, function (err, map) {
+	if (err) {
+		console.log(err);
+		return;
+	}
 
-// Inicializamos el juego
-var game = new Game();
+	if (map === null) {
+		console.log("Default map not found");
+		FS.readFileSync('resources/maps/_default.json', function (err, mapData) {
+			if(err){
+				console.log(err);
+			}
+			var newMap = new Map();
+			newMap.name = "Default Map";
+			newMap.default = true;
+			newMap.data = mapData;
 
+			newMap.save(function (err, response) {
+				if (err) {
+					console.log('Error saving new map');
+					return;
+				}
+				createGame();
+			})
+		})
+	} else {
+		createGame();
+	}
+});
 
-//MAP
+function createGame() {
 
-var defaultMap = {
-	"height": 30,
-	"layers": [
-		{
-			"data": [20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 37, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 13, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 18],
-			"height": 30,
-			"name": "GridMap",
-			"opacity": 1,
-			"type": "tilelayer",
-			"visible": true,
-			"width": 30,
-			"x": 0,
-			"y": 0
-		}],
-	"nextobjectid": 1,
-	"orientation": "orthogonal",
-	"properties": {},
-	"renderorder": "left-up",
-	"tileheight": 32,
-	"tilesets": [
-		{
-			"firstgid": 1,
-			"image": "template7x7_0.png",
-			"imageheight": 224,
-			"imagewidth": 224,
-			"margin": 0,
-			"name": "template7x7_0",
-			"properties": {},
-			"spacing": 0,
-			"tileheight": 32,
-			"tilewidth": 32
-		}],
-	"tilewidth": 32,
-	"version": 1,
-	"width": 30
-};
+	//Create battle
+	var newBattle = new Battle();
 
-//TODO LEER MAPA DESDE BBDD
-game.setMap(defaultMap);
+	// Create Game
+	var game = new Game();
 
-//TEAMS"agent" : ObjectId("55f1423a2d7abecc233aca51")"agent" : ObjectId("55f142802d7abecc233aca53")
-var luisTeamId = game.addTeam("Luis", new AgentController("55f1423a2d7abecc233aca51"));
-var marcosTeamId = game.addTeam("Marcos", new AgentController("55f142802d7abecc233aca53"));
-
-game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
-	position: new Vector2D(2, 2) //Return a vector2d,
-}));
-game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
-	position: new Vector2D(10, 2) //Return a vector2d
-}));
-
-//INICIALIZAMOS JUEGO
-game.initialize()
-	.then(function initializeResolved() {
-
-		newBattle.save(function (err,response) {
-			console.log(err);
-		});
-
-		for (var i = 0; i < 800; i += 1) {
-			var frame = game.tick();
-
-			console.log("saving tick:" + i);
-			var newBattleFriend = new BattleFrame({
-				battle: newBattle._id,
-				index: i,
-				data: frame
-			});
-
-			newBattleFriend.save(function (err, response) {
-				console.log(err)
-			});
+	Map.findOne({default: true}, function (err, map) {
+		if (err) {
+			console.log('cant find default map, aborting');
+			return;
 		}
-
-		console.log(JSON.stringify(game.chunk));
-
-	}, function initializeRejected() {
-
+		game.setMap(map);
+		createTeams();
+		runGame();
 	});
+
+	//Load map in game
+
+	function createTeams(){
+		var luisTeamId = game.addTeam("Luis", new AgentController("55f1423a2d7abecc233aca51"));
+		var marcosTeamId = game.addTeam("Marcos", new AgentController("55f142802d7abecc233aca53"));
+
+		game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
+			position: new Vector2D(2, 2) //Return a vector2d,
+		}));
+		game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
+			position: new Vector2D(10, 2) //Return a vector2d
+		}));
+	}
+
+	function runGame(){
+		game.initialize()
+			.then(function initializeResolved() {
+
+				newBattle.save(function (err) {
+					console.log(err);
+				});
+
+				for (var i = 0; i < 800; i += 1) {
+					var frame = game.tick();
+
+					console.log("saving tick:" + i);
+					var newBattleFriend = new BattleFrame({
+						battle: newBattle._id,
+						index: i,
+						data: frame
+					});
+
+					newBattleFriend.save(function (err, response) {
+						console.log(err)
+					});
+				}
+
+				console.log(JSON.stringify(game.chunk));
+
+			}, function initializeRejected() {
+
+			});
+
+	}
+
+
+}
 
 
 
