@@ -125,6 +125,8 @@ Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
 
 	}
 
+	_endCallback();
+
 };
 
 
@@ -201,12 +203,7 @@ Game.prototype.update = function () {
 		_team.update();
 	});
 };
-/**
- * Send a new copy of the game to the agents, with updated values of this tick
- */
-Game.prototype.updateGameAgentsState = function () {
-	//todo En cada iteración actualizar el estado del juego para pasarselo a los agentes
-};
+
 
 /**
  * Checks if the current game finished
