@@ -97,8 +97,11 @@ function createGame() {
 		newBattle.chunkSize = 300;
 		newBattle.fps = 60;
 		newBattle.frameCount = 800;
-		newBattle.teams = newGame.teams;
-		console.log('teams',newGame.teams);
+		newBattle.agents = [];
+
+		for(var i in newGame.teams){
+			newBattle.agents.push(newGame.teams[i].agent.id)
+		}
 
 		newBattle.save(function (err) {
 			console.log(err);
