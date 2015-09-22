@@ -1,6 +1,7 @@
-"use strict";
-var GridMap, Game, Runner, Team, Unit, _, readline, PF, Path, Vector2D, Angle, Agent, AgentController;
+var GridMap, Game, Runner, Team, Unit, FS, _, PF, Path, Vector2D, Angle, Agent, Map, Battle, BattleFrame, Config, Mongoose, readline;
 
+
+//ENGINE
 GridMap = require("./engine/GridMap");
 Game = require("./engine/Game");
 Runner = require("./engine/Runner");
@@ -9,113 +10,129 @@ Unit = require("./engine/Unit");
 Vector2D = require("./engine/vendor/Vector2D");
 Angle = require("./engine/vendor/Angle");
 Agent = require("./engine/Agent");
-AgentController = require('./engine/controllers/AgentController');
 
+//MODEL
+Map = require("./model/Map");
+Battle = require('./model/Battle');
+BattleFrame = require('./model/BattleFrame');
+Config = require('./config.js');
+
+//LIBS
+FS = require("fs");
 _ = require("underscore");
 readline = require('readline');
 PF = require("pathfinding");
+Mongoose = require('mongoose');
 
-
-var Battle = require('./model/Battle');
-var BattleFrame = require('./model/BattleFrame');
-
-
-var Config = require('./config.js');
-var Mongoose = require('mongoose');
-
+//CONNECT TO DATABASE
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {
 	console.error('MongoDB error: %s', err);
 });
 
-//Creamos partida en mongo
-var newBattle = new Battle();
+//FIRST LOAD MAP ON DB
+Map.findOne({default: true}, function (err, map) {
+	if (err) {
+		console.log(err);
+		return;
+	}
 
-// Inicializamos el juego
-var game = new Game();
+	console.log('Map found in DB', map);
 
+	if (map === null) {
+		console.log("Map not found in DB");
+		FS.readFile('./resources/maps/_default.json', 'utf8', function (err, mapData) {
+			if (err) {
+				console.log(err);
+			}
+			console.log("Loading default map");
+			var newMap = new Map();
+			newMap.name = "Default Map";
+			newMap.default = true;
+			newMap.data = JSON.parse(mapData);
 
-//MAP
+			newMap.save(function (err, response) {
+				if (err) {
+					console.log(err);
+					return;
+				}
+				console.log("map saved, creating");
+				createGame();
+			})
+		})
+	} else {
+		console.log("map found, creating game");
+		createGame();
+	}
+});
 
-var defaultMap = {
-	"height": 30,
-	"layers": [
-		{
-			"data": [20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 37, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 19, 19, 19, 0, 0, 19, 19, 19, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 0, 19, 19, 0, 0, 0, 0, 0, 19, 19, 19, 19, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 13, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 18],
-			"height": 30,
-			"name": "GridMap",
-			"opacity": 1,
-			"type": "tilelayer",
-			"visible": true,
-			"width": 30,
-			"x": 0,
-			"y": 0
-		}],
-	"nextobjectid": 1,
-	"orientation": "orthogonal",
-	"properties": {},
-	"renderorder": "left-up",
-	"tileheight": 32,
-	"tilesets": [
-		{
-			"firstgid": 1,
-			"image": "template7x7_0.png",
-			"imageheight": 224,
-			"imagewidth": 224,
-			"margin": 0,
-			"name": "template7x7_0",
-			"properties": {},
-			"spacing": 0,
-			"tileheight": 32,
-			"tilewidth": 32
-		}],
-	"tilewidth": 32,
-	"version": 1,
-	"width": 30
-};
+function createGame() {
 
-//TODO LEER MAPA DESDE BBDD
-game.setMap(defaultMap);
+	//Create battle
+	var newBattle = new Battle();
 
-//TEAMS"agent" : ObjectId("55f1423a2d7abecc233aca51")"agent" : ObjectId("55f142802d7abecc233aca53")
-var luisTeamId = game.addTeam("Luis", new AgentController("55f1423a2d7abecc233aca51"));
-var marcosTeamId = game.addTeam("Marcos", new AgentController("55f142802d7abecc233aca53"));
+	// Create Game
+	var newGame = new Game();
 
-game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
-	position: new Vector2D(2, 2) //Return a vector2d,
-}));
-game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
-	position: new Vector2D(10, 2) //Return a vector2d
-}));
+	Map.findOne({default: true}, function (err, map) {
+		if (err) {
+			console.log(err);
+			return;
+		}
 
-//INICIALIZAMOS JUEGO
-game.initialize()
-	.then(function initializeResolved() {
+		//Create teams
+		var luisTeamId = newGame.addTeam("Luis","56004de6f595528b68c8e1f0");
+		var marcosTeamId = newGame.addTeam("Marcos", "56004df1f595528b68c8e1f2");
 
-		newBattle.save(function (err,response) {
+		newGame.teams[luisTeamId].addUnit(new Unit(newGame, newGame.teams[luisTeamId], {
+			position: new Vector2D(2, 2) //Return a vector2d,
+		}));
+		newGame.teams[marcosTeamId].addUnit(new Unit(newGame, newGame.teams[marcosTeamId], {
+			position: new Vector2D(10, 2) //Return a vector2d
+		}));
+
+		//Set map
+		newGame.setMap(map.data);
+		newBattle.map = map._id;
+		newBattle.chunkSize = 300;
+		newBattle.fps = 60;
+		newBattle.frameCount = 800;
+		newBattle.teams = newGame.teams;
+		console.log('teams',newGame.teams);
+
+		newBattle.save(function (err) {
 			console.log(err);
 		});
 
-		for (var i = 0; i < 800; i += 1) {
-			var frame = game.tick();
+		//Run Game
+		newGame.initialize()
+			.then(function initializeResolved() {
 
-			console.log("saving tick:" + i);
-			var newBattleFriend = new BattleFrame({
-				battle: newBattle._id,
-				index: i,
-				data: frame
+				for (var i = 0; i < 800; i += 1) {
+					var frame = newGame.tick();
+
+					console.log("saving tick:" + i);
+					var newBattleFrame = new BattleFrame({
+						battle: newBattle._id,
+						index: i,
+						data: frame
+					});
+
+					newBattleFrame.save(function (err, response) {
+						console.log(err)
+					});
+				}
+
+				console.log(JSON.stringify(newGame.chunk));
+
+			}, function initializeRejected() {
+
 			});
-
-			newBattleFriend.save(function (err, response) {
-				console.log(err)
-			});
-		}
-
-		console.log(JSON.stringify(game.chunk));
-
-	}, function initializeRejected() {
 
 	});
+
+
+}
 
 
 

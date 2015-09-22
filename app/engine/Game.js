@@ -1,5 +1,5 @@
 "use strict";
-var Q,_, Unit, GridMap, Vector2D, Team, Bullet, Util, Action,AgentController;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController;
 
 Q = require('q');
 _ = require("underscore");
@@ -11,7 +11,6 @@ Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 Action = require('./Action');
 AgentController = require("./controllers/AgentController");
-
 
 
 /**
@@ -91,23 +90,24 @@ function Game() {
 }
 
 Game.prototype.initialize = function (_deferred) {
-	var deferred = _deferred||Q.defer();
-	var _self=this;
-	var ready=true;
+	var deferred = _deferred || Q.defer();
+	var _self = this;
+	var ready = true;
 	_.each(this.teams, function (_team) {
-		if(!_team.agent.prepared){
-			ready=false;
+		if (!_team.agent.prepared) {
+			ready = false;
 		}
 
 	});
-	if(ready){
+	if (ready) {
 		_.each(this.teams, function (_team) {
 			_team.update();
 		});
 		deferred.resolve();
-	}else{
-		setTimeout(function(){
-			_self.initialize(deferred);},100);
+	} else {
+		setTimeout(function () {
+			_self.initialize(deferred);
+		}, 100);
 	}
 
 	return deferred.promise;
@@ -119,7 +119,7 @@ Game.prototype.initialize = function (_deferred) {
  * Selecciona el mapa donde se va a jugar
  * @param _map
  */
-Game.prototype.setMap = function(_map){
+Game.prototype.setMap = function (_map) {
 	this.map = new GridMap("MapTest", this);
 	this.map.loadColMap(_map);
 	this.map.initializePathfinding();
@@ -192,8 +192,8 @@ Game.prototype.tick = function () {
 	return this.getGameFrame();
 };
 
-Game.prototype.update=function(){
-	_.each(this.teams,function(_team){
+Game.prototype.update = function () {
+	_.each(this.teams, function (_team) {
 		_team.update();
 	});
 };
@@ -236,8 +236,7 @@ Game.prototype.updatePositions = function () {
 	_.each(this.teams, function (_team) {
 		_.each(_team.units, function (_unit) {
 			//Actualizar posición de las unidades que están vivas
-			if(_unit.alive)
-			{
+			if (_unit.alive) {
 				_unit.update();
 			}
 		}, this);
@@ -308,7 +307,7 @@ Game.prototype.getRandomFreeCell = function () {
 	if (this.checkPosition(new Vector2D(rx, ry))) {
 		return this.getRandomFreeCell();
 	}
-	return new Vector2D(rx+0.5, ry+0.5);
+	return new Vector2D(rx + 0.5, ry + 0.5);
 };
 
 
@@ -370,7 +369,7 @@ Game.prototype.getGameFrame = function () {
 	var bullets = {};
 	_.each(this.bullets, function (_bullet) {
 		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
-		bullets[_bullet.id]=bulletPicked;
+		bullets[_bullet.id] = bulletPicked;
 
 	});
 

@@ -1,11 +1,14 @@
 "use strict";
-var Vector2D, Bullet, Unit, _;
+var Vector2D, Bullet, Unit, _, AgentController, Agent;
 
 
 Vector2D = require("./vendor/Vector2D");
 Unit = require("./Unit");
 Bullet = require('./Bullet');
 _ = require('underscore');
+AgentController = require('controllers/AgentController');
+Agent = require('../model/Agent');
+
 
 
 function get_random_color() {
@@ -26,7 +29,9 @@ function get_random_color() {
  * @param {Game} _game Instancia del objeto game
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
-function Team(_id, _name, _agent, _game) {
+function Team(_id, _name, _agentId, _game) {
+
+	var _self = this;
 
 	/**
 	 * Variable del juego
@@ -60,7 +65,13 @@ function Team(_id, _name, _agent, _game) {
 	 * Agente que controlará el equipo
 	 * @type {Agent}
 	 */
-	this.agent = _agent;
+	this.agent =  new AgentController(_agentId);
+
+	/**
+	 * Contendrá la información de usuario cuando se solicite
+	 * @type {User}
+	 */
+	this.user = undefined;
 
 	/**
 	 * Unidades del equipo
@@ -81,6 +92,21 @@ function Team(_id, _name, _agent, _game) {
 	 */
 
 	this.health = 0;
+
+
+
+/*
+	Agent.findById(_agentId)
+		.populate('user')
+		.select('user')
+		.exec(function (err, user) {
+			if(err){
+				console.log('casca suputamadre',err);
+			}
+			_self.user = user;
+
+		})
+*/
 
 }
 

@@ -24,14 +24,15 @@ var AgentVersion = require('../../model/AgentVersion');
  */
 function AgentController(_agentId) {
 
+	this.agentId = _agentId;
 	this.ownerId = undefined;
 	this.game = undefined;
 	this.timeout = undefined;
 	this.agent = undefined;
 	this.prepared = false;
 
-	var _self=this;
-	AgentVersion.findOne({agent:_agentId}).sort('-moment')
+	var _self = this;
+	AgentVersion.findOne({agent: _agentId}).sort('-moment')
 		.exec(function (err, agentVersion) {
 			if (err) {
 				console.log("Error recovering agent");
@@ -52,20 +53,20 @@ function AgentController(_agentId) {
 
 AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
 
-     if (_game instanceof Game) {
-     throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
-     }
+	if (_game instanceof Game) {
+		throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
+	}
 
-    this.game = _game;
-    this.ownerId = _ownerId;
-    //this.timeout = 1000 / _fps / _.keys(this.game.teams).length;
-	this.prepared=true;
+	this.game = _game;
+	this.ownerId = _ownerId;
+	//this.timeout = 1000 / _fps / _.keys(this.game.teams).length;
+	this.prepared = true;
 };
 
 
 AgentController.prototype.isPrepared = function () {
-    this.prepared = this.prepared || (!_.isUndefined(this.game) && !_.isUndefined(this.timeout));
-    return this.prepared;
+	this.prepared = this.prepared || (!_.isUndefined(this.game) && !_.isUndefined(this.timeout));
+	return this.prepared;
 };
 
 /**
@@ -75,28 +76,28 @@ AgentController.prototype.isPrepared = function () {
  */
 AgentController.prototype.tick = function () {
 
-    if (!this.isPrepared()) {
-        throw "The controller isn't prepared";
-    }
+	if (!this.isPrepared()) {
+		throw "The controller isn't prepared";
+	}
 
-    var sandbox = {
-        input: new AgentInput(this.game, this.ownerId),
-        output: new AgentOutput(),
-		 	Action: Action,
-		 Vector2D: Vector2D,
-		 Angle: Angle
-    };
+	var sandbox = {
+		input: new AgentInput(this.game, this.ownerId),
+		output: new AgentOutput(),
+		Action: Action,
+		Vector2D: Vector2D,
+		Angle: Angle
+	};
 
-    try {
-        //console.log("Timeout : " + this.timeout);
-        this.agent.runInNewContext(sandbox, this.timeout);
-    } catch (exception) {
-        console.dir(exception);
-        throw "El agente ha excedido el tiempo máximo de proceso";
-        //TODO: no devolver una exepción, controlar el error correctamente
-    }
+	try {
+		//console.log("Timeout : " + this.timeout);
+		this.agent.runInNewContext(sandbox, this.timeout);
+	} catch (exception) {
+		console.dir(exception);
+		throw "El agente ha excedido el tiempo máximo de proceso";
+		//TODO: no devolver una exepción, controlar el error correctamente
+	}
 
-    return sandbox.output.unitsActions;
+	return sandbox.output.unitsActions;
 
 };
 
