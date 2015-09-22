@@ -1,4 +1,4 @@
-var GridMap, Game, Runner, Team, Unit, FS, _, PF, Path, Vector2D, Angle, Agent, AgentController, Map, Battle, BattleFrame, Config, Mongoose;
+var GridMap, Game, Runner, Team, Unit, FS, _, PF, Path, Vector2D, Angle, Agent, Map, Battle, BattleFrame, Config, Mongoose, readline;
 
 
 //ENGINE
@@ -10,7 +10,6 @@ Unit = require("./engine/Unit");
 Vector2D = require("./engine/vendor/Vector2D");
 Angle = require("./engine/vendor/Angle");
 Agent = require("./engine/Agent");
-AgentController = require('./engine/controllers/AgentController');
 
 //MODEL
 Map = require("./model/Map");
@@ -46,7 +45,7 @@ Map.findOne({default: true}, function (err, map) {
 			if (err) {
 				console.log(err);
 			}
-			console.log("Loading default map", mapData);
+			console.log("Loading default map");
 			var newMap = new Map();
 			newMap.name = "Default Map";
 			newMap.default = true;
@@ -57,12 +56,12 @@ Map.findOne({default: true}, function (err, map) {
 					console.log(err);
 					return;
 				}
-				console.log("map saved, creating")
+				console.log("map saved, creating");
 				createGame();
 			})
 		})
 	} else {
-		console.log("map found, creating game")
+		console.log("map found, creating game");
 		createGame();
 	}
 });
@@ -73,63 +72,64 @@ function createGame() {
 	var newBattle = new Battle();
 
 	// Create Game
-	var game = new Game();
+	var newGame = new Game();
 
 	Map.findOne({default: true}, function (err, map) {
 		if (err) {
 			console.log(err);
 			return;
 		}
-		game.setMap(map.data);
-		createTeams();
-		runGame();
-	});
 
-	//Load map in game
+		//Create teams
+		var luisTeamId = newGame.addTeam("Luis","56004de6f595528b68c8e1f0");
+		var marcosTeamId = newGame.addTeam("Marcos", "56004df1f595528b68c8e1f2");
 
-	function createTeams() {
-		var luisTeamId = game.addTeam("Luis", new AgentController("56004de6f595528b68c8e1f0"));
-		var marcosTeamId = game.addTeam("Marcos", new AgentController("56004df1f595528b68c8e1f2"));
-
-		game.teams[luisTeamId].addUnit(new Unit(game, game.teams[luisTeamId], {
+		newGame.teams[luisTeamId].addUnit(new Unit(newGame, newGame.teams[luisTeamId], {
 			position: new Vector2D(2, 2) //Return a vector2d,
 		}));
-		game.teams[marcosTeamId].addUnit(new Unit(game, game.teams[marcosTeamId], {
+		newGame.teams[marcosTeamId].addUnit(new Unit(newGame, newGame.teams[marcosTeamId], {
 			position: new Vector2D(10, 2) //Return a vector2d
 		}));
-	}
 
-	function runGame() {
-		game.initialize()
+		//Set map
+		newGame.setMap(map.data);
+		newBattle.map = map._id;
+		newBattle.chunkSize = 300;
+		newBattle.fps = 60;
+		newBattle.frameCount = 800;
+		newBattle.teams = newGame.teams;
+		console.log('teams',newGame.teams);
+
+		newBattle.save(function (err) {
+			console.log(err);
+		});
+
+		//Run Game
+		newGame.initialize()
 			.then(function initializeResolved() {
 
-
-				newBattle.save(function (err) {
-					console.log(err);
-				});
-
 				for (var i = 0; i < 800; i += 1) {
-					var frame = game.tick();
+					var frame = newGame.tick();
 
 					console.log("saving tick:" + i);
-					var newBattleFriend = new BattleFrame({
+					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
 						index: i,
 						data: frame
 					});
 
-					newBattleFriend.save(function (err, response) {
+					newBattleFrame.save(function (err, response) {
 						console.log(err)
 					});
 				}
 
-				console.log(JSON.stringify(game.chunk));
+				console.log(JSON.stringify(newGame.chunk));
 
 			}, function initializeRejected() {
 
 			});
 
-	}
+	});
 
 
 }

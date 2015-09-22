@@ -24,6 +24,7 @@ var AgentVersion = require('../../model/AgentVersion');
  */
 function AgentController(_agentId) {
 
+	this.agentId = _agentId;
 	this.ownerId = undefined;
 	this.game = undefined;
 	this.timeout = undefined;

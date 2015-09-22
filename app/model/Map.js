@@ -1,4 +1,4 @@
-var ModelName, _, Mongoose, Battle;
+var ModelName, _, Mongoose, Map;
 
 ModelName = 'Map';
 _ = require('underscore');
