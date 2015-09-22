@@ -149,15 +149,6 @@ Game.prototype.addBullet = function (_bullet) {
 };
 
 
-/**
- * Initialize the map
- */
-Game.prototype.initMap = function () {
-	this.map = new GridMap("MapTest", this);
-	this.map.initializeColMapDefault();
-
-};
-
 
 /**
  * Create a team by _id
