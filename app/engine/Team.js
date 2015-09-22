@@ -6,7 +6,7 @@ Vector2D = require("./vendor/Vector2D");
 Unit = require("./Unit");
 Bullet = require('./Bullet');
 _ = require('underscore');
-AgentController = require('controllers/AgentController');
+AgentController = require('./controllers/AgentController');
 Agent = require('../model/Agent');
 
 
