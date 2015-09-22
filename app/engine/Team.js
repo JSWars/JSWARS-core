@@ -119,6 +119,9 @@ Team.prototype.update = function () {
 		maxHealth = maxHealth + _unit.maxHealth;
 	});
 
+	if(totalHealth<=0){
+		this.alive=false;
+	}
 	this.health = (totalHealth / maxHealth) * 100;
 };
 

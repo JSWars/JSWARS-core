@@ -84,7 +84,7 @@ function Game() {
 	//todo Next implementations...
 	this.gameObjects = [];
 
-	this.timeLeft = 1000000;
+	this.timeLeft = 2000;
 
 
 }
@@ -112,6 +112,16 @@ Game.prototype.initialize = function (_deferred) {
 
 	return deferred.promise;
 
+};
+
+Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
+	while(!this.checkGameFinish()){
+		this.tick();
+
+		if(typeof _tickCallBack === 'function'){
+			_tickCallBack(this.totalTicks,this.getGameFrame());
+		}
+	}
 };
 
 
@@ -210,20 +220,14 @@ Game.prototype.updateGameAgentsState = function () {
  * @return {boolean}
  */
 Game.prototype.checkGameFinish = function () {
-	//TODO el juego acaba cuando sólo hay un equipo en pie
 	var teamsAlive=0;
 	_.each(this.teams, function (_team) {
 		if(_team.isAlive()){
 			teamsAlive+=1;
 		}
-
 	});
 
-	if(teamsAlive<=1){
-		return true;
-	}
-
-	return false;
+	return (teamsAlive<=1) || (this.totalTicks>=this.timeLeft);
 };
 
 /**

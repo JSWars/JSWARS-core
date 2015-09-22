@@ -41,7 +41,7 @@ Map.findOne({default: true}, function (err, map) {
 
 	if (map === null) {
 		console.log("Map not found in DB");
-		FS.readFile('./resources/maps/_default.json', 'utf8', function (err, mapData) {
+		FS.readFile('./app/resources/maps/_default.json', 'utf8', function (err, mapData) {
 			if (err) {
 				console.log(err);
 			}
@@ -79,10 +79,9 @@ function createGame() {
 			console.log(err);
 			return;
 		}
-
 		//Create teams
-		var luisTeamId = newGame.addTeam("Luis","56004de6f595528b68c8e1f0");
-		var marcosTeamId = newGame.addTeam("Marcos", "56004df1f595528b68c8e1f2");
+		var luisTeamId = newGame.addTeam("Luis","55f1423a2d7abecc233aca51");
+		var marcosTeamId = newGame.addTeam("Marcos", "55f1423a2d7abecc233aca51");
 
 		newGame.teams[luisTeamId].addUnit(new Unit(newGame, newGame.teams[luisTeamId], {
 			position: new Vector2D(2, 2) //Return a vector2d,
@@ -100,7 +99,7 @@ function createGame() {
 		newBattle.agents = [];
 
 		for(var i in newGame.teams){
-			newBattle.agents.push(newGame.teams[i].agent.id)
+			newBattle.agents.push(newGame.teams[i].agent.id);
 		}
 
 		newBattle.save(function (err) {
@@ -111,9 +110,7 @@ function createGame() {
 		newGame.initialize()
 			.then(function initializeResolved() {
 
-				for (var i = 0; i < 800; i += 1) {
-					var frame = newGame.tick();
-
+				function tickCallback(i,frame){
 					console.log("saving tick:" + i);
 					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
@@ -122,11 +119,11 @@ function createGame() {
 					});
 
 					newBattleFrame.save(function (err, response) {
-						console.log(err)
+						console.log(err);
 					});
 				}
 
-				console.log(JSON.stringify(newGame.chunk));
+				newGame.run(undefined,tickCallback,undefined);
 
 			}, function initializeRejected() {
 
@@ -136,6 +133,7 @@ function createGame() {
 
 
 }
+
 
 
 
