@@ -121,7 +121,10 @@ Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
 		if(typeof _tickCallBack === 'function'){
 			_tickCallBack(this.totalTicks,this.getGameFrame());
 		}
+
+
 	}
+
 };
 
 
@@ -158,9 +161,9 @@ Game.prototype.initMap = function () {
 
 /**
  * Create a team by _id
- * @param {String} _name of the team
+ * @param {String} _agent of the team
  */
-Game.prototype.addTeam = function (_name, _agent) {
+Game.prototype.addTeam = function ( _agent) {
 	this.teams[this.totalTeams] = new Team(this.totalTeams, _name, _agent, this);
 	return this.totalTeams++;
 };

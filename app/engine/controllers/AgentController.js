@@ -71,7 +71,6 @@ AgentController.prototype.isPrepared = function () {
 
 /**
  * Ejecuta en el sandbox el código del agente y devuelve la salida para la ronda
- * @param _agentInput
  * @returns {*}
  */
 AgentController.prototype.tick = function () {
@@ -94,7 +93,6 @@ AgentController.prototype.tick = function () {
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
-		//TODO: no devolver una exepción, controlar el error correctamente
 	}
 
 	return sandbox.output.unitsActions;

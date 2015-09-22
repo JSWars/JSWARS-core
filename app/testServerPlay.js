@@ -80,8 +80,10 @@ function createGame() {
 			return;
 		}
 		//Create teams
-		var luisTeamId = newGame.addTeam("Luis","55f1423a2d7abecc233aca51");
-		var marcosTeamId = newGame.addTeam("Marcos", "55f1423a2d7abecc233aca51");
+
+		//TODO GENERAR LA PARTIDA DESDE UN SERVICIO PASANDO POR PARÁMETRO LOS AGENTES
+		var luisTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
+		var marcosTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
 
 		newGame.teams[luisTeamId].addUnit(new Unit(newGame, newGame.teams[luisTeamId], {
 			position: new Vector2D(2, 2) //Return a vector2d,
@@ -95,7 +97,6 @@ function createGame() {
 		newBattle.map = map._id;
 		newBattle.chunkSize = 300;
 		newBattle.fps = 60;
-		newBattle.frameCount = 800;
 		newBattle.agents = [];
 
 		for(var i in newGame.teams){
@@ -118,10 +119,13 @@ function createGame() {
 						data: frame
 					});
 
+
+
 					newBattleFrame.save(function (err, response) {
 						console.log(err);
 					});
 				}
+
 
 				newGame.run(undefined,tickCallback,undefined);
 

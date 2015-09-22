@@ -29,7 +29,7 @@ function get_random_color() {
  * @param {Game} _game Instancia del objeto game
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
-function Team(_id, _name, _agentId, _game) {
+function Team(_id, _agentId, _game) {
 
 	var _self = this;
 
@@ -57,6 +57,7 @@ function Team(_id, _name, _agentId, _game) {
 	/**
 	 * Nombre del equipo
 	 * @type {string}
+	 * @deprecated
 	 */
 	this.name = (_name && _name.trim()) || "Guest";
 
