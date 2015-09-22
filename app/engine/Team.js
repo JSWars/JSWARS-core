@@ -59,7 +59,7 @@ function Team(_id, _agentId, _game) {
 	 * @type {string}
 	 * @deprecated
 	 */
-	this.name = (_name && _name.trim()) || "Guest";
+	//this.name = (_name && _name.trim()) || "Guest";
 
 
 	/**

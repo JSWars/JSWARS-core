@@ -164,7 +164,7 @@ Game.prototype.initMap = function () {
  * @param {String} _agent of the team
  */
 Game.prototype.addTeam = function ( _agent) {
-	this.teams[this.totalTeams] = new Team(this.totalTeams, _name, _agent, this);
+	this.teams[this.totalTeams] = new Team(this.totalTeams, _agent, this);
 	return this.totalTeams++;
 };
 
