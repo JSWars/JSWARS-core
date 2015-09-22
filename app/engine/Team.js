@@ -22,6 +22,8 @@ function get_random_color() {
  * Representa un equipo
  * @param {number} _id Identificador del equipo
  * @param {string} _name Nombre del equipo
+ * @param {string} _agent Identificador del agente
+ * @param {Game} _game Instancia del objeto game
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
 function Team(_id, _name, _agent, _game) {
@@ -52,6 +54,7 @@ function Team(_id, _name, _agent, _game) {
 	 * @type {string}
 	 */
 	this.name = (_name && _name.trim()) || "Guest";
+
 
 	/**
 	 * Agente que controlará el equipo
@@ -141,6 +144,16 @@ Team.prototype.addDefaultUnit = function () {
  */
 Team.prototype.removeUnit = function (_index) {
 	delete this.units[_index];
+};
+
+/**
+ * NAME
+ * USER
+ * COLOR
+ *
+ */
+Team.prototype.toJSON=function(){
+	return _.pick(this,'name','user','color');
 };
 
 
