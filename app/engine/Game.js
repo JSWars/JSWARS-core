@@ -211,18 +211,30 @@ Game.prototype.updateGameAgentsState = function () {
  */
 Game.prototype.checkGameFinish = function () {
 	//TODO el juego acaba cuando sólo hay un equipo en pie
+	var teamsAlive=0;
+	_.each(this.teams, function (_team) {
+		if(_team.isAlive()){
+			teamsAlive+=1;
+		}
 
+	});
+
+	if(teamsAlive<=1){
+		return true;
+	}
+
+	return false;
 };
 
 /**
  * Gets the agents actions and apply in the game
  */
 Game.prototype.getAgentActions = function () {
-	_.each(this.teams, function (team) {
-		var action = team.agent.tick();
+	_.each(this.teams, function (_team) {
+		var action = _team.agent.tick();
 		_.each(action, function (_action, _idUnit) {
-			team.units[_idUnit].moveTo(_action.move);
-			team.units[_idUnit].addAttackOrder(_action.attack);
+			_team.units[_idUnit].moveTo(_action.move);
+			_team.units[_idUnit].addAttackOrder(_action.attack);
 		});
 	});
 };

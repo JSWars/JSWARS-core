@@ -22,9 +22,9 @@ var AgentVersion = require('../../model/AgentVersion');
  * del equipo.
  * @constructor
  */
-function AgentController(_agentId) {
+function AgentController(_id) {
 
-	this.agentId = _agentId;
+	this.id = _id;
 	this.ownerId = undefined;
 	this.game = undefined;
 	this.timeout = undefined;
@@ -32,7 +32,7 @@ function AgentController(_agentId) {
 	this.prepared = false;
 
 	var _self = this;
-	AgentVersion.findOne({agent: _agentId}).sort('-moment')
+	AgentVersion.findOne({agent: _id}).sort('-moment')
 		.exec(function (err, agentVersion) {
 			if (err) {
 				console.log("Error recovering agent");
