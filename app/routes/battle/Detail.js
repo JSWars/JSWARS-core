@@ -1,25 +1,38 @@
-var _, Battle, Map, Agent;
+var _, Q, Battle, BattleFrame, Map, Agent;
 
 _ = require('underscore');
+Q = require('q');
 Battle = require('../../model/Battle');
+BattleFrame = require('../../model/BattleFrame');
 Map = require('../../model/Map');
 Agent = require('../../model/Agent');
+
 
 function BattleDetail(req, res) {
 	var id = req.params.id;
 
+
 	Battle.findById(id)
 		.select('-__v')
 		.populate('map')
-		.exec(function (err, battle) {
+		.exec(function (err, _battle) {
 			if (err) {
 				res.status(500).json(err).end();
 				return;
 			}
 
-			Agent.find({
+			if (_battle == null) {
+				res.status(404).end();
+				return;
+			}
+
+			var response = _battle.toObject();
+			delete response.agents;
+
+
+			var agentsPromise = Agent.find({
 				'_id': {
-					$in: battle.agents
+					$in: _battle.agents
 				}
 			})
 				.select('-__v')
@@ -27,6 +40,7 @@ function BattleDetail(req, res) {
 				.exec(function (err, agents) {
 					if (err) {
 						res.status(500).json(err).end();
+						return;
 					}
 
 					var teams = {};
@@ -37,7 +51,7 @@ function BattleDetail(req, res) {
 							name: agent.name,
 							color: '#ffffff',
 							user: {
-								id: agent.user._id,
+								_id: agent.user._id,
 								username: agent.user.username,
 								avatar: agent.user.avatar,
 								country: agent.user.country
@@ -45,14 +59,30 @@ function BattleDetail(req, res) {
 						};
 					}
 
+					//frameCount
 
-					var response = _.extend({
+					response = _.extend({
 						teams: teams
-					}, battle.toObject());
-
-					console.log('teams', JSON.stringify(response))
+					}, response);
 
 
+				});
+
+			var countPromise = BattleFrame.count({
+				"battle": id
+			}).exec(function (err, count) {
+				if (err) {
+					res.status(500).json(err).end();
+					return;
+				}
+
+				response = _.extend({
+					frameCount: count
+				}, response);
+			});
+
+			Q.allSettled([agentsPromise, countPromise])
+				.then(function () {
 					res.json(response);
 				});
 
