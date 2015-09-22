@@ -82,8 +82,8 @@ function createGame() {
 		//Create teams
 
 		//TODO GENERAR LA PARTIDA DESDE UN SERVICIO PASANDO POR PARÁMETRO LOS AGENTES
-		var luisTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
-		var marcosTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
+		var luisTeamId = newGame.addTeam("56004de6f595528b68c8e1f0");
+		var marcosTeamId = newGame.addTeam("56004df1f595528b68c8e1f2");
 
 		newGame.teams[luisTeamId].addUnit(new Unit(newGame, newGame.teams[luisTeamId], {
 			position: new Vector2D(2, 2) //Return a vector2d,

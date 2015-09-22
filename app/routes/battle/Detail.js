@@ -27,7 +27,6 @@ function BattleDetail(req, res) {
 			}
 
 			var response = _battle.toObject();
-			delete response.agents;
 
 
 			var agentsPromise = Agent.find({
@@ -42,6 +41,7 @@ function BattleDetail(req, res) {
 						res.status(500).json(err).end();
 						return;
 					}
+					console.log('agentssssss',agents,_battle.agents)
 
 					var teams = {};
 
@@ -64,6 +64,7 @@ function BattleDetail(req, res) {
 					response = _.extend({
 						teams: teams
 					}, response);
+					console.log('teams',agents)
 
 
 				});

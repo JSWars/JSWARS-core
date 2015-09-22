@@ -9,7 +9,6 @@ Battle = new Mongoose.Schema({
 	map: {type: Mongoose.Schema.Types.ObjectId, ref: 'Map', required: true},
 	chunkSize: {type: Number, required: true},
 	fps: {type: Number, required: true},
-	frameCount: {type: Number, required: true},
 	agents:[String],
 	moment: {type: Date, required: true, default: new Date()},
 	duration: {type: Number, required: false}
