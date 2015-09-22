@@ -20,7 +20,7 @@ User = require('./model/User');
 
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {
-    console.error('MongoDB error: %s', err);
+	console.error('MongoDB error: %s', err);
 });
 
 //conn = Mongoose.createConnection(Config.db.url);
@@ -34,19 +34,19 @@ server.use(Passport.session()); // persistent login sessions
 
 // serialize and deserialize
 Passport.serializeUser(function (user, done) {
-    done(null, user);
+	done(null, user);
 });
 Passport.deserializeUser(function (obj, done) {
-    done(null, obj);
+	done(null, obj);
 });
 
 // config
 Passport.use(new GithubStrategy(Config.apis.github,
-    function (accessToken, refreshToken, profile, done) {
-        process.nextTick(function () {
-            return done(null, profile);
-        });
-    }
+	function (accessToken, refreshToken, profile, done) {
+		process.nextTick(function () {
+			return done(null, profile);
+		});
+	}
 ));
 
 //---------------------------
@@ -78,19 +78,20 @@ server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, re
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 
 //Battle
-server.get(Config.path + '/battle/',require('./routes/battle/BattleList'));
-server.get(Config.path + '/battle/:id/',require('./routes/battle/Detail'));
+server.post(Config.path + '/battle/', require('./routes/battle/Queue'));
+server.get(Config.path + '/battle/', require('./routes/battle/List'));
+server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
 server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
 
 
 //Start listening!
 
 server.listen(Config.http.port, Config.http.ip, function (error) {
-    if (error) {
-        return console.log(error);
-        throw error;
-    }
+	if (error) {
+		return console.log(error);
+		throw error;
+	}
 
-    console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
+	console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
 });
 

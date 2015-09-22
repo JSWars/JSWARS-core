@@ -1,14 +1,33 @@
+var _, BattleQueue;
 
-function Map(req, res) {
+_ = require('underscore');
+BattleQueue = require('../../model/BattleQueue');
 
-	var username = req.params.username;
+function QueueRequest(req, res) {
 
-	if (username === undefined || username.trim().length === 0) {
+	//Check user is logged
+	var user = req.session.internalUser;
+
+	if (_.isUndefined(user) || user.username !== req.params.username) {
 		res.status(401).end();
+		return;
 	}
 
-	var name = req.body.name;
-	var code = req.body.code;
+	var agents = req.body.agents;
+
+	var newBattleQueue = new BattleQueue();
+	newBattleQueue.agents = agents;
+	newBattleQueue.status = "PENDING";
+	newBattleQueue.requester = user;
+
+	newBattleQueue.save(function (err, response) {
+		if (err) {
+			res.status(500).end();
+			return;
+		}
+		res.status(201).end();
+	})
+
 
 }
-module.exports = Map;
+module.exports = QueueRequest;
