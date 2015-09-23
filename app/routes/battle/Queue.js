@@ -8,10 +8,11 @@ function QueueRequest(req, res) {
 	//Check user is logged
 	var user = req.session.internalUser;
 
-	if (_.isUndefined(user) || user.username !== req.params.username) {
-		res.status(401).end();
-		return;
-	}
+	//console.log(req.session);
+	//if (_.isUndefined(user) || user.username !== req.params.username) {
+	//	res.status(401).end();
+	//	return;
+	//}
 
 	var agents = req.body.agents;
 
@@ -22,7 +23,7 @@ function QueueRequest(req, res) {
 
 	newBattleQueue.save(function (err, response) {
 		if (err) {
-			res.status(500).end();
+			res.status(500).json(err).end();
 			return;
 		}
 		res.status(201).end();
