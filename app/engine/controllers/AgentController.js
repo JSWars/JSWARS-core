@@ -28,8 +28,11 @@ function AgentController(_id) {
 	this.ownerId = undefined;
 	this.game = undefined;
 	this.timeout = undefined;
+	this.timeoutStart=1000;
 	this.agent = undefined;
 	this.prepared = false;
+
+	this.persistence={};
 
 	var _self = this;
 	AgentVersion.findOne({agent: _id}).sort('-moment')
@@ -49,11 +52,22 @@ function AgentController(_id) {
 
 		});
 
+	this.sandbox = {
+		input: new AgentInput(this.game, this.ownerId),
+		output: new AgentOutput(),
+		utils:{
+			Action: Action,
+			Vector2D: Vector2D,
+			Angle: Angle
+		},
+		persistence:this.persistence
+	};
+
 }
 
-AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
+AgentController.prototype.setGameConfig = function (_game, _ownerId) {
 
-	if (_game instanceof Game) {
+	if (!(_game instanceof Game.constructor)) {
 		throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
 	}
 
@@ -69,6 +83,31 @@ AgentController.prototype.isPrepared = function () {
 	return this.prepared;
 };
 
+
+/**
+ * Tiempo de inicialización del agente, se deja un tiempo concreto de cómputo para que puedan
+ * analizar la partida antes de comenzar
+ */
+AgentController.prototype.prepareGame=function(){
+	if (!this.isPrepared()) {
+		throw "The controller isn't prepared";
+	}
+
+	try {
+		//console.log("Timeout : " + this.timeout);
+		//this.agent.runInNewContext(this.sandbox, this.timeoutStart);
+	} catch (exception) {
+		console.dir(exception);
+		throw "El agente ha excedido el tiempo máximo de proceso";
+	}
+
+	//TODO CONTROLAR EL TAMAÑO PARA QUE NO SE VAYA A LA PUTA
+	this.persistence=this.sandbox.persistence;
+
+	return this.sandbox.output.unitsActions;
+
+};
+
 /**
  * Ejecuta en el sandbox el código del agente y devuelve la salida para la ronda
  * @returns {*}
@@ -79,24 +118,21 @@ AgentController.prototype.tick = function () {
 		throw "The controller isn't prepared";
 	}
 
-	var sandbox = {
-		input: new AgentInput(this.game, this.ownerId),
-		output: new AgentOutput(),
-		Action: Action,
-		Vector2D: Vector2D,
-		Angle: Angle
-	};
-
 	try {
 		//console.log("Timeout : " + this.timeout);
-		this.agent.runInNewContext(sandbox, this.timeout);
+		this.agent.runInNewContext(this.sandbox.runTick, this.timeout);
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
+	//TODO CONTROLAR EL TAMAÑO PARA QUE NO SE VAYA A LA PUTA
+	this.persistence=sandbox.persistence;
+
 	return sandbox.output.unitsActions;
 
 };
+
+//TODO MOSTRAR LOS ERRORES AL QUE LO HA PROGRAMAO
 
 module.exports = AgentController;

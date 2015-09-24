@@ -1,7 +1,21 @@
 /**
  * Created by Luiss_000 on 16/07/2015.
  */
-input.game=null;
-output.unitsActions = [
-	new Action(new Angle(0,false),new Angle(Math.PI,true))
+
+
+function prepareGame(){
+return;
+}
+
+function runTick(){
+
+
+
+
+	output.unitsActions = [
+		new utils.Action(new utils.Angle(0,false),new utils.Angle(Math.PI,true));
+
+	persistence.test="random";
 ];
+
+}

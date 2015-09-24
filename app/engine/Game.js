@@ -93,6 +93,10 @@ Game.prototype.initialize = function (_deferred) {
 	var deferred = _deferred || Q.defer();
 	var _self = this;
 	var ready = true;
+
+
+
+
 	_.each(this.teams, function (_team) {
 		if (!_team.agent.prepared) {
 			ready = false;
@@ -103,6 +107,9 @@ Game.prototype.initialize = function (_deferred) {
 		_.each(this.teams, function (_team) {
 			_team.update();
 		});
+
+		this.prepareGame();
+
 		deferred.resolve();
 	} else {
 		setTimeout(function () {
@@ -114,18 +121,36 @@ Game.prototype.initialize = function (_deferred) {
 
 };
 
+Game.prototype.prepareGame = function(){
+	_.each(this.teams, function (_team) {
+		_team.agent.prepareGame();
+	});
+};
+
+/**
+ *
+ * @param _startCallBack
+ * @param _tickCallBack
+ * @param _endCallback
+ */
 Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
+
+	if(typeof _startCallBack==='function'){
+		_startCallBack();
+	}
+
 	while(!this.checkGameFinish()){
 		this.tick();
 
 		if(typeof _tickCallBack === 'function'){
 			_tickCallBack(this.totalTicks,this.getGameFrame());
 		}
-
-
 	}
 
-	_endCallback();
+	if(typeof _endCallback==='function'){
+		_endCallback();
+	}
+
 
 };
 
