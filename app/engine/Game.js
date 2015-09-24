@@ -115,13 +115,14 @@ Game.prototype.initialize = function (_deferred) {
 };
 
 Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
+
 	while(!this.checkGameFinish()){
+
 		this.tick();
 
 		if(typeof _tickCallBack === 'function'){
 			_tickCallBack(this.totalTicks,this.getGameFrame());
 		}
-
 
 	}
 
@@ -187,7 +188,6 @@ Game.prototype.tick = function () {
 	//Update positions
 	//Checks collisions
 
-	this.updateGameAgentsState();
 	this.getAgentActions();
 	this.updatePositions();
 	this.updateBullets();

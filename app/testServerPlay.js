@@ -112,17 +112,15 @@ function createGame() {
 			.then(function initializeResolved() {
 
 				function tickCallback(i,frame){
-					console.log("saving tick:" + i);
+					console.log("Saving tick:" + i);
 					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
 						index: i,
 						data: frame
 					});
 
-
-
 					newBattleFrame.save(function (err, response) {
-						console.log(err);
+						console.log('saving');
 					});
 				}
 

@@ -20,6 +20,7 @@
     "passport-http": "^0.2.2",
     "passport-local": "^1.0.0",
     "pathfinding": "^0.4.13",
+    "postal": "^1.0.7",
     "q": "^1.4.1",
     "underscore": "^1.7.0",
     "validator": "^3.22.1"
