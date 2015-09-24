@@ -28,7 +28,7 @@ function AgentController(_id) {
 	this.ownerId = undefined;
 	this.game = undefined;
 	this.timeout = undefined;
-	this.timeoutStart=1000;
+	this.timeoutStart = undefined;
 	this.agent = undefined;
 	this.prepared = false;
 
@@ -52,22 +52,21 @@ function AgentController(_id) {
 
 		});
 
+
 	this.sandbox = {
 		input: new AgentInput(this.game, this.ownerId),
 		output: new AgentOutput(),
-		utils:{
-			Action: Action,
-			Vector2D: Vector2D,
-			Angle: Angle
-		},
+		Action: Action,
+		Vector2D: Vector2D,
+		Angle: Angle,
 		persistence:this.persistence
 	};
 
 }
 
-AgentController.prototype.setGameConfig = function (_game, _ownerId) {
+AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
 
-	if (!(_game instanceof Game.constructor)) {
+	if (_game instanceof Game) {
 		throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
 	}
 
@@ -95,7 +94,7 @@ AgentController.prototype.prepareGame=function(){
 
 	try {
 		//console.log("Timeout : " + this.timeout);
-		//this.agent.runInNewContext(this.sandbox, this.timeoutStart);
+		this.agent.runInNewContext(this.sandbox, this.timeoutStart);
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
@@ -104,7 +103,7 @@ AgentController.prototype.prepareGame=function(){
 	//TODO CONTROLAR EL TAMAÑO PARA QUE NO SE VAYA A LA PUTA
 	this.persistence=this.sandbox.persistence;
 
-	return this.sandbox.output.unitsActions;
+	return true;
 
 };
 
@@ -118,21 +117,20 @@ AgentController.prototype.tick = function () {
 		throw "The controller isn't prepared";
 	}
 
+
 	try {
 		//console.log("Timeout : " + this.timeout);
-		this.agent.runInNewContext(this.sandbox.runTick, this.timeout);
+		this.agent.runInNewContext(this.sandbox, this.timeout);
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
-	//TODO CONTROLAR EL TAMAÑO PARA QUE NO SE VAYA A LA PUTA
-	this.persistence=sandbox.persistence;
+	//TODO CONTROLAR zy
+	this.persistence=this.sandbox.persistence;
 
-	return sandbox.output.unitsActions;
+	return this.sandbox.output.unitsActions;
 
 };
-
-//TODO MOSTRAR LOS ERRORES AL QUE LO HA PROGRAMAO
 
 module.exports = AgentController;

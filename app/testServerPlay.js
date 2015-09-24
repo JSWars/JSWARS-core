@@ -82,8 +82,8 @@ function createGame() {
 		//Create teams
 
 		//TODO GENERAR LA PARTIDA DESDE UN SERVICIO PASANDO POR PARÁMETRO LOS AGENTES
-		var luisTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
-		var marcosTeamId = newGame.addTeam("55f1423a2d7abecc233aca51");
+		var luisTeamId = newGame.addTeam("56045969e89e978c23e98dc8");
+		var marcosTeamId = newGame.addTeam("56045969e89e978c23e98dc8");
 
 
 		//TODO PONER UNIDADES EN EL MAPA

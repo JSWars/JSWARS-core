@@ -3,19 +3,5 @@
  */
 
 
-function prepareGame(){
-return;
-}
+	output.unitsActions = [new utils.Action(new utils.Angle(0,false),new utils.Angle(Math.PI,true));
 
-function runTick(){
-
-
-
-
-	output.unitsActions = [
-		new utils.Action(new utils.Angle(0,false),new utils.Angle(Math.PI,true));
-
-	persistence.test="random";
-];
-
-}

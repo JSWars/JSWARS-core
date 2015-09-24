@@ -68,7 +68,6 @@ function Team(_id, _agentId, _game) {
 	 */
 	this.agent =  new AgentController(_agentId);
 
-	this.agent.setGameConfig(_game,_id);
 
 	/**
 	 * Contendrá la información de usuario cuando se solicite
