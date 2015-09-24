@@ -8,18 +8,21 @@ function QueueRequest(req, res) {
 	//Check user is logged
 	var user = req.session.internalUser;
 
-	//console.log(req.session);
-	//if (_.isUndefined(user) || user.username !== req.params.username) {
-	//	res.status(401).end();
-	//	return;
-	//}
-
+	if (_.isUndefined(user)) {
+		res.status(401).end();
+		return;
+	}
 	var agents = req.body.agents;
+
+	if(agents.length<2){
+		res.status(400).end();
+		return;
+	}
 
 	var newBattleQueue = new BattleQueue();
 	newBattleQueue.agents = agents;
 	newBattleQueue.status = "PENDING";
-	newBattleQueue.requester = user;
+	newBattleQueue.requester = user._id;
 
 	newBattleQueue.save(function (err, response) {
 		if (err) {
