@@ -38,7 +38,7 @@ function AgentController(_id) {
 	AgentVersion.findOne({agent: _id}).sort('-moment')
 		.exec(function (err, agentVersion) {
 			if (err) {
-				console.log("Error recovering agent");
+				console.log("Error recovering agent",err);
 				return;
 			}
 			if (agentVersion === null) {

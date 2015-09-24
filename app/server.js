@@ -1,9 +1,8 @@
-var Path, Config, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, conn, server;
+var Path, Config, postal, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, fork, server;
 
 //Node Modules
 Path = require('path');
 Config = require('./config.js');
-
 //Express dependencies
 Express = require('express');
 ExpressSession = require('express-session');
@@ -16,6 +15,9 @@ Mongoose = require('mongoose');
 Passport = require('passport');
 GithubStrategy = require('passport-github').Strategy;
 User = require('./model/User');
+
+fork = require('child_process').fork;
+postal = require('postal');
 
 
 Mongoose.connect(Config.db.url);
@@ -82,6 +84,20 @@ server.post(Config.path + '/battle/', EnsureAuthentication, require('./routes/ba
 server.get(Config.path + '/battle/', require('./routes/battle/List'));
 server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
 server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
+
+//Start Queue Runner
+var queueRunner = fork('app/engine/QueueRunner');
+
+postal.subscribe({
+	channel: "models",
+	topic: "battle.save",
+	callback: function(model) {
+		queueRunner.send({
+			name: "RUN",
+			data: model._id
+		})
+	}
+});
 
 
 //Start listening!

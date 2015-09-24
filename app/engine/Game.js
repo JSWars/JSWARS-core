@@ -125,13 +125,14 @@ Game.prototype.prepareGame=function(){
 };
 
 Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
+
 	while(!this.checkGameFinish()){
+
 		this.tick();
 
 		if(typeof _tickCallBack === 'function'){
 			_tickCallBack(this.totalTicks,this.getGameFrame());
 		}
-
 
 	}
 
