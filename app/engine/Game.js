@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController,AgentGame;
 
 Q = require('q');
 _ = require("underscore");
@@ -11,6 +11,8 @@ Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 Action = require('./Action');
 AgentController = require("./controllers/AgentController");
+
+AgentGame = require("./controllers/interfaces/AgentGame")
 
 
 /**
@@ -398,6 +400,32 @@ Game.prototype.getGameFrame = function () {
 
 	};
 	return frame;
+};
+
+Game.prototype.getAgentInput=function(){
+	var teams = {};
+
+	//recorremos los equipos
+	_.each(this.teams, function (_team) {
+		var teamPicked = _.pick(_team, "id", "name", "health");
+		teamPicked.units = [];
+		//Recorremos las unidades
+		_.each(_team.units, function (_unit) {
+			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
+			//var unitPicked= _.omit(_unit,"game");
+			teamPicked.units.push(unitPicked);
+		});
+		teams[teamPicked.id] = teamPicked;
+	});
+
+	var bullets = {};
+	_.each(this.bullets, function (_bullet) {
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
+		bullets[_bullet.id] = bulletPicked;
+
+	});
+
+	return new AgentGame(this.map.colMap,teams,bullets,(this.timeLeft-this.totalTicks));
 };
 
 
