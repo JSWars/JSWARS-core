@@ -1,4 +1,4 @@
-var _, Map, Battle, Mongoose, Game, Unit, Config, BattleQueue;
+var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleQueue;
 
 Config = require('../config');
 _ = require("underscore");
@@ -8,10 +8,10 @@ BattleQueue = require("../model/BattleQueue");
 Game = require("./Game");
 Unit = require("./Unit");
 
-
 //MODEL
 Map = require("../model/Map");
 Battle = require('../model/Battle');
+BattleFrame = require('../model/BattleFrame');
 
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {
@@ -19,11 +19,11 @@ Mongoose.connection.on('error', function (err) {
 });
 
 var messageHandler = function (message) {
-	if (message.name === "RUN") {
+	if (message.name == "RUN") {
 		var queueItemId = message.data;
 		BattleQueue.findById(queueItemId, function (err, queueItem) {
 			runBattleQueueItem(queueItem);
-		});
+		})
 	}
 };
 
@@ -50,10 +50,10 @@ function runBattleQueueItem(battleQueueItem) {
 		newBattle.fps = 60;
 		newBattle.agents = [];
 
-		for (var i = 0; i<battleQueueItem.agents.length; i++) {
+		for (var i = 0; i < battleQueueItem.agents.length; i++) {
 			var teamId = newGame.addTeam(battleQueueItem.agents[i]);
 			newGame.teams[teamId].addUnit(new Unit(newGame, newGame.teams[teamId], {
-				position: [2+i*8,2] //Return a vector2d,
+				position: [2, 2] //Return a vector2d,
 			}));
 			newBattle.agents.push(newGame.teams[teamId].agent.id);
 
