@@ -66,7 +66,7 @@ function Team(_id, _agentId, _game) {
 	 * Agente que controlará el equipo
 	 * @type {AgentController}
 	 */
-	this.agent =  new AgentController(_agentId);
+	this.agent =  new AgentController(_agentId,this.game,this.id);
 
 
 	/**

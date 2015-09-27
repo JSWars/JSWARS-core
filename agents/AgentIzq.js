@@ -3,5 +3,12 @@
  */
 
 
-	output.unitsActions = [new utils.Action(new utils.Angle(0,false),new utils.Angle(Math.PI,true));
+
+function init(){
+
+}
+function tick(_input,_output){
+	output.unitsActions = [new Action(new Angle(0,false),new Angle(Math.PI,true))];
+}
+
 

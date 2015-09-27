@@ -104,7 +104,7 @@ Game.prototype.initialize = function (_deferred) {
 			_team.update();
 		});
 
-		//this.prepareGame();
+		this.prepareTeams();
 		deferred.resolve();
 	} else {
 		setTimeout(function () {
@@ -118,9 +118,9 @@ Game.prototype.initialize = function (_deferred) {
 
 };
 
-Game.prototype.prepareGame=function(){
+Game.prototype.prepareTeams=function(){
 	_.each(this.teams, function (_team) {
-		_team.agent.prepareGame();
+		_team.agent.prepareTeams();
 	});
 };
 
