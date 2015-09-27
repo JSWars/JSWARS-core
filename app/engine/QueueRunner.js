@@ -81,7 +81,6 @@ function runBattleQueueItem(battleQueueItem) {
 					});
 
 					newBattleFrame.save(function (err, response) {
-						console.log('saving');
 					});
 				}
 
