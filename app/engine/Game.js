@@ -104,7 +104,7 @@ Game.prototype.initialize = function (_deferred) {
 			_team.update();
 		});
 
-		this.prepareGame();
+		//this.prepareGame();
 		deferred.resolve();
 	} else {
 		setTimeout(function () {
@@ -136,7 +136,9 @@ Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
 
 	}
 
-	_endCallback();
+	//if(typeof _endCallback === 'function') {
+	//	_endCallback();
+	//}
 
 };
 

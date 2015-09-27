@@ -19,11 +19,11 @@ Mongoose.connection.on('error', function (err) {
 });
 
 var messageHandler = function (message) {
-	if (message.name == "RUN") {
+	if (message.name === "RUN") {
 		var queueItemId = message.data;
 		BattleQueue.findById(queueItemId, function (err, queueItem) {
 			runBattleQueueItem(queueItem);
-		})
+		});
 	}
 };
 
@@ -53,7 +53,7 @@ function runBattleQueueItem(battleQueueItem) {
 		for (var i = 0; i<battleQueueItem.agents.length; i++) {
 			var teamId = newGame.addTeam(battleQueueItem.agents[i]);
 			newGame.teams[teamId].addUnit(new Unit(newGame, newGame.teams[teamId], {
-				position: [2,2] //Return a vector2d,
+				position: [2+i*8,2] //Return a vector2d,
 			}));
 			newBattle.agents.push(newGame.teams[teamId].agent.id);
 
