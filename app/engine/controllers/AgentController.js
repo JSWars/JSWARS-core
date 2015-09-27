@@ -22,23 +22,28 @@ var AgentVersion = require('../../model/AgentVersion');
  * del equipo.
  * @constructor
  */
-function AgentController(_id) {
+function AgentController(_id, _game) {
 
 	this.id = _id;
-	this.ownerId = undefined;
-	this.game = undefined;
-	this.timeout = undefined;
-	this.timeoutStart = undefined;
+	this.game = _game;
+	this.timeout = 500;
+	this.timeoutStart = 2000;
 	this.agent = undefined;
 	this.prepared = false;
 
-	this.persistence={};
-
+	this.persistence = {};
+	this.context = new VM.createContext({
+		Action: Action,
+		Vector2D: Vector2D,
+		Angle: Angle
+	});
 	var _self = this;
+
+
 	AgentVersion.findOne({agent: _id}).sort('-moment')
 		.exec(function (err, agentVersion) {
 			if (err) {
-				console.log("Error recovering agent",err);
+				console.log("Error recovering agent", err);
 				return;
 			}
 			if (agentVersion === null) {
@@ -46,35 +51,16 @@ function AgentController(_id) {
 				return;
 			}
 
-			_self.agent = VM.createScript(agentVersion.code);
+			//_self.agent = VM.createScript(agentVersion.code);
+
+			VM.runInContext(agentVersion.code, _self.context);
 
 			_self.prepared = true;
 
 		});
 
 
-	this.sandbox = {
-		input: new AgentInput(this.game, this.ownerId),
-		output: new AgentOutput(),
-		Action: Action,
-		Vector2D: Vector2D,
-		Angle: Angle,
-		persistence:this.persistence
-	};
-
 }
-
-AgentController.prototype.setGameConfig = function (_game, _ownerId, _fps) {
-
-	if (_game instanceof Game) {
-		throw "El parámetro 'game' debe ser un objeto 'Game' correcto.";
-	}
-
-	this.game = _game;
-	this.ownerId = _ownerId;
-	//this.timeout = 1000 / _fps / _.keys(this.game.teams).length;
-	this.prepared = true;
-};
 
 
 AgentController.prototype.isPrepared = function () {
@@ -87,21 +73,21 @@ AgentController.prototype.isPrepared = function () {
  * Tiempo de inicialización del agente, se deja un tiempo concreto de cómputo para que puedan
  * analizar la partida antes de comenzar
  */
-AgentController.prototype.prepareGame=function(){
+AgentController.prototype.prepareTeams = function () {
 	if (!this.isPrepared()) {
 		throw "The controller isn't prepared";
 	}
 
 	try {
 		//console.log("Timeout : " + this.timeout);
-		this.agent.runInNewContext(this.sandbox, this.timeoutStart);
+		this.context.input = new AgentInput(this.game);
+		this.context.output = new AgentOutput();
+		VM.runInContext("init(input)", this.context, {timeout: this.timeoutStart});
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
-	//TODO CONTROLAR EL TAMAÑO PARA QUE NO SE VAYA A LA PUTA
-	this.persistence=this.sandbox.persistence;
 
 	return true;
 
@@ -120,16 +106,16 @@ AgentController.prototype.tick = function () {
 
 	try {
 		//console.log("Timeout : " + this.timeout);
-		this.agent.runInNewContext(this.sandbox, this.timeout);
+		this.context.input = new AgentInput(this.game);
+		this.context.output = new AgentOutput();
+		VM.runInContext("tick(input)", this.context, {timeout: this.timeout});
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
-	//TODO CONTROLAR zy
-	this.persistence=this.sandbox.persistence;
 
-	return this.sandbox.output.unitsActions;
+	return this.context.output.unitsActions;
 
 };
 
