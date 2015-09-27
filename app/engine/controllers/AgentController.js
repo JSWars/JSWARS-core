@@ -9,7 +9,7 @@ var _ = require("underscore");
 var Game = require("../Game");
 var AgentInput = require("./interfaces/AgentInput");
 var AgentOutput = require("./interfaces/AgentOutput");
-var Action = require("../Action");
+var Actions = require("../Actions");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
 
@@ -31,27 +31,47 @@ function AgentController(_id, _game) {
 	this.agent = undefined;
 	this.prepared = false;
 
-	this.persistence = {};
-	this.context = new VM.createContext({
-		Action: Action,
-		Vector2D: Vector2D,
-		Angle: Angle
-	});
-	var _self = this;
+	var _contextObject = {};
 
+	//Creating util property in ctx object
+	Object.defineProperty(_contextObject, 'Utils', {
+		writable: false,
+		value: {
+			Vector2D: Vector2D,
+			Angle: Angle
+		}
+	});
+
+	Object.defineProperty(_contextObject, 'Actions', {
+			writable: false,
+			value: Actions
+		}
+	);
+
+	Object.defineProperty(_contextObject, 'Game', {
+			writable: false,
+			value: this.game
+		}
+	);
+
+	Object.defineProperty(_contextObject, 'Me',{
+		writable:false,
+		value: {
+			units: this.game.teams[this.id].units
+		}
+	});
+
+	this.context = new VM.createContext(_contextObject);
+	var _self = this;
 
 	AgentVersion.findOne({agent: _id}).sort('-moment')
 		.exec(function (err, agentVersion) {
 			if (err) {
-				console.log("Error recovering agent", err);
-				return;
+				throw "Error loading agent from database";
 			}
 			if (agentVersion === null) {
-				console.log("Error agent null");
-				return;
+				throw "Can't find agent";
 			}
-
-			//_self.agent = VM.createScript(agentVersion.code);
 
 			VM.runInContext(agentVersion.code, _self.context);
 
@@ -64,7 +84,6 @@ function AgentController(_id, _game) {
 
 
 AgentController.prototype.isPrepared = function () {
-	this.prepared = this.prepared || (!_.isUndefined(this.game) && !_.isUndefined(this.timeout));
 	return this.prepared;
 };
 
@@ -75,11 +94,10 @@ AgentController.prototype.isPrepared = function () {
  */
 AgentController.prototype.prepareTeams = function () {
 	if (!this.isPrepared()) {
-		throw "The controller isn't prepared";
+		throw "The agent isn't prepared";
 	}
 
 	try {
-		//console.log("Timeout : " + this.timeout);
 		this.context.input = new AgentInput(this.game);
 		this.context.output = new AgentOutput();
 		VM.runInContext("init(input)", this.context, {timeout: this.timeoutStart});
@@ -105,7 +123,6 @@ AgentController.prototype.tick = function () {
 
 
 	try {
-		//console.log("Timeout : " + this.timeout);
 		this.context.input = new AgentInput(this.game);
 		this.context.output = new AgentOutput();
 		VM.runInContext("tick(input)", this.context, {timeout: this.timeout});

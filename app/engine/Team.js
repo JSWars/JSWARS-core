@@ -134,26 +134,6 @@ Team.prototype.addUnit = function (_unit) {
 
 
 /**
- * Crea una unidad con valores por defecto
- * @returns {Unit}
- */
-Team.prototype.addDefaultUnit = function () {
-	// _speed,_armor, _damage, _fireRate, _fireDistance
-
-	var properties = {
-		position: this.game.getRandomFreeCell(),//OBLIGATORIO
-		radius: 0.5,
-		speed: 0.1,
-		armor: 0,
-		damage: 1,
-		fireRate: 10,
-		fireDistance: 5
-	};
-	this.units.push(new Unit(this.game, this, properties));
-};
-
-
-/**
  * Elimina la unitad de la posición indicada
  *
  * Delete the unit at the _index position
@@ -204,7 +184,7 @@ Team.prototype.getName = function () {
 };
 
 /**
- * Devulve un tanque por su identificador
+ * Devuelve un tanque por su identificador
  * @param _index
  * @returns {Unit} unit
  */
