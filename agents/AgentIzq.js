@@ -1,7 +1,7 @@
 /**
  * Created by Luiss_000 on 16/07/2015.
  */
-input.game=null;
-output.unitsActions = [
-	new Action(new Angle(0,false),new Angle(Math.PI,true))
-];
+
+
+	output.unitsActions = [new utils.Action(new utils.Angle(0,false),new utils.Angle(Math.PI,true));
+

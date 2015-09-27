@@ -103,6 +103,8 @@ Game.prototype.initialize = function (_deferred) {
 		_.each(this.teams, function (_team) {
 			_team.update();
 		});
+
+		this.prepareGame();
 		deferred.resolve();
 	} else {
 		setTimeout(function () {
@@ -110,8 +112,16 @@ Game.prototype.initialize = function (_deferred) {
 		}, 100);
 	}
 
+
+
 	return deferred.promise;
 
+};
+
+Game.prototype.prepareGame=function(){
+	_.each(this.teams, function (_team) {
+		_team.agent.prepareGame();
+	});
 };
 
 Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){

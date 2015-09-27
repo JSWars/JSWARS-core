@@ -64,9 +64,10 @@ function Team(_id, _agentId, _game) {
 
 	/**
 	 * Agente que controlará el equipo
-	 * @type {Agent}
+	 * @type {AgentController}
 	 */
 	this.agent =  new AgentController(_agentId);
+
 
 	/**
 	 * Contendrá la información de usuario cuando se solicite
@@ -94,27 +95,13 @@ function Team(_id, _agentId, _game) {
 
 	this.health = 0;
 
-
-
-/*
-	Agent.findById(_agentId)
-		.populate('user')
-		.select('user')
-		.exec(function (err, user) {
-			if(err){
-				console.log('casca suputamadre',err);
-			}
-			_self.user = user;
-
-		})
-*/
-
 }
 
 
 Team.prototype.update = function () {
 	var totalHealth = 0;
 	var maxHealth = 0;
+
 	_.each(this.units, function (_unit) {
 		totalHealth = totalHealth + _unit.health;
 		maxHealth = maxHealth + _unit.maxHealth;
