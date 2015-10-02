@@ -1,5 +1,3 @@
-"use strict";
-
 
 function Action(_move,_attack){
 	this.move=_move;

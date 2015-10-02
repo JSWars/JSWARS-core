@@ -48,19 +48,6 @@ function AgentController(_id, _game) {
 		}
 	);
 
-	Object.defineProperty(_contextObject, 'Game', {
-			writable: false,
-			value: this.game
-		}
-	);
-
-	Object.defineProperty(_contextObject, 'Me',{
-		writable:false,
-		value: {
-			units: this.game.teams[this.id].units
-		}
-	});
-
 	this.context = new VM.createContext(_contextObject);
 	var _self = this;
 
@@ -78,8 +65,6 @@ function AgentController(_id, _game) {
 			_self.prepared = true;
 
 		});
-
-
 }
 
 
@@ -98,14 +83,14 @@ AgentController.prototype.prepareTeams = function () {
 	}
 
 	try {
-		this.context.input = new AgentInput(this.game);
+		this.context.game = this.game;
+		this.context.me = this.game.teams[this.id].units;
 		this.context.output = new AgentOutput();
 		VM.runInContext("init(input)", this.context, {timeout: this.timeoutStart});
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
-
 
 	return true;
 
@@ -121,7 +106,6 @@ AgentController.prototype.tick = function () {
 		throw "The controller isn't prepared";
 	}
 
-
 	try {
 		this.context.input = new AgentInput(this.game);
 		this.context.output = new AgentOutput();
@@ -130,7 +114,6 @@ AgentController.prototype.tick = function () {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
-
 
 	return this.context.output.unitsActions;
 
