@@ -342,7 +342,7 @@ Game.prototype.getRandomFreeCell = function () {
  * Get the current game state ready to send to the agents
  */
 Game.prototype.getGameState = function () {
-	var teams = [];
+	var teams = {};
 	_.each(this.teams, function (_team) {
 		var teamPicked = _.pick(_team, "id", "name", "color");
 		teamPicked.units = [];
@@ -361,12 +361,13 @@ Game.prototype.getGameState = function () {
 
 	});
 
-	var chunk = {
+	var gameState = {
 		"teams": teams,
-		"bullets": bullets
+		"bullets": bullets,
+		"colMap": this.map.colMap
 	};
 
-	this.chunk.push(chunk);
+	return gameState;
 };
 
 
