@@ -20,9 +20,10 @@ var AgentVersion = require('../../model/AgentVersion');
  * del equipo.
  * @constructor
  */
-function AgentController(_id, _game) {
+function AgentController(_id, _game, _teamId) {
 
 	this.id = _id;
+	this.teamId = _teamId;
 	this.game = _game;
 	this.timeout = 500;
 	this.timeoutStart = 2000;
@@ -35,8 +36,7 @@ function AgentController(_id, _game) {
 	Object.defineProperty(_contextObject, 'Utils', {
 		writable: false,
 		value: {
-			Vector2D: Vector2D,
-			Angle: Angle
+			Vector2D: Vector2D
 		}
 	});
 
@@ -55,7 +55,6 @@ function AgentController(_id, _game) {
 			VM.runInContext(agentVersion.code, _self.context);
 
 			_self.prepared = true;
-
 		});
 }
 
@@ -74,18 +73,17 @@ AgentController.prototype.prepareTeams = function () {
 		throw "The agent isn't prepared";
 	}
 
+	this.context.game = this.game.getGameState();
+	this.context.me = this.game.teams[this.teamId].units;
+
 	try {
-		this.context.game = this.game.getGameState();
-		this.context.me = this.game.teams[this.id].units;
-		this.context.output = new AgentOutput();
-		VM.runInContext("init(input)", this.context, {timeout: this.timeoutStart});
+		VM.runInContext("init()", this.context, {timeout: this.timeoutStart});
 	} catch (exception) {
 		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
 	return true;
-
 };
 
 /**
@@ -100,7 +98,10 @@ AgentController.prototype.tick = function () {
 
 	try {
 		this.context.output = new AgentOutput();
-		VM.runInContext("tick(input)", this.context, {timeout: this.timeout});
+		this.context.log = function (a) {
+			console.log(a)
+		};
+		VM.runInContext("tick()", this.context, {timeout: this.timeout});
 	} catch (exception) {
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}

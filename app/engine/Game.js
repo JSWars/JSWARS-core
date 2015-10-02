@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController,AgentGame;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame;
 
 Q = require('q');
 _ = require("underscore");
@@ -9,10 +9,9 @@ Vector2D = require('./vendor/Vector2D');
 Team = require('./Team');
 Bullet = require('./Bullet');
 Util = require('./vendor/Util');
-Action = require('./Action');
 AgentController = require("./controllers/AgentController");
 
-AgentGame = require("./controllers/interfaces/AgentGame")
+AgentGame = require("./controllers/interfaces/AgentGame");
 
 
 /**
@@ -115,25 +114,24 @@ Game.prototype.initialize = function (_deferred) {
 	}
 
 
-
 	return deferred.promise;
 
 };
 
-Game.prototype.prepareTeams=function(){
+Game.prototype.prepareTeams = function () {
 	_.each(this.teams, function (_team) {
 		_team.agent.prepareTeams();
 	});
 };
 
-Game.prototype.run = function(_startCallBack,_tickCallBack,_endCallback){
+Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 
-	while(!this.checkGameFinish()){
+	while (!this.checkGameFinish()) {
 
 		this.tick();
 
-		if(typeof _tickCallBack === 'function'){
-			_tickCallBack(this.totalTicks,this.getGameFrame());
+		if (typeof _tickCallBack === 'function') {
+			_tickCallBack(this.totalTicks, this.getGameFrame());
 		}
 
 	}
@@ -166,12 +164,11 @@ Game.prototype.addBullet = function (_bullet) {
 };
 
 
-
 /**
  * Create a team by _id
  * @param {String} _agent of the team
  */
-Game.prototype.addTeam = function ( _agent) {
+Game.prototype.addTeam = function (_agent) {
 	this.teams[this.totalTeams] = new Team(this.totalTeams, _agent, this);
 	return this.totalTeams++;
 };
@@ -225,14 +222,14 @@ Game.prototype.update = function () {
  * @return {boolean}
  */
 Game.prototype.checkGameFinish = function () {
-	var teamsAlive=0;
+	var teamsAlive = 0;
 	_.each(this.teams, function (_team) {
-		if(_team.isAlive()){
-			teamsAlive+=1;
+		if (_team.isAlive()) {
+			teamsAlive += 1;
 		}
 	});
 
-	return (teamsAlive<=1) || (this.totalTicks>=this.timeLeft);
+	return (teamsAlive <= 1) || (this.totalTicks >= this.timeLeft);
 };
 
 /**
@@ -241,9 +238,11 @@ Game.prototype.checkGameFinish = function () {
 Game.prototype.getAgentActions = function () {
 	_.each(this.teams, function (_team) {
 		var agentOutput = _team.agent.tick();
+		console.log(JSON.stringify(agentOutput));
 
 		for (var unit in agentOutput.actions) {
 			for (var action in agentOutput.actions[unit]) {
+				console.log(unit, action, agentOutput.actions[unit][action]);
 				_team.units[unit][action](agentOutput.actions[unit][action]);
 			}
 		}
@@ -324,7 +323,7 @@ Game.prototype.checkUnitHit = function (_bullet) {
  * @returns {Vector2D}
  */
 Game.prototype.getRandomFreeCell = function () {
-	//Posicion aleatoria
+	//Posición aleatoria
 	var rx = Math.floor(Math.random() * this.map.width);
 	var ry = Math.floor(Math.random() * this.map.height);
 	if (this.checkPosition(new Vector2D(rx, ry))) {
@@ -342,7 +341,7 @@ Game.prototype.getRandomFreeCell = function () {
  * Get the current game state ready to send to the agents
  */
 Game.prototype.getGameState = function () {
-	var teams = {};
+	var teams = [];
 	_.each(this.teams, function (_team) {
 		var teamPicked = _.pick(_team, "id", "name", "color");
 		teamPicked.units = [];
@@ -404,86 +403,33 @@ Game.prototype.getGameFrame = function () {
 	};
 	return frame;
 };
-
-Game.prototype.getAgentInput=function(){
-	var teams = {};
-
-	//recorremos los equipos
-	_.each(this.teams, function (_team) {
-		var teamPicked = _.pick(_team, "id", "name", "health");
-		teamPicked.units = [];
-		//Recorremos las unidades
-		_.each(_team.units, function (_unit) {
-			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
-			//var unitPicked= _.omit(_unit,"game");
-			teamPicked.units.push(unitPicked);
-		});
-		teams[teamPicked.id] = teamPicked;
-	});
-
-	var bullets = {};
-	_.each(this.bullets, function (_bullet) {
-		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
-		bullets[_bullet.id] = bulletPicked;
-
-	});
-
-	return new AgentGame(this.map.colMap,teams,bullets,(this.timeLeft-this.totalTicks));
-};
-
-
-/**
- * RENDER FUNCTIONS
- */
-
-/**
- * Dibuja el mapa en la consola
- */
-Game.prototype.render = function () {
-	var render = "";
-	var renderMap = this.map.colMap.slice(0);
-
-	_.each(this.teams, function (_team) {
-		_.each(_team.units, function (_unit) {
-			renderMap[Math.floor(_unit.position.y)][Math.floor(_unit.position.x)] = 2;
-		});
-	});
-	_.each(this.bullets, function (_bullet) {
-		renderMap[Math.floor(_bullet.position.y)][Math.floor(_bullet.position.x)] = 3;
-	});
-
-	for (var i = 0; i < this.map.width; i += 1) {
-		for (var j = 0; j < this.map.height; j += 1) {
-			{
-				render += " " + this.map.getBlockAscii(renderMap[i][j]) + " ";
-			}
-		}
-		render += "\n";
-	}
-
-	console.log(render);
-
-	//render player stats
-	this.renderPlayerStats();
-};
-
-
-/**
- *
- * @return {String}
- */
-Game.prototype.renderPlayerStats = function () {
-	var turn = "";
-	_.each(this.teams, function (_team) {
-		_.each(_team.units, function (_unit) {
-			turn += "\nPosition: " + _unit.position;
-			turn += "\nDest: " + _unit.direction.angle;
-
-		}, this);
-	}, this);
-	console.log(turn);
-};
-
+//
+//Game.prototype.getAgentInput=function(){
+//	var teams = {};
+//
+//	//recorremos los equipos
+//	_.each(this.teams, function (_team) {
+//		var teamPicked = _.pick(_team, "id", "name", "health");
+//		teamPicked.units = [];
+//		//Recorremos las unidades
+//		_.each(_team.units, function (_unit) {
+//			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
+//			//var unitPicked= _.omit(_unit,"game");
+//			teamPicked.units.push(unitPicked);
+//		});
+//		teams[teamPicked.id] = teamPicked;
+//	});
+//
+//	var bullets = {};
+//	_.each(this.bullets, function (_bullet) {
+//		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
+//		bullets[_bullet.id] = bulletPicked;
+//
+//	});
+//
+//	return new AgentGame(this.map.colMap,teams,bullets,(this.timeLeft-this.totalTicks));
+//};
+//
 
 /**
  * Devuelve el equipo especificado por su identificador

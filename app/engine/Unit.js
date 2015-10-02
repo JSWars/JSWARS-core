@@ -155,13 +155,13 @@ function Unit(_game, _team, _properties) {
 	 * Unit's direction angle
 	 * @type {Angle}
 	 */
-	this.direction = new Angle(0, false);
+	this.direction = undefined;
 
 	/**
 	 * Unit's direction attack
 	 * @type {Angle}
 	 */
-	this.attackTo = new Angle(0, false);
+	this.attackTo = undefined;
 	//TODO create a specific class to Attacks
 
 	this.createCollSphere();
@@ -180,28 +180,6 @@ Unit.prototype.createCollSphere = function () {
 		this.collSphereRelative[i] = this.collSphereRelative[i].rotate(angle);
 	}
 
-};
-
-/**
- * Attack to position
- * @param {Angle} _attack
- */
-Unit.prototype.addAttackOrder = function (_attack) {
-	Util.isInstance(_attack, Angle);
-	this.attackTo = _attack;
-};
-
-/**
- * Do an attack
- */
-Unit.prototype.attack = function () {
-	this.cooldown -= 1;
-	if (this.cooldown <= 0 && this.attackTo.action) {
-
-		var b = new Bullet(this.game, this.position, this.teamId, this.attackTo, 0.2, this.damage, 0.25);
-		this.game.addBullet(b);
-		this.cooldown = this.fireRate;
-	}
 };
 
 /**
@@ -225,20 +203,37 @@ Unit.prototype.hurt = function (_damage) {
 
 
 /**
+ * Attack to position
+ * @param {Angle} _attack
+ */
+Unit.prototype.attackTo = function (_attack) {
+	Util.isInstance(_attack, Vector2D);
+	this.attackTo = _attack;
+};
+
+/**
+ * Do an attack
+ */
+Unit.prototype.attack = function () {
+	this.cooldown -= 1;
+	if (this.cooldown <= 0 && this.attackTo !== undefined) {
+
+		var b = new Bullet(this.game, this.position, this.teamId, this.attackTo, 0.2, this.damage, 0.25);
+		this.game.addBullet(b);
+		this.cooldown = this.fireRate;
+	}
+};
+
+
+/**
  * Elimina los destinos anteriores de la unidad y añade un único destino
  * @param {Angle} _direction
  */
 Unit.prototype.moveTo = function (_direction) {
-	Util.isInstance(_direction, Angle);
-
+	Util.isInstance(_direction, Vector2D);
 	this.direction = _direction;
-	return true;
 };
 
-
-Unit.prototype.stop = function () {
-	this.direction = new Angle(0, false);
-};
 
 /**
  * Move the unit in the direction give by this.direction attribute
@@ -246,17 +241,21 @@ Unit.prototype.stop = function () {
 Unit.prototype.move = function () {
 	//If action is false, do nothing
 
-	if (this.direction.action === false) {
+	if (this.direction === undefined) {
 		return;
 	}
 
-	var dir = this.direction.toVector2D();
+	var dir = this.direction;
 
 	if (!this.checkCollide(this.position.add(dir.multiply(this.speed)))) {
 		//if the next position is free, update the unit's position
 		this.position = this.position.add(dir.multiply(this.speed));
 	}
 
+};
+
+Unit.prototype.stop = function () {
+	this.direction = undefined;
 };
 
 
