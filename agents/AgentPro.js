@@ -1,10 +1,11 @@
-var dirMov;
-var dirAttack;
 function init(){
-	dirMov=0;
-	dirAttack=Math.PI;
+//nothing to init
 }
-function tick(_input,_output){
 
-	output.unitsActions = [new Action(new Angle(dirMov,false),new Angle(dirAttack,true))];
+function tick(){
+
+	var randomX = Math.random(game.colMap[0].length);
+	var randomY = Math.random(game.colMap.length);
+
+	output.unit(0).addAction("moveTo", new Utils.Angle(randomX, randomY));
 }
