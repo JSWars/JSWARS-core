@@ -15,6 +15,7 @@ AgentOutput.prototype.unit = function (_unitId) {
 	return {
 		addAction: function (action, angle) {
 			if (!_.isUndefined(AgentOutput.ACTIONS[action])) {
+				_self.actions[unitId] = _self.actions[unitId] || {};
 				_self.actions[unitId][action] = angle;
 			}
 		}

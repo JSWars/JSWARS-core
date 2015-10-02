@@ -86,7 +86,14 @@ server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
 server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
 
 //Start Queue Runner
-var queueRunner = fork('app/engine/QueueRunner');
+
+var fs = require('fs'),
+	out = fs.openSync('./out.log', 'a'),
+	err = fs.openSync('./out.log', 'a');
+
+var queueRunner = fork('app/engine/QueueRunner',[],{
+	stdio: [ 'ignore', out, err ]
+});
 
 postal.subscribe({
 	channel: "models",
@@ -111,3 +118,4 @@ server.listen(Config.http.port, Config.http.ip, function (error) {
 	console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
 });
 
+console.log("asdasdasd")

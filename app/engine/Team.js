@@ -10,7 +10,6 @@ AgentController = require('./controllers/AgentController');
 Agent = require('../model/Agent');
 
 
-
 function get_random_color() {
 	var letters = '0123456789ABCDEF'.split('');
 	var color = '#';
@@ -30,8 +29,6 @@ function get_random_color() {
  * @constructor Crear un equipo con las caracteristicas especificadas
  */
 function Team(_id, _agentId, _game) {
-
-	var _self = this;
 
 	/**
 	 * Variable del juego
@@ -66,7 +63,7 @@ function Team(_id, _agentId, _game) {
 	 * Agente que controlará el equipo
 	 * @type {AgentController}
 	 */
-	this.agent =  new AgentController(_agentId,this.game,this.id);
+	this.agent = new AgentController(_agentId, this.game, this.id);
 
 
 	/**
@@ -107,8 +104,8 @@ Team.prototype.update = function () {
 		maxHealth = maxHealth + _unit.maxHealth;
 	});
 
-	if(totalHealth<=0){
-		this.alive=false;
+	if (totalHealth <= 0) {
+		this.alive = false;
 	}
 	this.health = (totalHealth / maxHealth) * 100;
 };
@@ -149,8 +146,8 @@ Team.prototype.removeUnit = function (_index) {
  * COLOR
  *
  */
-Team.prototype.toJSON=function(){
-	return _.pick(this,'name','user','color');
+Team.prototype.toJSON = function () {
+	return _.pick(this, 'name', 'user', 'color');
 };
 
 
