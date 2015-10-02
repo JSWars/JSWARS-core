@@ -484,18 +484,6 @@ Game.prototype.renderPlayerStats = function () {
 
 
 /**
- * GETTERS & SETTERS
- */
-
-/**
- * Devuelve el mapa que se está usando en el juego
- * @returns {GridMap} Mapa
- */
-Game.prototype.getMap = function () {
-	return this.map;
-};
-
-/**
  * Devuelve el equipo especificado por su identificador
  * @param {number} Identificador
  * @returns {Team} Equipo

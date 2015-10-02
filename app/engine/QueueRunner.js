@@ -68,12 +68,11 @@ function runBattleQueueItem(battleQueueItem) {
 			.then(function initializeResolved() {
 
 				function beginCallback() {
-					//TODO: CHANGE QUEUE ITEM STATUS
-
+					console.log("Start battle run");
 				}
 
 				function tickCallback(i, frame) {
-					console.log("Saving tick:" + i);
+
 					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
 						index: i,
@@ -85,7 +84,7 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function endCallback() {
-					//TODO: REMOVE ITEM FROM QUEUE
+					console.log("End battle run");
 				}
 
 				newGame.run(beginCallback, tickCallback, endCallback);
