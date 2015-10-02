@@ -7,9 +7,7 @@
 var VM = require("vm");
 var _ = require("underscore");
 var Game = require("../Game");
-var AgentInput = require("./interfaces/AgentInput");
 var AgentOutput = require("./interfaces/AgentOutput");
-var Actions = require("../Actions");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
 
@@ -41,12 +39,6 @@ function AgentController(_id, _game) {
 			Angle: Angle
 		}
 	});
-
-	Object.defineProperty(_contextObject, 'Actions', {
-			writable: false,
-			value: Actions
-		}
-	);
 
 	this.context = new VM.createContext(_contextObject);
 	var _self = this;
@@ -83,7 +75,7 @@ AgentController.prototype.prepareTeams = function () {
 	}
 
 	try {
-		this.context.game = this.game;
+		this.context.game = this.game.getGameState();
 		this.context.me = this.game.teams[this.id].units;
 		this.context.output = new AgentOutput();
 		VM.runInContext("init(input)", this.context, {timeout: this.timeoutStart});
@@ -107,15 +99,13 @@ AgentController.prototype.tick = function () {
 	}
 
 	try {
-		this.context.input = new AgentInput(this.game);
 		this.context.output = new AgentOutput();
 		VM.runInContext("tick(input)", this.context, {timeout: this.timeout});
 	} catch (exception) {
-		console.dir(exception);
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 
-	return this.context.output.unitsActions;
+	return this.context.output;
 
 };
 

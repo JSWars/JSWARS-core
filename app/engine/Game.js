@@ -240,11 +240,13 @@ Game.prototype.checkGameFinish = function () {
  */
 Game.prototype.getAgentActions = function () {
 	_.each(this.teams, function (_team) {
-		var action = _team.agent.tick();
-		_.each(action, function (_action, _idUnit) {
-			_team.units[_idUnit].moveTo(_action.move);
-			_team.units[_idUnit].addAttackOrder(_action.attack);
-		});
+		var agentOutput = _team.agent.tick();
+
+		for (var unit in agentOutput.actions) {
+			for (var action in agentOutput.actions[unit]) {
+				_team.units[unit][action](agentOutput.actions[unit][action]);
+			}
+		}
 	});
 };
 

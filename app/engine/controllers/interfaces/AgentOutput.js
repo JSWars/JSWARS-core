@@ -1,15 +1,21 @@
-function AgentOutput() {
-	this.unitActions = [];
+var _ = require("underscore");
 
+function AgentOutput() {
+	this.actions = {};
 }
+
+AgentOutput.ACTIONS = {
+	"moveTo": "moveTo",
+	"attackTo": "attackTo"
+};
 
 AgentOutput.prototype.unit = function (_unitId) {
 	var _self = this;
 	var unitId = _unitId;
 	return {
-		addAction: function (action) {
-			if(_self.unitActions[unitId] === undefined){
-				_self.unitActions[unitId] = {};
+		addAction: function (action, angle) {
+			if (!_.isUndefined(AgentOutput.ACTIONS[action])) {
+				_self.actions[unitId][action] = angle;
 			}
 		}
 	}
