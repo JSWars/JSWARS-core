@@ -212,6 +212,16 @@ Unit.prototype.attackToHandler = function (_attack) {
 };
 
 /**
+ * Elimina los destinos anteriores de la unidad y añade un único destino
+ * @param {Angle} _direction
+ */
+Unit.prototype.moveToHandler = function (_direction) {
+	Util.isInstance(_direction, Vector2D);
+	this.direction = _direction;
+};
+
+
+/**
  * Do an attack
  */
 Unit.prototype.attack = function () {
@@ -222,16 +232,6 @@ Unit.prototype.attack = function () {
 		this.game.addBullet(b);
 		this.cooldown = this.fireRate;
 	}
-};
-
-
-/**
- * Elimina los destinos anteriores de la unidad y añade un único destino
- * @param {Angle} _direction
- */
-Unit.prototype.moveToHandler = function (_direction) {
-	Util.isInstance(_direction, Vector2D);
-	this.direction = _direction;
 };
 
 
