@@ -91,6 +91,12 @@ var fs = require('fs'),
 	out = fs.openSync('./out.log', 'a'),
 	err = fs.openSync('./out.log', 'a');
 
+var debug = typeof v8debug === 'object';
+if (debug) {
+	//Set an unused port number.
+	process.execArgv.push('--debug=' + (50000));
+}
+
 var queueRunner = fork('app/engine/QueueRunner',[],{
 	stdio: [ 'ignore', out, err ]
 });
@@ -117,5 +123,3 @@ server.listen(Config.http.port, Config.http.ip, function (error) {
 
 	console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
 });
-
-console.log("asdasdasd")

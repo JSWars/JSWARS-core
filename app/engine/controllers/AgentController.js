@@ -3,7 +3,7 @@
  * Created by Marcos on 1/02/14.
  */
 
-
+var Q = require("q");
 var VM = require("vm");
 var _ = require("underscore");
 var Game = require("../Game");
@@ -41,21 +41,6 @@ function AgentController(_id, _game, _teamId) {
 	});
 
 	this.context = new VM.createContext(_contextObject);
-	var _self = this;
-
-	AgentVersion.findOne({agent: _id}).sort('-moment')
-		.exec(function (err, agentVersion) {
-			if (err) {
-				throw "Error loading agent from database";
-			}
-			if (agentVersion === null) {
-				throw "Can't find agent";
-			}
-
-			VM.runInContext(agentVersion.code, _self.context);
-
-			_self.prepared = true;
-		});
 }
 
 
@@ -68,22 +53,36 @@ AgentController.prototype.isPrepared = function () {
  * Tiempo de inicialización del agente, se deja un tiempo concreto de cómputo para que puedan
  * analizar la partida antes de comenzar
  */
-AgentController.prototype.prepareTeams = function () {
-	if (!this.isPrepared()) {
-		throw "The agent isn't prepared";
-	}
+AgentController.prototype.prepare = function () {
+	var deferred = Q.defer();
+	var _self = this;
 
-	this.context.game = this.game.getGameState();
-	this.context.me = this.game.teams[this.teamId].units;
+	AgentVersion.findOne({agent: this.id}).sort('-moment')
+		.exec(function (err, agentVersion) {
+			if (err) {
+				deferred.reject();
+				throw "Error loading agent from database";
+			}
+			if (agentVersion === null) {
+				deferred.reject();
+				throw "Can't find agent";
+			}
 
-	try {
-		VM.runInContext("init()", this.context, {timeout: this.timeoutStart});
-	} catch (exception) {
-		console.dir(exception);
-		throw "El agente ha excedido el tiempo máximo de proceso";
-	}
+			_self.context.game = _self.game.getGameState();
+			_self.context.me = _self.game.teams[_self.teamId].units;
 
-	return true;
+			try {
+				VM.runInContext(agentVersion.code, _self.context);
+				VM.runInContext("init()", _self.context, {timeout: _self.timeoutStart});
+				_self.prepared = true;
+				deferred.resolve();
+			} catch (exception) {
+				console.dir(exception);
+				deferred.reject();
+			}
+		});
+
+	return deferred.promise;
 };
 
 /**

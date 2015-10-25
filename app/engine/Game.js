@@ -90,43 +90,23 @@ function Game() {
 
 }
 
-Game.prototype.initialize = function (_deferred) {
-	var deferred = _deferred || Q.defer();
-	var _self = this;
-	var ready = true;
-	_.each(this.teams, function (_team) {
-		if (!_team.agent.prepared) {
-			ready = false;
-		}
-
-	});
-	if (ready) {
-		_.each(this.teams, function (_team) {
-			_team.update();
-		});
-
-		this.prepareTeams();
-		deferred.resolve();
-	} else {
-		setTimeout(function () {
-			_self.initialize(deferred);
-		}, 100);
-	}
-
-
-	return deferred.promise;
-
+Game.prototype.initialize = function () {
+	return this.prepare();
 };
 
-Game.prototype.prepareTeams = function () {
+Game.prototype.prepare = function () {
+	var agentPromises = [];
 	_.each(this.teams, function (_team) {
-		_team.agent.prepareTeams();
+		agentPromises.push(_team.prepare());
 	});
+
+	//Creamos una promesa compuesta del resto de promesas
+	return Q.all(agentPromises)
 };
 
 Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 
-	while (!this.checkGameFinish()) {
+	while (!this.gameFinished()) {
 
 		this.tick();
 
@@ -199,12 +179,12 @@ Game.prototype.tick = function () {
 	//Update positions
 	//Checks collisions
 
-	this.getAgentActions();
-	this.updatePositions();
-	this.updateBullets();
+	this.loadUnitActions();
+	this.unitsMove();
+	this.unitsAttack();
 
 	this.update();
-	this.checkGameFinish();
+	this.gameFinished();
 
 	return this.getGameFrame();
 };
@@ -221,7 +201,7 @@ Game.prototype.update = function () {
  *
  * @return {boolean}
  */
-Game.prototype.checkGameFinish = function () {
+Game.prototype.gameFinished = function () {
 	var teamsAlive = 0;
 	_.each(this.teams, function (_team) {
 		if (_team.isAlive()) {
@@ -235,7 +215,7 @@ Game.prototype.checkGameFinish = function () {
 /**
  * Gets the agents actions and apply in the game
  */
-Game.prototype.getAgentActions = function () {
+Game.prototype.loadUnitActions = function () {
 	_.each(this.teams, function (_team) {
 		var agentOutput = _team.agent.tick();
 		console.log(JSON.stringify(agentOutput));
@@ -243,10 +223,11 @@ Game.prototype.getAgentActions = function () {
 		for (var unit in agentOutput.actions) {
 			for (var action in agentOutput.actions[unit]) {
 				console.log(unit, action, agentOutput.actions[unit][action]);
-				_team.units[unit][action](agentOutput.actions[unit][action]);
+				_team.units[unit][action + "Handler"](agentOutput.actions[unit][action]);
 			}
 		}
 	});
+	console.log(this.teams);
 };
 
 /**
@@ -254,7 +235,7 @@ Game.prototype.getAgentActions = function () {
  *
  * Update all the players creatures positions
  */
-Game.prototype.updatePositions = function () {
+Game.prototype.unitsMove = function () {
 	_.each(this.teams, function (_team) {
 		_.each(_team.units, function (_unit) {
 			//Actualizar posición de las unidades que están vivas
@@ -265,7 +246,7 @@ Game.prototype.updatePositions = function () {
 	}, this);
 };
 
-Game.prototype.updateBullets = function () {
+Game.prototype.unitsAttack = function () {
 	_.each(this.bullets, function (_bullet) {
 		_bullet.update();
 	});
