@@ -1,4 +1,4 @@
-var GridMap, Game, Team, Unit, FS, Path, Vector2D, Angle, Agent, Map, Battle, BattleFrame, Config, Mongoose;
+var GridMap, Game, Team, Unit, FS, Path, Vector2D, Angle, Agent, Map, Battle, BattleFrame, Config, Mongoose, Logger;
 
 
 //
@@ -17,6 +17,8 @@ Mongoose.connection.on('error', function (err) {
 	console.error('MongoDB error: %s', err);
 });
 
+Logger = require('./logger.js');
+
 //FIRST LOAD MAP ON DB
 Map.findOne({default: true}, function (err, map) {
 	if (err) {
@@ -25,13 +27,13 @@ Map.findOne({default: true}, function (err, map) {
 	}
 
 	if (map === null) {
-		console.log("Map not found in DB");
+		Logger.log('info', 'Map not found in DB');
 		FS.readFile('./resources/maps/_default.json', 'utf8', function (err, mapData) {
 			if (err) {
-				console.log(err);
+				Logger.log('error', 'Default map file can\'t not be loaded', err);
 				return;
 			}
-			console.log("Loading default map");
+			Logger.log('info', 'Default map file loaded');
 			var newMap = new Map();
 			newMap.name = "Default Map";
 			newMap.default = true;
@@ -39,14 +41,17 @@ Map.findOne({default: true}, function (err, map) {
 
 			newMap.save(function (err, response) {
 				if (err) {
-					console.log(err);
+					Logger.log('error', 'Default map can\'t be saved on database', err);
 					return;
+				} else {
+					Logger.log('info', 'Default map loaded');
+
 				}
-				console.log("Default map loaded");
 			})
 		})
 	} else {
-		console.log("Default map already exist");
+		Logger.log('warn', 'Default map already in database');
+
 	}
 });
 

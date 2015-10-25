@@ -218,16 +218,12 @@ Game.prototype.gameFinished = function () {
 Game.prototype.loadUnitActions = function () {
 	_.each(this.teams, function (_team) {
 		var agentOutput = _team.agent.tick();
-		console.log(JSON.stringify(agentOutput));
-
 		for (var unit in agentOutput.actions) {
 			for (var action in agentOutput.actions[unit]) {
-				console.log(unit, action, agentOutput.actions[unit][action]);
 				_team.units[unit][action + "Handler"](agentOutput.actions[unit][action]);
 			}
 		}
 	});
-	console.log(this.teams);
 };
 
 /**

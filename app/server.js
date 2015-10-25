@@ -1,20 +1,22 @@
-var Path, Config, postal, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, fork, server;
+var Path, Config, postal, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, Logger, fork, server;
 
 //Node Modules
 Path = require('path');
 Config = require('./config.js');
+
 //Express dependencies
 Express = require('express');
 ExpressSession = require('express-session');
 ExpressBodyParser = require('body-parser');
 
-//Mongo dependencies
+//DB dependencies
 Mongoose = require('mongoose');
 
 //Passport Dependencies
 Passport = require('passport');
 GithubStrategy = require('passport-github').Strategy;
 User = require('./model/User');
+Logger = require("./logger.js");
 
 fork = require('child_process').fork;
 postal = require('postal');
@@ -60,6 +62,8 @@ var EnsureAuthentication = require('./filters/EnsureAuthenticated');
 //          ROUTES
 //---------------------------
 
+Logger.log('debug',"Loading routes");
+
 //Session Routes
 server.get(Config.path + '/session', EnsureAuthentication, require('./routes/Session'));
 server.get(Config.path + '/login/github', require('./routes/login/github/Entry'));
@@ -93,18 +97,22 @@ var fs = require('fs'),
 
 var debug = typeof v8debug === 'object';
 if (debug) {
-	//Set an unused port number.
-	process.execArgv.push('--debug=' + (50000));
+	var DEBUG_PORT = 50000;
+	Logger.log('debug',"Process is being debugged. Opening debug in QueueRunner. Port "+DEBUG_PORT );
+	process.execArgv.push('--debug=' + (DEBUG_PORT ));
 }
 
-var queueRunner = fork('app/engine/QueueRunner',[],{
-	stdio: [ 'ignore', out, err ]
+Logger.log('debug',"Starting QueueRunner" );
+var queueRunner = fork('app/engine/QueueRunner', [], {
+	stdio: ['ignore', out, err]
 });
+
 
 postal.subscribe({
 	channel: "models",
 	topic: "battle.save",
-	callback: function(model) {
+	callback: function (model) {
+		Logger.log('info',"New battle detected. Sending a message to QueueRunner" );
 		queueRunner.send({
 			name: "RUN",
 			data: model._id
@@ -115,11 +123,12 @@ postal.subscribe({
 
 //Start listening!
 
+
+
 server.listen(Config.http.port, Config.http.ip, function (error) {
 	if (error) {
-		return console.log(error);
 		throw error;
 	}
 
-	console.info("Listen=> " + Config.http.ip + ":" + Config.http.port);
+	Logger.log('info',"API Listening on " + Config.http.ip + ":" + Config.http.port );
 });
