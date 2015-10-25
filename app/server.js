@@ -29,7 +29,6 @@ Mongoose.connection.on('error', function (error) {
 	Logger.log('error', 'Error connecting to database', error)
 });
 
-//conn = Mongoose.createConnection(Config.db.url);
 server = Express();
 
 server.use(ExpressBodyParser.json()); // get information from html forms
@@ -43,15 +42,16 @@ server.use(ExpressSession({
 server.use(Passport.initialize());
 server.use(Passport.session()); // persistent login sessions
 
-// serialize and deserialize
+//Serializador de usuario
 Passport.serializeUser(function (user, done) {
 	done(null, user);
 });
+//Deserializador de usuario
 Passport.deserializeUser(function (obj, done) {
 	done(null, obj);
 });
 
-// config
+// Configurando la estrategia de login de GitHUB
 Passport.use(new GithubStrategy(Config.apis.github,
 	function (accessToken, refreshToken, profile, done) {
 		process.nextTick(function () {
