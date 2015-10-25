@@ -149,8 +149,10 @@ Game.prototype.addBullet = function (_bullet) {
  * @param {String} _agent of the team
  */
 Game.prototype.addTeam = function (_agent) {
+	var team = new Team(this.totalTeams, _agent, this);
 	this.teams[this.totalTeams] = new Team(this.totalTeams, _agent, this);
-	return this.totalTeams++;
+	this.totalTeams++;
+	return team;
 };
 
 /**
@@ -179,16 +181,22 @@ Game.prototype.tick = function () {
 	//Update positions
 	//Checks collisions
 
+	//Get registered actions from agents
 	this.loadUnitActions();
+	//Unit moves
 	this.unitsMove();
-	this.unitsAttack();
-
+	//Unit attacks
+	this.unitAttack();
+	//Update al teams
 	this.update();
+
 	this.gameFinished();
 
-	return this.getGameFrame();
 };
 
+/**
+ *
+ */
 Game.prototype.update = function () {
 	_.each(this.teams, function (_team) {
 		_team.update();
@@ -242,7 +250,10 @@ Game.prototype.unitsMove = function () {
 	}, this);
 };
 
-Game.prototype.unitsAttack = function () {
+/**
+ *
+ */
+Game.prototype.unitAttack = function () {
 	_.each(this.bullets, function (_bullet) {
 		_bullet.update();
 	});
@@ -310,7 +321,7 @@ Game.prototype.getRandomFreeCell = function () {
 };
 
 
-/**
+/*
  * AGENT FUNCTIONS
  */
 
@@ -380,33 +391,6 @@ Game.prototype.getGameFrame = function () {
 	};
 	return frame;
 };
-//
-//Game.prototype.getAgentInput=function(){
-//	var teams = {};
-//
-//	//recorremos los equipos
-//	_.each(this.teams, function (_team) {
-//		var teamPicked = _.pick(_team, "id", "name", "health");
-//		teamPicked.units = [];
-//		//Recorremos las unidades
-//		_.each(_team.units, function (_unit) {
-//			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
-//			//var unitPicked= _.omit(_unit,"game");
-//			teamPicked.units.push(unitPicked);
-//		});
-//		teams[teamPicked.id] = teamPicked;
-//	});
-//
-//	var bullets = {};
-//	_.each(this.bullets, function (_bullet) {
-//		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
-//		bullets[_bullet.id] = bulletPicked;
-//
-//	});
-//
-//	return new AgentGame(this.map.colMap,teams,bullets,(this.timeLeft-this.totalTicks));
-//};
-//
 
 /**
  * Devuelve el equipo especificado por su identificador

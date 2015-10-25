@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.9.2",
+    "connect-mongo": "^0.8.2",
     "express": "^4.10.2",
     "express-session": "^1.9.1",
     "mongoose": "^4.2.2",

@@ -55,12 +55,14 @@ function runBattleQueueItem(battleQueueItem) {
 		newBattle.agents = [];
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
-			var teamId = newGame.addTeam(battleQueueItem.agents[i]);
-			newGame.teams[teamId].addUnit(new Unit(newGame, newGame.teams[teamId], {
-				position: [2 + i * 8, 2] //Return a vector2d,
-			}));
-			newBattle.agents.push(newGame.teams[teamId].agent.id);
+			var team = newGame.addTeam(battleQueueItem.agents[i]);
+			for (var o = 0; o < battleQueueItem.units; o++) {
+				team.addUnit(new Unit(newGame, team, {
+					position: [2 + o * 8, 2] //Return a vector2d,
+				}));
+			}
 
+			newBattle.agents.push(team.agent.id);
 		}
 
 		newBattle.save(function (err) {

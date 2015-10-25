@@ -107,6 +107,7 @@ function Team(_id, _agentId, _game) {
 Team.prototype.prepare = function () {
 	//Convertimos el agente en un controlador
 	this.agent = new AgentController(this.agent.id, this.game, this.id);
+	//Esto no es cierto...
 	this.prepared = true;
 	//Devolvemos la promesa del agente tal cual
 	return this.agent.prepare();

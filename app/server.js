@@ -1,30 +1,32 @@
-var Path, Config, postal, Express, ExpressSession, ExpressBodyParser, Mongoose, Passport, GithubStrategy, User, Logger, fork, server;
+//Node and Util Modules
+var Path = require('path');
+var Config = require('./config.js');
+var Logger = require("./logger.js");
 
-//Node Modules
-Path = require('path');
-Config = require('./config.js');
+var fork = require('child_process').fork;
+var postal = require('postal');
 
 //Express dependencies
-Express = require('express');
-ExpressSession = require('express-session');
-ExpressBodyParser = require('body-parser');
+var Express = require('express');
+var ExpressSession = require('express-session');
+var ExpressBodyParser = require('body-parser');
 
 //DB dependencies
-Mongoose = require('mongoose');
+var Mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(ExpressSession);
 
 //Passport Dependencies
-Passport = require('passport');
-GithubStrategy = require('passport-github').Strategy;
-User = require('./model/User');
-Logger = require("./logger.js");
+var Passport = require('passport');
+var GithubStrategy = require('passport-github').Strategy;
 
-fork = require('child_process').fork;
-postal = require('postal');
+//Model
+var User = require('./model/User');
 
 
+//Connect to Mongo
 Mongoose.connect(Config.db.url);
-Mongoose.connection.on('error', function (err) {
-	console.error('MongoDB error: %s', err);
+Mongoose.connection.on('error', function (error) {
+	Logger.log('error', 'Error connecting to database', error)
 });
 
 //conn = Mongoose.createConnection(Config.db.url);
@@ -32,7 +34,12 @@ server = Express();
 
 server.use(ExpressBodyParser.json()); // get information from html forms
 server.use(ExpressBodyParser.urlencoded({extended: true}));
-server.use(ExpressSession({resave: true, saveUninitialized: true, secret: 'a6277604a'}))
+server.use(ExpressSession({
+	resave: true,
+	saveUninitialized: true,
+	secret: 'a6277604a',
+	store: new MongoStore({mongoose_connection: Mongoose.connection})
+}));
 server.use(Passport.initialize());
 server.use(Passport.session()); // persistent login sessions
 
@@ -53,16 +60,20 @@ Passport.use(new GithubStrategy(Config.apis.github,
 	}
 ));
 
+
 //---------------------------
 //        FILTERS
 //---------------------------
+
+Logger.log('debug', "Loading filters");
+
 var EnsureAuthentication = require('./filters/EnsureAuthenticated');
 
 //---------------------------
 //          ROUTES
 //---------------------------
 
-Logger.log('debug',"Loading routes");
+Logger.log('debug', "Loading routes");
 
 //Session Routes
 server.get(Config.path + '/session', EnsureAuthentication, require('./routes/Session'));
@@ -89,30 +100,24 @@ server.get(Config.path + '/battle/', require('./routes/battle/List'));
 server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
 server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
 
-//Start Queue Runner
-
-var fs = require('fs'),
-	out = fs.openSync('./out.log', 'a'),
-	err = fs.openSync('./out.log', 'a');
 
 var debug = typeof v8debug === 'object';
 if (debug) {
 	var DEBUG_PORT = 50000;
-	Logger.log('debug',"Process is being debugged. Opening debug in QueueRunner. Port "+DEBUG_PORT );
+	Logger.log('debug', "Process is being debugged. Opening debug in QueueRunner. Port " + DEBUG_PORT);
 	process.execArgv.push('--debug=' + (DEBUG_PORT ));
 }
 
-Logger.log('debug',"Starting QueueRunner" );
-var queueRunner = fork('app/engine/QueueRunner', [], {
-	stdio: ['ignore', out, err]
-});
+//Start Queue Runner
+Logger.log('debug', "Starting QueueRunner");
+var queueRunner = fork('app/engine/QueueRunner', [], {});
 
-
+//Subscribe QueueRunner to DB updates
 postal.subscribe({
 	channel: "models",
 	topic: "battle.save",
 	callback: function (model) {
-		Logger.log('info',"New battle detected. Sending a message to QueueRunner" );
+		Logger.log('info', "New battle detected. Sending a message to QueueRunner");
 		queueRunner.send({
 			name: "RUN",
 			data: model._id
@@ -120,15 +125,11 @@ postal.subscribe({
 	}
 });
 
-
-//Start listening!
-
-
-
+//Start listening API endpoints
 server.listen(Config.http.port, Config.http.ip, function (error) {
 	if (error) {
-		throw error;
+		Logger.log('info', "API can\'t be started", error);
 	}
 
-	Logger.log('info',"API Listening on " + Config.http.ip + ":" + Config.http.port );
+	Logger.log('info', "API Listening on " + Config.http.ip + ":" + Config.http.port);
 });

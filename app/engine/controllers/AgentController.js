@@ -10,6 +10,7 @@ var Game = require("../Game");
 var AgentOutput = require("./interfaces/AgentOutput");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
+var Logger = require('../../logger.js');
 
 
 var Agent = require('../../model/Agent');
@@ -56,28 +57,27 @@ AgentController.prototype.isPrepared = function () {
 AgentController.prototype.prepare = function () {
 	var deferred = Q.defer();
 	var _self = this;
+	Logger.log('info', 'Preparrng AgentController (teamId: ' + _self.teamId + ')');
+
 
 	AgentVersion.findOne({agent: this.id}).sort('-moment')
 		.exec(function (err, agentVersion) {
-			if (err) {
+			if (err || agentVersion === null) {
 				deferred.reject();
-				throw "Error loading agent from database";
-			}
-			if (agentVersion === null) {
-				deferred.reject();
-				throw "Can't find agent";
+				Logger.log('error', 'AgentVersion can\'t be retrieved from database', err);
 			}
 
 			_self.context.game = _self.game.getGameState();
-			_self.context.me = _self.game.teams[_self.teamId].units;
+			_self.context.me = _.pick(_self.game.teams[_self.teamId], "id", "name", "color", "units");
 
 			try {
 				VM.runInContext(agentVersion.code, _self.context);
 				VM.runInContext("init()", _self.context, {timeout: _self.timeoutStart});
+				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') User code executed successfully in VM');
 				_self.prepared = true;
 				deferred.resolve();
-			} catch (exception) {
-				console.dir(exception);
+			} catch (error) {
+				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error runing user code in VM', error);
 				deferred.reject();
 			}
 		});
