@@ -1,39 +1,43 @@
-var FS, Battle, BattleFrame, Mongoose;
+var FS, Battle, BattleFrame, Mongoose, Logger;
 FS = require('fs');
 
 Battle = require('../../model/Battle');
 BattleFrame = require('../../model/BattleFrame');
 Mongoose = require('mongoose');
+Logger = require('../../logger.js');
 
-function Map(req, res) {
-	var chunkId, chunkSize, chunkStartFrame, chunkEndFrame;
+
+function Chunk(req, res) {
+	var chunkId, battleId, chunkSize, chunkStartFrame, chunkEndFrame;
 
 	chunkId = req.params.chunkId;
-	chunkSize = 300;//TODO QUITAR HARCODED
+	battleId = req.params.id;
+	chunkSize = 300;
 
 	chunkStartFrame = chunkId * chunkSize;
 	chunkEndFrame = chunkStartFrame + chunkSize;
 
+	Logger.log('debug', 'Requested chunk ' + chunkId + ' for battle ' + battleId);
 
-	//FS.readFile('app/resources/chunk.json', function (err, data) {
-	//	if (err) throw err;
-	//	res.json(JSON.parse(data));   {battle: "55aa34c9a9c9c6a0035c6f1a"}
-	//});
+	Logger.log('debug', 'Start frame ' + chunkStartFrame);
+	Logger.log('debug', 'End frame ' + chunkEndFrame);
 
+	BattleFrame.find({
+		battle: battleId,
+		index: {$gt: chunkStartFrame, $lte: chunkEndFrame}
+	})
+		.sort({'index': 1})
+		.select({data: 1})
+		.exec(function (err, frames) {
+			if (err) {
+				Logger.log('error', 'Battle with id' + battleId * ' not found')
+				res.status(404).end();
+				return;
+			}
+			Logger.log('debug', 'Returning ' + frames.length + ' frames');
 
-	Battle.findOne({})
-		.sort({'moment': -1})
-		.exec(function (err, battle) {
-			BattleFrame.find({
-				battle: battle._id,
-				index: {$gte: chunkStartFrame, $lt: chunkEndFrame}
-			})
-				.sort({'index': 1})
-				.select({data: 1})
-				.exec(function (err, frames) {
-					res.json(frames);
-				});
-
+			res.json(frames);
 		});
+
 }
-module.exports = Map;
+module.exports = Chunk;
