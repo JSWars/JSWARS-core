@@ -152,7 +152,7 @@ Game.prototype.addBullet = function (_bullet) {
  */
 Game.prototype.addTeam = function (_agent) {
 	var team = new Team(this.totalTeams, _agent, this);
-	this.teams[this.totalTeams] = new Team(this.totalTeams, _agent, this);
+	this.teams[this.totalTeams] = team;
 	this.totalTeams++;
 	return team;
 };
