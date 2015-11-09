@@ -10,9 +10,10 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.9.2",
+    "connect-mongo": "^0.8.2",
     "express": "^4.10.2",
     "express-session": "^1.9.1",
-    "mongoose": "^3.8.19",
+    "mongoose": "^4.2.2",
     "passport": "^0.2.2",
     "passport-github": "^0.1.5",
     "passport-http": "^0.2.2",
@@ -20,7 +21,8 @@
     "pathfinding": "^0.4.13",
     "postal": "^1.0.7",
     "q": "^1.4.1",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "winston": "^1.1.1"
   },
   "jshintConfig": {
     "bitwise": true,
@@ -84,5 +86,10 @@
       "define"
     ],
     "indent": 4
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-exec": "^0.4.6"
   }
 }

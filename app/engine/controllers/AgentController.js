@@ -3,13 +3,14 @@
  * Created by Marcos on 1/02/14.
  */
 
-
+var Q = require("q");
 var VM = require("vm");
 var _ = require("underscore");
 var Game = require("../Game");
 var AgentOutput = require("./interfaces/AgentOutput");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
+var Logger = require('../../logger.js');
 
 
 var Agent = require('../../model/Agent');
@@ -41,21 +42,6 @@ function AgentController(_id, _game, _teamId) {
 	});
 
 	this.context = new VM.createContext(_contextObject);
-	var _self = this;
-
-	AgentVersion.findOne({agent: _id}).sort('-moment')
-		.exec(function (err, agentVersion) {
-			if (err) {
-				throw "Error loading agent from database";
-			}
-			if (agentVersion === null) {
-				throw "Can't find agent";
-			}
-
-			VM.runInContext(agentVersion.code, _self.context);
-
-			_self.prepared = true;
-		});
 }
 
 
@@ -68,22 +54,35 @@ AgentController.prototype.isPrepared = function () {
  * Tiempo de inicialización del agente, se deja un tiempo concreto de cómputo para que puedan
  * analizar la partida antes de comenzar
  */
-AgentController.prototype.prepareTeams = function () {
-	if (!this.isPrepared()) {
-		throw "The agent isn't prepared";
-	}
+AgentController.prototype.prepare = function () {
+	var deferred = Q.defer();
+	var _self = this;
+	Logger.log('info', 'Preparrng AgentController (teamId: ' + _self.teamId + ')');
 
-	this.context.game = this.game.getGameState();
-	this.context.me = this.game.teams[this.teamId].units;
 
-	try {
-		VM.runInContext("init()", this.context, {timeout: this.timeoutStart});
-	} catch (exception) {
-		console.dir(exception);
-		throw "El agente ha excedido el tiempo máximo de proceso";
-	}
+	AgentVersion.findOne({agent: this.id}).sort('-moment')
+		.exec(function (err, agentVersion) {
+			if (err || agentVersion === null) {
+				deferred.reject();
+				Logger.log('error', 'AgentVersion can\'t be retrieved from database', err);
+			}
 
-	return true;
+			_self.context.game = _self.game.getGameState();
+			_self.context.me = _.pick(_self.game.teams[_self.teamId], "id", "name", "color", "units");
+
+			try {
+				VM.runInContext(agentVersion.code, _self.context);
+				VM.runInContext("init()", _self.context, {timeout: _self.timeoutStart});
+				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') User code executed successfully in VM');
+				_self.prepared = true;
+				deferred.resolve();
+			} catch (error) {
+				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error runing user code in VM', error);
+				deferred.reject();
+			}
+		});
+
+	return deferred.promise;
 };
 
 /**

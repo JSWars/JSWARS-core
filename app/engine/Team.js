@@ -1,7 +1,7 @@
 "use strict";
-var Vector2D, Bullet, Unit, _, AgentController, Agent;
+var Q, Vector2D, Bullet, Unit, _, AgentController, Agent;
 
-
+Q = require("q");
 Vector2D = require("./vendor/Vector2D");
 Unit = require("./Unit");
 Bullet = require('./Bullet');
@@ -63,7 +63,9 @@ function Team(_id, _agentId, _game) {
 	 * Agente que controlará el equipo
 	 * @type {AgentController}
 	 */
-	this.agent = new AgentController(_agentId, this.game, this.id);
+	this.agent = {
+		id: _agentId
+	};
 
 
 	/**
@@ -92,7 +94,24 @@ function Team(_id, _agentId, _game) {
 
 	this.health = 0;
 
+	/**
+	 * Agent is prepared
+	 * @type {Boolean{
+	 */
+
+	this.prepared = false;
+
 }
+
+
+Team.prototype.prepare = function () {
+	//Convertimos el agente en un controlador
+	this.agent = new AgentController(this.agent.id, this.game, this.id);
+	//Esto no es cierto...
+	this.prepared = true;
+	//Devolvemos la promesa del agente tal cual
+	return this.agent.prepare();
+};
 
 
 Team.prototype.update = function () {

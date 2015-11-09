@@ -1,4 +1,4 @@
-var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleQueue;
+var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleQueue, Logger;
 
 Config = require('../config');
 _ = require("underscore");
@@ -12,6 +12,9 @@ Unit = require("./Unit");
 Map = require("../model/Map");
 Battle = require('../model/Battle');
 BattleFrame = require('../model/BattleFrame');
+
+
+Logger = require('../logger.js');
 
 Mongoose.connect(Config.db.url);
 Mongoose.connection.on('error', function (err) {
@@ -38,12 +41,13 @@ function runBattleQueueItem(battleQueueItem) {
 
 	Map.findOne({default: true}, function (err, map) {
 		if (err) {
-			console.log(err);
+			Logger.log('error', 'Can\'t find default map to run the battle', err);
 			return;
 		}
 		//Create teams
 
-		//Set map
+		Logger.log('debug', 'Creating a game instance');
+
 		newGame.setMap(map.data);
 		newBattle.map = map._id;
 		newBattle.chunkSize = 300;
@@ -51,19 +55,25 @@ function runBattleQueueItem(battleQueueItem) {
 		newBattle.agents = [];
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
-			var teamId = newGame.addTeam(battleQueueItem.agents[i]);
-			newGame.teams[teamId].addUnit(new Unit(newGame, newGame.teams[teamId], {
-				position: [2+i*8, 2] //Return a vector2d,
-			}));
-			newBattle.agents.push(newGame.teams[teamId].agent.id);
+			var team = newGame.addTeam(battleQueueItem.agents[i]);
+			for (var o = 0; o < battleQueueItem.units; o++) {
+				team.addUnit(new Unit(newGame, team, {
+					position: [2 + o * 8, 2] //Return a vector2d,
+				}));
+			}
 
+			newBattle.agents.push(team.agent.id);
 		}
 
 		newBattle.save(function (err) {
-			console.log(err);
+			if (err) {
+				Logger.log('error', 'New battle can\'t be saved');
+			}
+			Logger.log('info', 'Battle saved');
 		});
 
 		//Run Game
+		Logger.log('debug', 'Initializing game');
 		newGame.initialize()
 			.then(function initializeResolved() {
 
@@ -72,7 +82,6 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function tickCallback(i, frame) {
-
 					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
 						index: i,

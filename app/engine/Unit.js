@@ -206,10 +206,20 @@ Unit.prototype.hurt = function (_damage) {
  * Attack to position
  * @param {Angle} _attack
  */
-Unit.prototype.attackTo = function (_attack) {
+Unit.prototype.attackToHandler = function (_attack) {
 	Util.isInstance(_attack, Vector2D);
 	this.attackTo = _attack;
 };
+
+/**
+ * Elimina los destinos anteriores de la unidad y añade un único destino
+ * @param {Angle} _direction
+ */
+Unit.prototype.moveToHandler = function (_direction) {
+	Util.isInstance(_direction, Vector2D);
+	this.direction = _direction;
+};
+
 
 /**
  * Do an attack
@@ -222,16 +232,6 @@ Unit.prototype.attack = function () {
 		this.game.addBullet(b);
 		this.cooldown = this.fireRate;
 	}
-};
-
-
-/**
- * Elimina los destinos anteriores de la unidad y añade un único destino
- * @param {Angle} _direction
- */
-Unit.prototype.moveTo = function (_direction) {
-	Util.isInstance(_direction, Vector2D);
-	this.direction = _direction;
 };
 
 

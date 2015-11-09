@@ -11,6 +11,7 @@ BattleQueue = new Mongoose.Schema({
 	agents: [String],
 	status: {type: String, enum: ['PENDING', 'RUNNING', 'ENDED']},
 	requester: {type: Mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+	units: {type: Number, required: true, default: 5},
 	moment: {type: Date, required: true, default: new Date()}
 });
 
