@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger;
 
 Q = require('q');
 _ = require("underscore");
@@ -10,6 +10,8 @@ Team = require('./Team');
 Bullet = require('./Bullet');
 Util = require('./vendor/Util');
 AgentController = require("./controllers/AgentController");
+Logger = require('../logger.js');
+
 
 AgentGame = require("./controllers/interfaces/AgentGame");
 
@@ -224,7 +226,9 @@ Game.prototype.gameFinished = function () {
  * Gets the agents actions and apply in the game
  */
 Game.prototype.loadUnitActions = function () {
+	Logger.log('debug', 'Loading actions from agents execution');
 	_.each(this.teams, function (_team) {
+		Logger.log('debug', 'Loading actions for agent '+ _team.id);
 		var agentOutput = _team.agent.tick();
 		for (var unit in agentOutput.actions) {
 			for (var action in agentOutput.actions[unit]) {

@@ -77,7 +77,7 @@ AgentController.prototype.prepare = function () {
 				_self.prepared = true;
 				deferred.resolve();
 			} catch (error) {
-				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error runing user code in VM', error);
+				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error running user code in VM', error);
 				deferred.reject();
 			}
 		});
@@ -97,11 +97,11 @@ AgentController.prototype.tick = function () {
 
 	try {
 		this.context.output = new AgentOutput();
-		this.context.log = function (a) {
-			console.log(a)
-		};
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
-	} catch (exception) {
+		Logger.log('debug', 'User code executed successfully in VM');
+	} catch (error) {
+		Logger.log('debug', 'Error running user code in VM', error);
+
 		throw "El agente ha excedido el tiempo máximo de proceso";
 	}
 

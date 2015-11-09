@@ -121,7 +121,7 @@ postal.subscribe({
 		queueRunner.send({
 			name: "RUN",
 			data: model._id
-		})
+		});
 	}
 });
 

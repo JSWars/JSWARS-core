@@ -32,7 +32,7 @@ function Map(req, res) {
 				.select({data: 1})
 				.exec(function (err, frames) {
 					res.json(frames);
-				})
+				});
 
 		});
 }
