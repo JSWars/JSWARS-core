@@ -40,29 +40,29 @@ function AgentNewRoute(req, res) {
 
 
     //Create Agent object and push on it the AgentVersion
-    var newAgent = new Agent({
+    var agentEntity = new Agent({
         name: req.body.name,
         user: req.session.internalUser._id
     });
     //Create AgentVersion Object
 
     //Save new Agent
-    newAgent.save(function (err) {
+    agentEntity.save(function (err) {
         if (err) {
             res.status(500).json({error: 'AGENT_NOT_SAVED'}).end();
             return;
         }
-        var newAgentVersion = new AgentVersion({
+        var agentVersionEntity = new AgentVersion({
             code: code,
-            agent: newAgent._id
+            agent: agentEntity._id
         });
 
-        newAgentVersion.save(function (err) {
+        agentVersionEntity.save(function (err) {
             if (err) {
                 res.status(500).json({error: 'AGENT_VERSION_NOT_SAVED'}).end();
                 return;
             }
-            res.status(201).json(newAgent);
+            res.status(201).json(agentEntity);
         });
     });
 }

@@ -25,13 +25,13 @@ function QueueRequest(req, res) {
 		units = 5;
 	}
 
-	var newBattleQueue = new BattleQueue();
-	newBattleQueue.agents = agents;
-	newBattleQueue.status = "PENDING";
-	newBattleQueue.requester = user._id;
-	newBattleQueue.unis = units;
+	var battleQueueEntity = new BattleQueue();
+	battleQueueEntity.agents = agents;
+	battleQueueEntity.status = "PENDING";
+	battleQueueEntity.requester = user._id;
+	battleQueueEntity.unis = units;
 
-	newBattleQueue.save(function (err, response) {
+	battleQueueEntity.save(function (err, response) {
 		if (err) {
 			res.status(500).json(err).end();
 			return;

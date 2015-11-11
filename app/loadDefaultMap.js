@@ -34,12 +34,12 @@ Map.findOne({default: true}, function (err, map) {
 				return;
 			}
 			Logger.log('info', 'Default map file loaded');
-			var newMap = new Map();
-			newMap.name = "Default Map";
-			newMap.default = true;
-			newMap.data = JSON.parse(mapData);
+			var mapEntity = new Map();
+			mapEntity.name = "Default Map";
+			mapEntity.default = true;
+			mapEntity.data = JSON.parse(mapData);
 
-			newMap.save(function (err, response) {
+			mapEntity.save(function (err, response) {
 				if (err) {
 					Logger.log('error', 'Default map can\'t be saved on database', err);
 					return;

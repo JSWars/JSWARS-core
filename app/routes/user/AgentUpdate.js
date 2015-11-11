@@ -42,17 +42,17 @@ function AgentUpdateRoute(req, res) {
                 return;
             }
 
-			 var newAgentVersion = new AgentVersion({
+			 var agentVersionEntity = new AgentVersion({
 				 agent: agent._id,
 				 code: code
 			 });
 
-			 newAgentVersion.save(function (err) {
+			 agentVersionEntity.save(function (err) {
 				 if(err){
 					 res.status(500).json({error: 'ERROR_CREATING_VERSION'}).end();
 					 return;
 				 }
-				 res.status(201).json(newAgentVersion);
+				 res.status(201).json(agentVersionEntity);
 			 });
 
         });

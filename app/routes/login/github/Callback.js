@@ -18,13 +18,13 @@ function CallbackRoute(req, res) {
 			}
 			if (user === null) { //Create user
 
-				var newUser = new User();
-				newUser.name = githubData.name;
-				newUser.username = githubData.login;
-				newUser.github = githubData;
+				var userEntity = new User();
+				userEntity.name = githubData.name;
+				userEntity.username = githubData.login;
+				userEntity.github = githubData;
 
 				//User is not registered
-				newUser.save(function (err) {
+				userEntity.save(function (err) {
 					if (err) {
 						//Database failure
 						res.status(500).end();
@@ -33,8 +33,8 @@ function CallbackRoute(req, res) {
 
 					var ret = req.session.return;
 					delete req.session.return;
-					req.session.internalUser = newUser;
-					res.redirect(ret.replace(':username', newUser.username));
+					req.session.internalUser = userEntity;
+					res.redirect(ret.replace(':username', userEntity.username));
 				});
 			} else {
 				var ret = req.session.return;

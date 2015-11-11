@@ -34,7 +34,7 @@ var messageHandler = function (message) {
 function runBattleQueueItem(battleQueueItem) {
 
 	//Create battle
-	var newBattle = new Battle();
+	var battleEntity = new Battle();
 
 	// Create Game
 	var newGame = new Game();
@@ -49,25 +49,25 @@ function runBattleQueueItem(battleQueueItem) {
 		Logger.log('debug', 'Creating a game instance');
 
 		newGame.setMap(map.data);
-		newBattle.map = map._id;
-		newBattle.chunkSize = 300;
-		newBattle.fps = 60;
-		newBattle.agents = [];
+		battleEntity.map = map._id;
+		battleEntity.chunkSize = 300;
+		battleEntity.fps = 60;
+		battleEntity.agents = [];
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
 			var team = newGame.addTeam(battleQueueItem.agents[i]);
-			Logger.log('debug','Counting units for team ' + team.id);
+			Logger.log('debug', 'Counting units for team ' + team.id);
 			for (var o = 0; o < battleQueueItem.units; o++) {
-				Logger.log('debug','Creating unit '+o+ ' for team ' + team.id);
+				Logger.log('debug', 'Creating unit ' + o + ' for team ' + team.id);
 				team.addUnit(new Unit(newGame, team, {
 					position: [2 + o * 8, 2] //Return a vector2d,
 				}));
 			}
 
-			newBattle.agents.push(team.agent.id);
+			battleEntity.agents.push(team.agent.id);
 		}
 
-		newBattle.save(function (err) {
+		battleEntity.save(function (err) {
 			if (err) {
 				Logger.log('error', 'New battle can\'t be saved');
 			}
@@ -84,13 +84,13 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function tickCallback(i, frame) {
-					var newBattleFrame = new BattleFrame({
-						battle: newBattle._id,
+					var battleFrameEntity = new BattleFrame({
+						battle: battleEntity._id,
 						index: i,
 						data: frame
 					});
 
-					newBattleFrame.save(function (err, response) {
+					battleFrameEntity.save(function (err, response) {
 					});
 				}
 
