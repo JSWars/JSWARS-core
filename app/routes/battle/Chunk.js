@@ -1,11 +1,9 @@
-var FS, Battle, BattleFrame, Mongoose, Logger;
-FS = require('fs');
+var Battle, BattleFrame, Mongoose, Logger;
 
 Battle = require('../../model/Battle');
 BattleFrame = require('../../model/BattleFrame');
 Mongoose = require('mongoose');
 Logger = require('../../logger.js');
-
 
 function Chunk(req, res) {
 	var chunkId, battleId, chunkSize, chunkStartFrame, chunkEndFrame;
@@ -30,7 +28,7 @@ function Chunk(req, res) {
 		.select({data: 1})
 		.exec(function (err, frames) {
 			if (err) {
-				Logger.log('error', 'Battle with id' + battleId * ' not found')
+				Logger.log('error', 'Battle with id' + battleId * ' not found');
 				res.status(404).end();
 				return;
 			}
