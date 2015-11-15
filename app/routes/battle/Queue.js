@@ -47,6 +47,7 @@ function QueueRequest(req, res) {
 		battleQueueEntity.status = "PENDING";
 		battleQueueEntity.requester = user._id;
 		battleQueueEntity.unis = units;
+		battleQueueEntity.moment = new Date();
 
 		battleQueueEntity.save(function (err, response) {
 			if (err) {

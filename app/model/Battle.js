@@ -10,7 +10,7 @@ Battle = new Mongoose.Schema({
 	chunkSize: {type: Number, required: true},
 	fps: {type: Number, required: true},
 	agents: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}],
-	moment: {type: Date, required: true, default: new Date()},
+	moment: {type: Date, required: true},
 	duration: {type: Number, required: false}
 });
 

@@ -22,6 +22,7 @@ function CallbackRoute(req, res) {
 				userEntity.name = githubData.name;
 				userEntity.username = githubData.login;
 				userEntity.github = githubData;
+				userEntity.created = new Date();
 
 				//User is not registered
 				userEntity.save(function (err) {

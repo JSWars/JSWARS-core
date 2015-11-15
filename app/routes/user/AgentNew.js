@@ -42,6 +42,7 @@ function AgentNewRoute(req, res) {
 	//Create Agent object and push on it the AgentVersion
 	var agentEntity = new Agent({
 		name: req.body.name,
+		moment: new Date(),
 		user: req.session.internalUser._id
 	});
 	//Create AgentVersion Object

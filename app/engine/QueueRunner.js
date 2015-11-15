@@ -52,6 +52,7 @@ function runBattleQueueItem(battleQueueItem) {
 		battleEntity.chunkSize = 300;
 		battleEntity.fps = 60;
 		battleEntity.agents = battleQueueItem.agents;
+		battleEntity.moment = new Date();
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
 			var team = newGame.addTeam(battleEntity.agents[i].toString());
