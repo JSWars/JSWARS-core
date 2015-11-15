@@ -78,6 +78,7 @@ AgentController.prototype.prepare = function () {
 				deferred.resolve();
 			} catch (error) {
 				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error running user code in VM', error);
+				Logger.log('debug',error);
 				deferred.reject();
 			}
 		});
@@ -97,6 +98,7 @@ AgentController.prototype.tick = function () {
 
 	try {
 		this.context.output = new AgentOutput();
+		this.context.game = this.game.getGameState();
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
 		Logger.log('debug', 'User code executed successfully in VM');
 	} catch (error) {

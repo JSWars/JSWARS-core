@@ -1,11 +1,12 @@
 "use strict";
-var _, Vector2D, Angle, Bullet, Util;
+var _, Vector2D, Angle, Bullet, Util, Logger;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
 Angle = require("./vendor/Angle");
 Bullet = require("./Bullet");
 Util = require("./vendor/Util");
+Logger = require('../logger.js');
 
 var TYPE = {
 	RANGE: 0,
@@ -204,20 +205,23 @@ Unit.prototype.hurt = function (_damage) {
 
 /**
  * Attack to position
- * @param {Angle} _attack
+ * @param {Vector2D} _attackPosition
  */
-Unit.prototype.attackToHandler = function (_attack) {
-	Util.isInstance(_attack, Vector2D);
-	this.attackTo = _attack;
+Unit.prototype.attackToHandler = function (_attackPosition) {
+
+	Logger.log('debug','Unit attack to position',_attackPosition);
+	Util.isInstance(_attackPosition, Vector2D);
+	this.attackTo = _attackPosition.subtract(this.position).normalize();
 };
 
 /**
  * Elimina los destinos anteriores de la unidad y añade un único destino
- * @param {Angle} _direction
+ * @param {Vector2D} _position
  */
-Unit.prototype.moveToHandler = function (_direction) {
-	Util.isInstance(_direction, Vector2D);
-	this.direction = _direction;
+Unit.prototype.moveToHandler = function (_position) {
+	Util.isInstance(_position, Vector2D);
+	Logger.log('debug','Unit move to position',_position);
+	this.direction = _position.subtract(this.position).normalize();
 };
 
 

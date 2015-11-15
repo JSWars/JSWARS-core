@@ -19,6 +19,8 @@ function get_random_color() {
 	return color;
 }
 
+var COLORS= ["#FF0000","#004FFF"]
+
 
 /**
  * Representa un equipo
@@ -84,7 +86,7 @@ function Team(_id, _agentId, _game) {
 	 *
 	 * @type {string}
 	 */
-	this.color = get_random_color();
+	this.color = COLORS[_id];
 
 
 	/**

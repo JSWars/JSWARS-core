@@ -293,14 +293,16 @@ Game.prototype.checkUnitHit = function (_bullet) {
 	_.each(this.teams, function (_team) {
 		if (_team.id !== _bullet.teamId) {
 			_.each(_team.units, function (_unit) {
-				//Calculate the distance to the object
-				var vDist, minDist;
-				vDist = _unit.position.subtract(_bullet.position);
-				minDist = _bullet.radius + _unit.radius;
-				//If the object is closest than the two radius return collision
-				if (vDist.mag() <= minDist) {
-					_unit.hurt(_bullet.damage);
-					hit = true;
+				if(_unit.isAlive()){
+					//Calculate the distance to the object
+					var vDist, minDist;
+					vDist = _unit.position.subtract(_bullet.position);
+					minDist = _bullet.radius + _unit.radius;
+					//If the object is closest than the two radius return collision
+					if (vDist.mag() <= minDist) {
+						_unit.hurt(_bullet.damage);
+						hit = true;
+					}
 				}
 			});
 		}
