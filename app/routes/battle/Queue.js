@@ -1,7 +1,10 @@
-var _, BattleQueue;
+var _, BattleQueue, Agent, Logger;
 
 _ = require('underscore');
 BattleQueue = require('../../model/BattleQueue');
+Agent = require('../../model/Agent');
+Logger = require('../../logger.js');
+
 
 function QueueRequest(req, res) {
 
@@ -25,19 +28,36 @@ function QueueRequest(req, res) {
 		units = 5;
 	}
 
-	var battleQueueEntity = new BattleQueue();
-	battleQueueEntity.agents = agents;
-	battleQueueEntity.status = "PENDING";
-	battleQueueEntity.requester = user._id;
-	battleQueueEntity.unis = units;
 
-	battleQueueEntity.save(function (err, response) {
-		if (err) {
-			res.status(500).json(err).end();
+	Logger.log('debug', 'Searching agents to ensure that battle requuest is correct', agents);
+	Agent.find({
+		'_id': {
+			$in: agents
+		}
+	}, function (err, foundAgents) {
+		if (err || foundAgents.length < agents.length) {
+			Logger.log('error', 'Agents not found');
+			res.status(500);
 			return;
 		}
-		res.status(201).end();
-	})
+
+		Logger.log('debug', 'Agents found. Creating a battle.');
+		var battleQueueEntity = new BattleQueue();
+		battleQueueEntity.agents = foundAgents;
+		battleQueueEntity.status = "PENDING";
+		battleQueueEntity.requester = user._id;
+		battleQueueEntity.unis = units;
+
+		battleQueueEntity.save(function (err, response) {
+			if (err) {
+				Logger.log('error', 'Battle can\'t be created', err);
+				res.status(500).json(err).end();
+				return;
+			}
+			Logger.log('info', 'Battle created successfully', battleQueueEntity.agents);
+			res.status(201).end();
+		})
+	});
 
 
 }

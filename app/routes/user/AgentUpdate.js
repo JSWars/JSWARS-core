@@ -44,6 +44,7 @@ function AgentUpdateRoute(req, res) {
 
 			 var agentVersionEntity = new AgentVersion({
 				 agent: agent._id,
+				 moment: new Date(),
 				 code: code
 			 });
 

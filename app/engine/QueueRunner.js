@@ -13,7 +13,6 @@ Map = require("../model/Map");
 Battle = require('../model/Battle');
 BattleFrame = require('../model/BattleFrame');
 
-
 Logger = require('../logger.js');
 
 Mongoose.connect(Config.db.url);
@@ -52,10 +51,10 @@ function runBattleQueueItem(battleQueueItem) {
 		battleEntity.map = map._id;
 		battleEntity.chunkSize = 300;
 		battleEntity.fps = 60;
-		battleEntity.agents = [];
+		battleEntity.agents = battleQueueItem.agents;
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
-			var team = newGame.addTeam(battleQueueItem.agents[i]);
+			var team = newGame.addTeam(battleEntity.agents[i].toString());
 			Logger.log('debug', 'Counting units for team ' + team.id);
 			for (var o = 0; o < battleQueueItem.units; o++) {
 				Logger.log('debug', 'Creating unit ' + o + ' for team ' + team.id);
@@ -64,7 +63,6 @@ function runBattleQueueItem(battleQueueItem) {
 				}));
 			}
 
-			battleEntity.agents.push(team.agent.id);
 		}
 
 		battleEntity.save(function (err) {

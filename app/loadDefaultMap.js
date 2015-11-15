@@ -1,7 +1,5 @@
 var GridMap, Game, Team, Unit, FS, Path, Vector2D, Angle, Agent, Map, Battle, BattleFrame, Config, Mongoose, Logger;
 
-
-//
 ////MODEL
 Map = require("./model/Map");
 Config = require('./config.js');
@@ -42,16 +40,13 @@ Map.findOne({default: true}, function (err, map) {
 			mapEntity.save(function (err, response) {
 				if (err) {
 					Logger.log('error', 'Default map can\'t be saved on database', err);
-					return;
 				} else {
 					Logger.log('info', 'Default map loaded');
-
 				}
 			})
 		})
 	} else {
 		Logger.log('warn', 'Default map already in database');
-
 	}
 });
 

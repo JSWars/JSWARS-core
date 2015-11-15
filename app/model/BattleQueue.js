@@ -8,7 +8,7 @@ Mongoose = require('mongoose');
 
 BattleQueue = new Mongoose.Schema({
 	id: {type: Number, index: true},
-	agents: [String],
+	agents: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}],
 	status: {type: String, enum: ['PENDING', 'RUNNING', 'ENDED']},
 	requester: {type: Mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
 	units: {type: Number, required: true, default: 5},
