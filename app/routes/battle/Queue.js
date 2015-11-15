@@ -37,7 +37,7 @@ function QueueRequest(req, res) {
 	}, function (err, foundAgents) {
 		if (err || foundAgents.length < agents.length) {
 			Logger.log('error', 'Agents not found');
-			res.status(500);
+			res.status(500).end();
 			return;
 		}
 

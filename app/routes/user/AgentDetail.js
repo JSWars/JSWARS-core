@@ -25,7 +25,6 @@ function AgentDetailRoute(req, res) {
 
     var agentId = req.params.id;
 
-
     if (agentId === undefined || agentId.trim().length === 0) {
         //Todo: Check valid code!
         res.status(400).json({error: 'ID_REQUIRED'}).end();

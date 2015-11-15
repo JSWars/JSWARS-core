@@ -26,7 +26,8 @@ function AgentVersionListRoute(req, res) {
 		agent: agentId
 	})
 		.sort('-moment')
-		.lean()
+		.lean(true)
+		.limit(10)
 		.exec(function (err, versions) {
 			if (err || versions.length === 0) {
 				res.status(500).json({error: 'ERROR_RECOVERING_AGENT_VERSIONS'}).end();
