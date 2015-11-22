@@ -199,7 +199,7 @@ Game.prototype.tick = function () {
 	Logger.log('debug','Units attacking');
 	this.unitAttack();
 	//Update al teams
-	Logger.log('debug','Update team healts');
+	Logger.log('debug','Update team health');
 	this.updateHealth();
 	Logger.log('debug','Checking if game has finished');
 	this.checkGameFinished();
