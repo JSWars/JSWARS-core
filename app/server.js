@@ -121,7 +121,7 @@ postal.subscribe({
 		Logger.log('info', "New battle detected. Sending a message to QueueRunner");
 		queueRunner.send({
 			name: "RUN",
-			data: model._id
+			data: model._id.toString()
 		});
 	}
 });
