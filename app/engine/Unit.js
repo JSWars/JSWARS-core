@@ -1,5 +1,5 @@
 "use strict";
-var _, Vector2D, Angle, Bullet, Util, Logger;
+var _, Vector2D, Angle, Bullet, Util, Logger,EasyStar;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
@@ -7,6 +7,8 @@ Angle = require("./vendor/Angle");
 Bullet = require("./Bullet");
 Util = require("./vendor/Util");
 Logger = require('../logger.js');
+
+EasyStar = require('easystarjs');
 
 var TYPE = {
 	RANGE: 0,
@@ -220,6 +222,8 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
 	}
 
 
+
+
 };
 
 /**
@@ -249,6 +253,20 @@ Unit.prototype.moveToHandler = function (_position) {
 	//});
     //
 	//this.game.map.easystar.calculate();
+
+
+	var _self=this;
+	this.game.map.easystar.findPath(_self.position.x.floor(),_self.position.y.floor(),2,2,function(){
+		if (path === null) {
+			Logger.log('debug',"Path was not found.");
+		} else {
+			Logger.log('debug',"Path was found. The first Point is " + path[0].x + " " + path[0].y);
+			var dest=new Vector2D(path[0].x+0.5,path[0].y+0.5);
+			_self.direction = dest.subtract(_self.position).normalize();
+		}
+	});
+
+	this.game.map.easystar.calculate();
 };
 
 
@@ -282,6 +300,7 @@ Unit.prototype.move = function () {
 		//if the next position is free, update the unit's position
 		this.position = this.position.add(dir.multiply(this.speed));
 	}
+
 
 };
 
