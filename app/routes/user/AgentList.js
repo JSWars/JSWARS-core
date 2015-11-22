@@ -17,6 +17,16 @@ function AgentListRoute(req, res) {
 	};
 	User.findOne(query)
 		.exec(function (err, user) {
+			if (err) {
+				res.status(500).end();
+				return;
+			}
+
+			if (user == null) {
+				res.status(404).end();
+				return;
+			}
+
 			Agent.find({user: user._id})
 				.sort('-moment')
 				//.populate('versions')

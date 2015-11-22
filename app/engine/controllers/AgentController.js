@@ -102,9 +102,8 @@ AgentController.prototype.tick = function () {
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
 		Logger.log('debug', 'User code executed successfully in VM');
 	} catch (error) {
-		Logger.log('debug', 'Error running user code in VM', error);
-
-		throw "El agente ha excedido el tiempo máximo de proceso";
+		Logger.log('debug', 'Error running user code in VM');
+		Logger.log('debug', error);
 	}
 
 	return this.context.output;
