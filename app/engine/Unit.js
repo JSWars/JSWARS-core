@@ -211,7 +211,13 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
 
 	Logger.log('debug', 'Unit attack to position', _attackPosition);
 	Util.isInstance(_attackPosition, Vector2D);
-	this.attackTo = _attackPosition.subtract(this.position).normalize();
+
+	if(_attackPosition.subtract(this.position).mag()==0){
+		this.attackTo = undefined;
+	}else{
+
+		this.attackTo = _attackPosition.subtract(this.position).normalize();
+	}
 };
 
 /**
@@ -220,12 +226,13 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
  */
 Unit.prototype.moveToHandler = function (_position) {
 	Util.isInstance(_position, Vector2D);
-	Logger.log('debug', 'Unit move to position', _position);
-	var substracted = _position.subtract(this.position);
-	if (substracted.mag() != 0) {
-		this.direction = substracted.normalize()
-	} else {
-		this.direction = substracted;
+	Logger.log('debug','Unit move to position',_position);
+
+	if(_position.subtract(this.position).mag()==0){
+		this.direction=undefined;
+	}else{
+
+		this.direction = _position.subtract(this.position).normalize();
 	}
 };
 
@@ -255,7 +262,6 @@ Unit.prototype.move = function () {
 	}
 
 	var dir = this.direction;
-
 
 	if (!this.checkCollide(this.position.add(dir.multiply(this.speed)))) {
 		//if the next position is free, update the unit's position

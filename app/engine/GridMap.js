@@ -299,7 +299,7 @@ GridMap.prototype.isOnCollision=function(_point){
  */
 GridMap.prototype.isOutsideBounds=function(_point){
     var point=this.getMapCell(_point);
-    return (point.x < 0 || point.x >= this.colMap.length || point.y < 0 || point.y >= this.colMap[point.x].length);
+    return (point.x < 0 || point.x >= this.colMap.length || point.y < 0 || point.y >= this.colMap[0].length);
 };
 
 
@@ -314,7 +314,7 @@ GridMap.prototype.isOutsideBounds=function(_point){
  */
 GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius){
 
-    //TODO FUNCTION UNTESTED AND UNUSUED, FUTURE IMPLEMENTATION
+    //TODO FUNCTION UNTESTED AND FUTURE IMPLEMENTATION
     var increment=_radius;
     /**
      * {Vector2D}
@@ -338,6 +338,7 @@ GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius)
         if(_object.checkCollisionInPosition(posIni)){
             return acum;
         }
+
         acum+=increment;
 
     }

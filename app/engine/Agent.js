@@ -1,5 +1,5 @@
 "use strict";
-var Unit,Action,Angle, _,Vector2D,Bullet,Util;
+var Unit,Action,Angle, _,Vector2D,Bullet,Util, Logger;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
@@ -7,6 +7,7 @@ Angle = require("./vendor/Angle");
 Bullet = require("./Bullet");
 Util=require("./vendor/Util");
 Action=require("./Action");
+Logger = require('../../logger.js');
 
 function Agent(_game,_teamId){
 	this.game=_game;
@@ -55,7 +56,7 @@ Agent.prototype.move = function(){
             this.path=this.game.map.getPath(this.position.clone().floor(),this.moveTo[0].clone());
 
             if(this.path.length===0){
-                console.log("ERROR DE LA MUERTEEEEE");
+					Logger.log();
             }
         }
 
