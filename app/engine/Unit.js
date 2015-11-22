@@ -209,7 +209,7 @@ Unit.prototype.hurt = function (_damage) {
  */
 Unit.prototype.attackToHandler = function (_attackPosition) {
 
-	Logger.log('debug','Unit attack to position',_attackPosition);
+	Logger.log('debug', 'Unit attack to position', _attackPosition);
 	Util.isInstance(_attackPosition, Vector2D);
 
 	if(_attackPosition.subtract(this.position).mag()==0){
