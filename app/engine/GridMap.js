@@ -145,16 +145,8 @@ GridMap.prototype.initializePathfinding = function () {
 	var grid = this.colMap;
 	this.easystar.setGrid(grid);
 	this.easystar.setAcceptableTiles([0]);
+	this.easystar.disableSync();
 
-	this.easystar.findPath(2, 2, 4, 2, function (path) {
-		if (path === null) {
-			Logger.log('debug', "Path was not found.");
-		} else {
-			Logger.log('debug', "Path was found. The first Point is " + path[0].x + " " + path[0].y);
-		}
-	});
-
-	this.easystar.calculate();
 
 };
 

@@ -218,6 +218,8 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
 
 		this.attackTo = _attackPosition.subtract(this.position).normalize();
 	}
+
+
 };
 
 /**
@@ -234,6 +236,19 @@ Unit.prototype.moveToHandler = function (_position) {
 
 		this.direction = _position.subtract(this.position).normalize();
 	}
+
+	//var _self=this;
+	//this.game.map.easystar.findPath(2, 2, 4, 2, function (path) {
+	//	if (path === null) {
+	//		Logger.log('debug', "Path was not found.");
+	//	} else {
+	//		Logger.log('debug', "Path was found. The first Point is " + path[0].x + " " + path[0].y);
+	//		var dest=new Vector2D(path[0].x,path[0].y);
+	//		_self.direction = dest.subtract(_self.position).normalize();
+	//	}
+	//});
+    //
+	//this.game.map.easystar.calculate();
 };
 
 
