@@ -18,15 +18,17 @@
 	function tick() {
 
 	var position= new Utils.Vector2D(0,0);
-	for(var i=0;i<4;i++){
-		if(game.teams[0].units[i].alive==true){
-			position=game.teams[0].units[i].position;
-			break;
+	for(var i=0;i<me.units.length;i++){
+		if(me.units[i].alive==true){
+			position=enemy.units[i].position;
+				output.unit(i).addAction("moveTo", enemy.units[i].position);
+				output.unit(i).addAction("attackTo", enemy.units[i].position);
 		}
 
 	}
-	output.unit(0).addAction("moveTo", position);
-	output.unit(0).addAction("attackTo", position);
+
+
+
 
 
 

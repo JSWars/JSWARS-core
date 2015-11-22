@@ -53,7 +53,7 @@ Agent.prototype.move = function(){
         if(this.path.length===0)
         {
             //Obtenemos destino y calculamos path
-            this.path=this.game.map.getPath(this.position.clone().floor(),this.moveTo[0].clone());
+
 
             if(this.path.length===0){
 					Logger.log();

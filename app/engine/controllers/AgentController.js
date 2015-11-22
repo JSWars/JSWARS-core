@@ -69,6 +69,7 @@ AgentController.prototype.prepare = function () {
 
 			_self.context.game = _self.game.getGameState();
 			_self.context.me = _.pick(_self.game.teams[_self.teamId], "id", "name", "color", "units");
+			_self.context.enemy = _.pick(_self.game.teams[(_self.teamId+1)%2], "id", "name", "color", "units");
 
 			try {
 				VM.runInContext(agentVersion.code, _self.context);
@@ -99,6 +100,8 @@ AgentController.prototype.tick = function () {
 	try {
 		this.context.output = new AgentOutput();
 		this.context.game = this.game.getGameState();
+		this.context.me = _.pick(this.game.teams[this.teamId], "id", "name", "color", "units");
+		this.context.enemy = _.pick(this.game.teams[(this.teamId+1)%2], "id", "name", "color", "units");
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
 		Logger.log('debug', 'User code executed successfully in VM');
 	} catch (error) {

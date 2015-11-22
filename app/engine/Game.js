@@ -194,7 +194,6 @@ Game.prototype.tick = function () {
 
 	this.gameFinished();
 
-	Logger.log('debug','IS VISIBLE'+this.map.checkObsFreeDistance(this.teams[0].units[0].position,this.teams[1].units[4].position,this.teams[0].units[0],this.teams[0].units[0].radius))
 
 };
 
