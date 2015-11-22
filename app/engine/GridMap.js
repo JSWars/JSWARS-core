@@ -141,6 +141,7 @@ function GridMap(_name, _game) {
  */
 GridMap.prototype.initializePathfinding = function () {
 	this.easystar = new EasyStar.js();
+	this.easystar.enableSync(false);
 	var grid = this.colMap;
 	this.easystar.setGrid(grid);
 	this.easystar.setAcceptableTiles([0]);
