@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger,EasyStar;
 
 Q = require('q');
 _ = require("underscore");
@@ -12,6 +12,7 @@ Util = require('./vendor/Util');
 AgentController = require("./controllers/AgentController");
 Logger = require('../logger.js');
 
+EasyStar= require('easystarjs');
 
 AgentGame = require("./controllers/interfaces/AgentGame");
 
@@ -130,8 +131,11 @@ Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
  * @param _map
  */
 Game.prototype.setMap = function (_map) {
+	Logger.log('debug','New gridmap');
 	this.map = new GridMap("MapTest", this);
+	Logger.log('debug','Loading colmap');
 	this.map.loadColMap(_map);
+	Logger.log('debug','Initializing pathfinding');
 	this.map.initializePathfinding();
 };
 
@@ -200,6 +204,8 @@ Game.prototype.tick = function () {
 	Logger.log('debug','Checking if game has finished');
 	this.checkGameFinished();
 	Logger.log('debug','Tick clicle ended');
+
+
 };
 
 /**
