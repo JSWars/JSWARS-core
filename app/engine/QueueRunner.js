@@ -112,8 +112,8 @@ function runBattleQueueItem(battleQueueItem) {
 
 				newGame.run(beginCallback, tickCallback, endCallback);
 
-			}, function initializeRejected() {
-
+			}, function initializeRejected(e) {
+				Logger.log('error','Unknown error during game initializing');
 			});
 
 	});

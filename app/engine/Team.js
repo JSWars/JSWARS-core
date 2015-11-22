@@ -116,7 +116,7 @@ Team.prototype.prepare = function () {
 };
 
 
-Team.prototype.update = function () {
+Team.prototype.updateHealth = function () {
 	var totalHealth = 0;
 	var maxHealth = 0;
 

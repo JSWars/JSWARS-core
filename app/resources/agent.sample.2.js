@@ -6,8 +6,6 @@
 function init() {
 
 
-
-
 }
 
 /**
@@ -17,17 +15,16 @@ function init() {
  */
 function tick() {
 
-	var position= new Utils.Vector2D(0,0);
-	for(var i=0;i<4;i++){
-		if(game.teams[0].units[i].alive==true){
-			position=game.teams[0].units[i].position;
+	var position = new Utils.Vector2D(0, 0);
+	for (var i = 0; i < 4; i++) {
+		if (game.teams[0].units[i].alive == true) {
+			position = game.teams[0].units[i].position;
 			break;
 		}
 
 	}
 	output.unit(0).addAction("moveTo", position);
 	output.unit(0).addAction("attackTo", position);
-
 
 
 }
