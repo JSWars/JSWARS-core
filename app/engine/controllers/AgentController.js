@@ -22,6 +22,7 @@ var AgentVersion = require('../../model/AgentVersion');
  * @constructor
  */
 function AgentController(_id, _game, _teamId) {
+	var _self = this;
 
 	this.id = _id;
 	this.teamId = _teamId;
@@ -30,6 +31,8 @@ function AgentController(_id, _game, _teamId) {
 	this.timeoutStart = 2000;
 	this.agent = undefined;
 	this.prepared = false;
+	this.agentVersionId = undefined;
+	this.logString = "";
 
 	var _contextObject = {};
 
@@ -37,7 +40,10 @@ function AgentController(_id, _game, _teamId) {
 	Object.defineProperty(_contextObject, 'Utils', {
 		writable: false,
 		value: {
-			Vector2D: Vector2D
+			Vector2D: Vector2D,
+			log: function (log) {
+				_self.logFromVm(log, 'info');
+			}
 		}
 	});
 
@@ -49,6 +55,14 @@ AgentController.prototype.isPrepared = function () {
 	return this.prepared;
 };
 
+AgentController.prototype.logFromVm = function (log, level) {
+	level = level || 'info';
+	Logger.log(level, 'Team: ' + this.teamId + ' | Agent controller log:');
+	Logger.log(level, '---------------------');
+	Logger.log(level, log);
+	Logger.log(level, '---------------------');
+	this.logString += '\r\n' + log;
+};
 
 /**
  * Tiempo de inicialización del agente, se deja un tiempo concreto de cómputo para que puedan
@@ -57,7 +71,7 @@ AgentController.prototype.isPrepared = function () {
 AgentController.prototype.prepare = function () {
 	var deferred = Q.defer();
 	var _self = this;
-	Logger.log('info', 'Preparrng AgentController (teamId: ' + _self.teamId + ')');
+	Logger.log('info', 'Preparing AgentController (teamId: ' + _self.teamId + ')');
 
 
 	AgentVersion.findOne({agent: this.id}).sort('-moment')
@@ -67,18 +81,21 @@ AgentController.prototype.prepare = function () {
 				Logger.log('error', 'AgentVersion can\'t be retrieved from database', err);
 			}
 
+			_self.agentVersionId = agentVersion._id;
+
 			_self.context.game = _self.game.getGameState();
 			_self.context.me = _.pick(_self.game.teams[_self.teamId], "id", "name", "color", "units");
 
 			try {
 				VM.runInContext(agentVersion.code, _self.context);
 				VM.runInContext("init()", _self.context, {timeout: _self.timeoutStart});
-				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') User code executed successfully in VM');
+				Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [init] executed successfully in VM');
 				_self.prepared = true;
 				deferred.resolve();
 			} catch (error) {
-				Logger.log('debug', '(AgentVersion: ' + agentVersion._id + ') Error running user code in VM', error);
-				Logger.log('debug',error);
+				_self.log(error.stack);
+				Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [init] failed to execute VM');
+				_self.logFromVm(error.stack,'error');
 				deferred.reject();
 			}
 		});
@@ -91,6 +108,7 @@ AgentController.prototype.prepare = function () {
  * @returns {*}
  */
 AgentController.prototype.tick = function () {
+	var _self = this;
 
 	if (!this.isPrepared()) {
 		throw "The controller isn't prepared";
@@ -100,10 +118,10 @@ AgentController.prototype.tick = function () {
 		this.context.output = new AgentOutput();
 		this.context.game = this.game.getGameState();
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
-		Logger.log('debug', 'User code executed successfully in VM');
+		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] executed successfully in VM');
 	} catch (error) {
-		Logger.log('debug', 'Error running user code in VM');
-		Logger.log('debug', error);
+		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] failed to execute VM');
+		_self.logFromVm(error.stack,'error');
 	}
 
 	return this.context.output;

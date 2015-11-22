@@ -14,17 +14,13 @@ function init() {
  * You can register actions in any point of the method
  */
 function tick() {
+	var enemy = game.teams[((me.id == 0) ? 1 : 0)];
 
-	var position = new Utils.Vector2D(0, 0);
-	for (var i = 0; i < 4; i++) {
-		if (game.teams[0].units[i].alive == true) {
-			position = game.teams[0].units[i].position;
-			break;
-		}
+	for (var i = 0; i < me.units; i++) {
+		var position = enemy.units[i].position;
 
+		output.unit(i).addAction("moveTo", position);
+		output.unit(i).addAction("attackTo", position);
 	}
-	output.unit(0).addAction("moveTo", position);
-	output.unit(0).addAction("attackTo", position);
-
-
+	console.log()
 }

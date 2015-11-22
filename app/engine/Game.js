@@ -29,12 +29,6 @@ function Game() {
 	this.map = null;
 
 	/**
-	 * Chunk
-	 */
-	this.chunk = [];
-
-
-	/**
 	 * Equipos
 	 * Teams
 	 * @type {Team{}}
@@ -58,11 +52,6 @@ function Game() {
 	 */
 	this.totalTeams = 0;
 
-	/**
-	 * Total units
-	 * @type {number}
-	 */
-	this.totalUnits = 0;
 
 	/**
 	 * Total units
@@ -70,26 +59,13 @@ function Game() {
 	 */
 	this.totalBullets = 0;
 
-
 	/**
 	 *
 	 * @type {number}
 	 */
 	this.totalTicks = 0;
 
-	/**
-	 *
-	 * @type {number}
-	 */
-	this.totalAgents = 0;
-
-
-	//todo Next implementations...
-	this.gameObjects = [];
-
 	this.timeLeft = 2000;
-
-
 }
 
 Game.prototype.initialize = function () {
@@ -179,27 +155,27 @@ Game.prototype.tick = function () {
 
 	this.totalTicks += 1;
 
-	Logger.log('debug','Starting tick cicle');
+	Logger.log('debug', 'Starting tick cicle');
 
 	//Apply inputs
 	//Update positions
 	//Checks collisions
 
 	//Get registered actions from agents
-	Logger.log('debug','Loading unit actions');
+	Logger.log('debug', 'Loading unit actions');
 	this.loadUnitActions();
 	//Unit moves
-	Logger.log('debug','Units moving');
+	Logger.log('debug', 'Units moving');
 	this.unitsMove();
 	//Unit attacks
-	Logger.log('debug','Units attacking');
+	Logger.log('debug', 'Units attacking');
 	this.unitAttack();
 	//Update al teams
-	Logger.log('debug','Update team healts');
-	this.updateHealth();
-	Logger.log('debug','Checking if game has finished');
+	Logger.log('debug', 'Update team healts');
+	this.updateHealths();
+	Logger.log('debug', 'Checking if game has finished');
 	this.checkGameFinished();
-	Logger.log('debug','Tick clicle ended');
+	Logger.log('debug', 'Tick clicle ended');
 };
 
 /**
@@ -250,20 +226,17 @@ Game.prototype.loadUnitActions = function () {
  * Update all the players creatures positions
  */
 Game.prototype.unitsMove = function () {
-	try{
-		Logger.log('debug','Iterating over teams to executed unit moves');
-	_.each(this.teams, function (_team) {
-		Logger.log('debug','Iteration. Team: '+ _team.id);
-		_.each(_team.units, function (_unit) {
-			Logger.log('debug','Iteration. Unit: '+ _unit.id);
-			//Actualizar posición de las unidades que están vivas
-			if (_unit.alive) {
-				_unit.update();
-			}
+	try {
+		_.each(this.teams, function (_team) {
+			_.each(_team.units, function (_unit) {
+				//Actualizar posición de las unidades que están vivas
+				if (_unit.alive) {
+					_unit.update();
+				}
+			}, this);
 		}, this);
-	}, this);
-	}catch(e){
-		Logger.log('error',e);
+	} catch (e) {
+		Logger.log('error', e);
 		console.log(e)
 	}
 };
