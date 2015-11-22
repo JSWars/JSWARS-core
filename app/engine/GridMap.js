@@ -314,7 +314,7 @@ GridMap.prototype.isOutsideBounds=function(_point){
  */
 GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius){
 
-    //TODO FUNCTION UNTESTED AND UNUSUED, FUTURE IMPLEMENTATION
+    //TODO FUNCTION UNTESTED AND FUTURE IMPLEMENTATION
     var increment=_radius;
     /**
      * {Vector2D}
@@ -338,6 +338,7 @@ GridMap.prototype.checkObsFreeDistance=function(_posIni,_posFin,_object,_radius)
         if(_object.checkCollisionInPosition(posIni)){
             return acum;
         }
+		 
         acum+=increment;
 
     }
