@@ -71,6 +71,15 @@ function runBattleQueueItem(battleQueueItem) {
 				Logger.log('error', 'New battle can\'t be saved');
 			}
 			Logger.log('info', 'Battle saved');
+			battleQueueItem.battle = battleEntity;
+			battleQueueItem.save(function (err) {
+				if(err){
+					Logger.log('error', 'Battle not referenced in queue item');
+					return;
+				}
+				Logger.log('info', 'Battle referenced in queue item');
+			});
+
 		});
 
 		//Run Game
@@ -79,7 +88,9 @@ function runBattleQueueItem(battleQueueItem) {
 			.then(function initializeResolved() {
 
 				function beginCallback() {
-					console.log("Start battle run");
+					battleQueueItem.status = 'RUNNING';
+					battleQueueItem.save();
+					Logger.log('debug', 'Battle run started');
 				}
 
 				function tickCallback(i, frame) {
@@ -94,7 +105,9 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function endCallback() {
-					console.log("End battle run");
+					battleQueueItem.status = 'ENDED';
+					battleQueueItem.save();
+					Logger.log('debug', 'Battle run ended');
 				}
 
 				newGame.run(beginCallback, tickCallback, endCallback);

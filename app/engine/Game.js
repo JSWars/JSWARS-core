@@ -228,7 +228,7 @@ Game.prototype.gameFinished = function () {
 Game.prototype.loadUnitActions = function () {
 	Logger.log('debug', 'Loading actions from agents execution');
 	_.each(this.teams, function (_team) {
-		Logger.log('debug', 'Loading actions for agent '+ _team.id);
+		Logger.log('debug', 'Loading actions for agent ' + _team.id);
 		var agentOutput = _team.agent.tick();
 		for (var unit in agentOutput.actions) {
 			for (var action in agentOutput.actions[unit]) {
@@ -244,6 +244,7 @@ Game.prototype.loadUnitActions = function () {
  * Update all the players creatures positions
  */
 Game.prototype.unitsMove = function () {
+	try{
 	_.each(this.teams, function (_team) {
 		_.each(_team.units, function (_unit) {
 			//Actualizar posición de las unidades que están vivas
@@ -252,6 +253,9 @@ Game.prototype.unitsMove = function () {
 			}
 		}, this);
 	}, this);
+	}catch(e){
+		console.log(e)
+	}
 };
 
 /**
@@ -287,13 +291,11 @@ Game.prototype.checkPosition = function (_position) {
  * @returns {boolean}
  */
 Game.prototype.checkUnitHit = function (_bullet) {
-
-
 	var hit = false;
 	_.each(this.teams, function (_team) {
 		if (_team.id !== _bullet.teamId) {
 			_.each(_team.units, function (_unit) {
-				if(_unit.isAlive()){
+				if (_unit.isAlive()) {
 					//Calculate the distance to the object
 					var vDist, minDist;
 					vDist = _unit.position.subtract(_bullet.position);
@@ -306,7 +308,6 @@ Game.prototype.checkUnitHit = function (_bullet) {
 				}
 			});
 		}
-
 	});
 	return hit;
 };
