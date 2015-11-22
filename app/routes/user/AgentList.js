@@ -8,9 +8,9 @@ function AgentListRoute(req, res) {
 
 	var username = req.params.username;
 
-	if (username === undefined || username.trim().length === 0) {
-		res.status(400).end();
-	}
+	//if (username === undefined || username.trim().length === 0) {
+	//	res.status(400).end();
+	//}
 
 	var query = {
 		'username': req.params.username

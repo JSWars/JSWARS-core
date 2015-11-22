@@ -94,6 +94,8 @@ server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', Ensu
 server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 
+server.get(Config.path + '/battle/queue/:id/', EnsureAuthentication, require('./routes/battle/QueueGet'));
+
 //Battle
 server.post(Config.path + '/battle/', EnsureAuthentication, require('./routes/battle/Queue'));
 server.get(Config.path + '/battle/', require('./routes/battle/List'));

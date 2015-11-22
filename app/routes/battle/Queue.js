@@ -56,8 +56,9 @@ function QueueRequest(req, res) {
 				return;
 			}
 			Logger.log('info', 'Battle created successfully', battleQueueEntity.agents);
-			res.status(201).end();
-		})
+
+			res.status(201).json(battleQueueEntity).end();
+		});
 	});
 
 

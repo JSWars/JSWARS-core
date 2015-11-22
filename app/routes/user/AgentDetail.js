@@ -4,13 +4,6 @@ ObjectId = require('mongoose').Types.ObjectId;
 Agent = require('../../model/Agent');
 AgentVersion = require('../../model/AgentVersion');
 
-//fs.writeFile("/tmp/test", "Hey there!", function(err) {
-//    if(err) {
-//        console.log(err);
-//    } else {
-//        console.log("The file was saved!");
-//    }
-//});
 
 
 function AgentDetailRoute(req, res) {
@@ -18,10 +11,10 @@ function AgentDetailRoute(req, res) {
     //Check user is logged
     var user = req.session.internalUser;
 
-    if (user.username !== req.params.username) {
-        res.status(400).end();
-        return;
-    }
+    //if (user.username !== req.params.username) {
+    //    res.status(400).end();
+    //    return;
+    //}
 
     var agentId = req.params.id;
 
