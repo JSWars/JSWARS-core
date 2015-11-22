@@ -97,7 +97,7 @@ server.post(Config.path + '/users/:username/agents', EnsureAuthentication, requi
 //Battle
 server.post(Config.path + '/battle/', EnsureAuthentication, require('./routes/battle/Queue'));
 server.get(Config.path + '/battle/', require('./routes/battle/List'));
-server.get(Config.path + '/battle/last/', require('./routes/battle/last'));
+//server.get(Config.path + '/battle/last/', require('./routes/battle/last'));
 server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
 server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
 
