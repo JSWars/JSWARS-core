@@ -211,7 +211,13 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
 
 	Logger.log('debug','Unit attack to position',_attackPosition);
 	Util.isInstance(_attackPosition, Vector2D);
-	this.attackTo = _attackPosition.subtract(this.position).normalize();
+
+	if(_attackPosition.subtract(this.position).mag()==0){
+		this.attackTo = undefined;
+	}else{
+
+		this.attackTo = _attackPosition.subtract(this.position).normalize();
+	}
 };
 
 /**
@@ -221,7 +227,13 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
 Unit.prototype.moveToHandler = function (_position) {
 	Util.isInstance(_position, Vector2D);
 	Logger.log('debug','Unit move to position',_position);
-	this.direction = _position.subtract(this.position).normalize();
+
+	if(_position.subtract(this.position).mag()==0){
+		this.direction=undefined;
+	}else{
+
+		this.direction = _position.subtract(this.position).normalize();
+	}
 };
 
 
