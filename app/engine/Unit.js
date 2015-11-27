@@ -8,7 +8,6 @@ Bullet = require("./Bullet");
 Util = require("./vendor/Util");
 Logger = require('../logger.js');
 
-EasyStar = require('easystarjs');
 
 var TYPE = {
 	RANGE: 0,
@@ -241,32 +240,9 @@ Unit.prototype.moveToHandler = function (_position) {
 		this.direction = _position.subtract(this.position).normalize();
 	}
 
-	//var _self=this;
-	//this.game.map.easystar.findPath(2, 2, 4, 2, function (path) {
-	//	if (path === null) {
-	//		Logger.log('debug', "Path was not found.");
-	//	} else {
-	//		Logger.log('debug', "Path was found. The first Point is " + path[0].x + " " + path[0].y);
-	//		var dest=new Vector2D(path[0].x,path[0].y);
-	//		_self.direction = dest.subtract(_self.position).normalize();
-	//	}
-	//});
-    //
-	//this.game.map.easystar.calculate();
 
 
-	var _self=this;
-	this.game.map.easystar.findPath(_self.position.x.floor(),_self.position.y.floor(),2,2,function(){
-		if (path === null) {
-			Logger.log('debug',"Path was not found.");
-		} else {
-			Logger.log('debug',"Path was found. The first Point is " + path[0].x + " " + path[0].y);
-			var dest=new Vector2D(path[0].x+0.5,path[0].y+0.5);
-			_self.direction = dest.subtract(_self.position).normalize();
-		}
-	});
 
-	this.game.map.easystar.calculate();
 };
 
 
