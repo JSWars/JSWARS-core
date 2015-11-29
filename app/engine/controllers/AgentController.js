@@ -85,7 +85,7 @@ AgentController.prototype.prepare = function () {
 
 			_self.context.game = _self.game.getGameState();
 			_self.context.me = _.pick(_self.game.teams[_self.teamId], "id", "name", "color", "units");
-			_self.context.enemy = _.pick(_self.game.teams[(_self.teamId+1)%2], "id", "name", "color", "units");
+			_self.context.enemy = _.pick(_self.game.teams[(_self.teamId + 1) % 2], "id", "name", "color", "units");
 
 			try {
 				VM.runInContext(agentVersion.code, _self.context);
@@ -96,7 +96,7 @@ AgentController.prototype.prepare = function () {
 			} catch (error) {
 				_self.log(error.stack);
 				Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [init] failed to execute VM');
-				_self.logFromVm(error.stack,'error');
+				_self.logFromVm(error.stack, 'error');
 				deferred.reject();
 			}
 		});
@@ -119,12 +119,12 @@ AgentController.prototype.tick = function () {
 		this.context.output = new AgentOutput();
 		this.context.game = this.game.getGameState();
 		this.context.me = _.pick(this.game.teams[this.teamId], "id", "name", "color", "units");
-		this.context.enemy = _.pick(this.game.teams[(this.teamId+1)%2], "id", "name", "color", "units");
+		this.context.enemy = _.pick(this.game.teams[(this.teamId + 1) % 2], "id", "name", "color", "units");
 		VM.runInContext("tick()", this.context, {timeout: this.timeout});
 		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] executed successfully in VM');
 	} catch (error) {
 		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] failed to execute VM');
-		_self.logFromVm(error.stack,'error');
+		_self.logFromVm(error.stack, 'error');
 	}
 
 	return this.context.output;

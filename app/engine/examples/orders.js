@@ -4,10 +4,10 @@
 
 /**
  * Orders example
-  * @type {{type: string, position: {x: number, y: number}}}
+ * @type {{type: string, position: {x: number, y: number}}}
  */
 
-var orderMove1={
-    "type":"move",
-    "position": {x:3,y:5}
+var orderMove1 = {
+	"type": "move",
+	"position": {x: 3, y: 5}
 }

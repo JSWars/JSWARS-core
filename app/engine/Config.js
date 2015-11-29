@@ -4,7 +4,7 @@
  */
 
 var Config = {
-    debug : true
+	debug: true
 };
 
 module.exports = Config;

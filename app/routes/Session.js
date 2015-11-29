@@ -11,13 +11,13 @@ User = require('../model/User');
  */
 function Session(req, res) {
 
-    var user = req.session.internalUser;
+	var user = req.session.internalUser;
 
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(403).end();
-    }
+	if (user) {
+		res.json(user);
+	} else {
+		res.status(403).end();
+	}
 }
 
 module.exports = Session;

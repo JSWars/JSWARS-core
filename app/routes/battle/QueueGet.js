@@ -39,9 +39,9 @@ function QueueItem(req, res) {
 					Logger.log('info', 'Queue item pending or running');
 					postal.subscribe({
 						channel: "queue",
-						topic:  "battle.ended." + id,
+						topic: "battle.ended." + id,
 						callback: function (model) {
-							QueueItem(req,res);
+							QueueItem(req, res);
 						}
 					});
 					break;

@@ -101,7 +101,7 @@ function createGame() {
 		newBattle.fps = 60;
 		newBattle.agents = [];
 
-		for(var i in newGame.teams){
+		for (var i in newGame.teams) {
 			newBattle.agents.push(newGame.teams[i].agent.id);
 		}
 
@@ -113,7 +113,7 @@ function createGame() {
 		newGame.initialize()
 			.then(function initializeResolved() {
 
-				function tickCallback(i,frame){
+				function tickCallback(i, frame) {
 					console.log("Saving tick:" + i);
 					var newBattleFrame = new BattleFrame({
 						battle: newBattle._id,
@@ -126,7 +126,7 @@ function createGame() {
 					});
 				}
 
-				newGame.run(undefined,tickCallback,undefined);
+				newGame.run(undefined, tickCallback, undefined);
 
 			}, function initializeRejected() {
 				console.log("Error al inicializar el juego");

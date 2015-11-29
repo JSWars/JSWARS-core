@@ -60,7 +60,7 @@ function runBattleQueueItem(battleQueueItem) {
 			for (var o = 0; o < battleQueueItem.units; o++) {
 				Logger.log('info', 'Creating unit ' + o + ' for team ' + team.id);
 				team.addUnit(new Unit(newGame, team, {
-					position: [2 + o * 8, 2 + i*25] //Return a vector2d,
+					position: [2 + o * 8, 2 + i * 25] //Return a vector2d,
 				}));
 			}
 
@@ -73,7 +73,7 @@ function runBattleQueueItem(battleQueueItem) {
 			Logger.log('info', 'Battle saved');
 			battleQueueItem.battle = battleEntity;
 			battleQueueItem.save(function (err) {
-				if(err){
+				if (err) {
 					Logger.log('error', 'Battle not referenced in queue item');
 					return;
 				}
@@ -88,9 +88,9 @@ function runBattleQueueItem(battleQueueItem) {
 			.then(function initializeResolved() {
 
 				function startCallback() {
-					battleQueueItem.set('status','RUNNING');
+					battleQueueItem.set('status', 'RUNNING');
 					battleQueueItem.save();
-					Logger.log('info', 'Battle run started');
+					Logger.log('info', 'Battle started');
 				}
 
 				function tickCallback(i, frame) {
@@ -105,23 +105,23 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function endCallback() {
-					battleQueueItem.set('status','ENDED');
+					battleQueueItem.set('status', 'ENDED');
 					battleQueueItem.save(function (err) {
-						if(!err){
+						if (!err) {
 							process.send({
-								name:'ENDED',
-								data:battleQueueItem._id
+								name: 'ENDED',
+								data: battleQueueItem._id
 							});
 						}
 					});
 
-					Logger.log('info', 'Battle run ended');
+					Logger.log('info', 'Battle ended');
 				}
 
 				newGame.run(startCallback, tickCallback, endCallback);
 
 			}, function initializeRejected(e) {
-				Logger.log('error','Unknown error during game initializing');
+				Logger.log('error', 'Unknown error during game initializing');
 			});
 
 	});

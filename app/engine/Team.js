@@ -19,7 +19,7 @@ function get_random_color() {
 	return color;
 }
 
-var COLORS= ["#FF0000","#004FFF"]
+var COLORS = ["#FF0000", "#004FFF"]
 
 
 /**

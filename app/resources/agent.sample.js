@@ -102,11 +102,11 @@ function tick() {
 	 *
 	 * output.unit(_unitId).addAction(_action, _position);
 	 *
-	 * 	_unitId: Target unit identifier
-	 * 	_action: Name of the action that we want to apply to the unit. Available actions are:
-	 * 		* attackTo: Shoot to a position
-	 * 		* moveTo: Move to a positions
-	 * 	_position: Target position of the action registered
+	 *   _unitId: Target unit identifier
+	 *   _action: Name of the action that we want to apply to the unit. Available actions are:
+	 *      * attackTo: Shoot to a position
+	 *      * moveTo: Move to a positions
+	 *   _position: Target position of the action registered
 	 *
 	 */
 
