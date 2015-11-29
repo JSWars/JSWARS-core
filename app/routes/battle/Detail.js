@@ -1,4 +1,4 @@
-var _, Q, Battle, BattleFrame, Map, Agent;
+var _, Q, Battle, BattleFrame, Map, Agent, Crypto;
 
 _ = require('underscore');
 Q = require('q');
@@ -6,7 +6,7 @@ Battle = require('../../model/Battle');
 BattleFrame = require('../../model/BattleFrame');
 Map = require('../../model/Map');
 Agent = require('../../model/Agent');
-
+Crypto = require('crypto');
 
 function BattleDetail(req, res) {
 	var id = req.params.id;
@@ -52,14 +52,12 @@ function BattleDetail(req, res) {
 							user: {
 								_id: agent.user._id,
 								username: agent.user.username,
-								avatar: agent.user.avatar,
+								//TODO: Ñapa
+								avatar: ((agent.user.github.avatar_url) ? agent.user.github.avatar_url : ((agent.user.github.email) ? "http://www.gravatar.com/avatar/" + Crypto.createHash('md5').update(agent.user.github.email).digest('hex') : undefined)),
 								country: agent.user.country
 							}
 						};
 					}
-
-					//frameCount
-
 					response = _.extend({
 						teams: teams
 					}, response);

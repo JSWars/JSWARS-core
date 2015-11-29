@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger,EasyStar;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger, EasyStar;
 
 Q = require('q');
 _ = require("underscore");
@@ -85,19 +85,20 @@ Game.prototype.prepare = function () {
 
 Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 
+	if (typeof _startCallBack === 'function') {
+		_startCallBack();
+	}
+
 	while (!this.checkGameFinished()) {
-
 		this.tick();
-
 		if (typeof _tickCallBack === 'function') {
 			_tickCallBack(this.totalTicks, this.getGameFrame());
 		}
-
 	}
 
-	//if(typeof _endCallback === 'function') {
-	//	_endCallback();
-	//}
+	if (typeof _endCallback === 'function') {
+		_endCallback();
+	}
 
 };
 
@@ -364,7 +365,7 @@ Game.prototype.getGameFrame = function () {
 		teamPicked.units = [];
 		//Recorremos las unidades
 		_.each(_team.units, function (_unit) {
-			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius", "attackTo","moveTo");
+			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius", "attackTo", "moveTo");
 			//var unitPicked= _.omit(_unit,"game");
 			teamPicked.units.push(unitPicked);
 		});

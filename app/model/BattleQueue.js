@@ -1,6 +1,6 @@
 var ModelName, _, postal, Mongoose, BattleQueue;
 
-ModelName = 'BattleAgentLog';
+ModelName = 'BattleQueue';
 _ = require('underscore');
 postal = require('postal');
 Mongoose = require('mongoose');

@@ -105,7 +105,6 @@ server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/
 server.get(Config.path + '/battle/:id/dump', require('./routes/battle/Dump'));
 
 
-
 var debug = typeof v8debug === 'object';
 if (debug) {
 	var DEBUG_PORT = 50000;
@@ -126,6 +125,17 @@ postal.subscribe({
 		queueRunner.send({
 			name: "RUN",
 			data: model._id.toString()
+		});
+	}
+});
+
+queueRunner.on('message', function (message) {
+
+	if (message.name = 'ENDED') {
+		postal.publish({
+			channel: "queue",
+			topic: "battle.ended." + message.data,
+			data: undefined
 		});
 	}
 });

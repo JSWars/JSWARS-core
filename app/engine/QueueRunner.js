@@ -45,7 +45,7 @@ function runBattleQueueItem(battleQueueItem) {
 		}
 		//Create teams
 
-		Logger.log('debug', 'Creating a game instance');
+		Logger.log('info', 'Creating a game instance');
 
 		newGame.setMap(map.data);
 		battleEntity.map = map._id;
@@ -56,9 +56,9 @@ function runBattleQueueItem(battleQueueItem) {
 
 		for (var i = 0; i < battleQueueItem.agents.length; i++) {
 			var team = newGame.addTeam(battleEntity.agents[i].toString());
-			Logger.log('debug', 'Counting units for team ' + team.id);
+			Logger.log('info', 'Counting units for team ' + team.id);
 			for (var o = 0; o < battleQueueItem.units; o++) {
-				Logger.log('debug', 'Creating unit ' + o + ' for team ' + team.id);
+				Logger.log('info', 'Creating unit ' + o + ' for team ' + team.id);
 				team.addUnit(new Unit(newGame, team, {
 					position: [2 + o * 8, 2 + i*25] //Return a vector2d,
 				}));
@@ -83,14 +83,14 @@ function runBattleQueueItem(battleQueueItem) {
 		});
 
 		//Run Game
-		Logger.log('debug', 'Initializing game');
+		Logger.log('info', 'Initializing game');
 		newGame.initialize()
 			.then(function initializeResolved() {
 
-				function beginCallback() {
-					battleQueueItem.status = 'RUNNING';
+				function startCallback() {
+					battleQueueItem.set('status','RUNNING');
 					battleQueueItem.save();
-					Logger.log('debug', 'Battle run started');
+					Logger.log('info', 'Battle run started');
 				}
 
 				function tickCallback(i, frame) {
@@ -105,12 +105,20 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 
 				function endCallback() {
-					battleQueueItem.status = 'ENDED';
-					battleQueueItem.save();
-					Logger.log('debug', 'Battle run ended');
+					battleQueueItem.set('status','ENDED');
+					battleQueueItem.save(function (err) {
+						if(!err){
+							process.send({
+								name:'ENDED',
+								data:battleQueueItem._id
+							});
+						}
+					});
+
+					Logger.log('info', 'Battle run ended');
 				}
 
-				newGame.run(beginCallback, tickCallback, endCallback);
+				newGame.run(startCallback, tickCallback, endCallback);
 
 			}, function initializeRejected(e) {
 				Logger.log('error','Unknown error during game initializing');

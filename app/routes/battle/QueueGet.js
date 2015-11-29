@@ -1,8 +1,9 @@
-var _, BattleQueue, Agent, Logger;
+var _, BattleQueue, Agent, Logger, postal;
 
 _ = require('underscore');
 BattleQueue = require('../../model/BattleQueue');
 Logger = require('../../logger.js');
+postal = require('postal');
 
 
 function QueueItem(req, res) {
@@ -27,15 +28,29 @@ function QueueItem(req, res) {
 	BattleQueue.findById(id)
 		.lean()
 		.exec(function (err, queueItem) {
-		if (err) {
-			Logger.log('error', 'Can\'t find queue item');
-			res.status(500).end();
-			return;
-		}
-			Logger.log('debug', 'Queue item found');
-		res.status(200).json(queueItem).end();
-	});
-
+			if (err) {
+				Logger.log('error', 'Can\'t find queue item');
+				res.status(500).end();
+				return;
+			}
+			switch (queueItem.status) {
+				case 'PENDING':
+				case 'RUNNING':
+					Logger.log('info', 'Queue item pending or running');
+					postal.subscribe({
+						channel: "queue",
+						topic:  "battle.ended." + id,
+						callback: function (model) {
+							QueueItem(req,res);
+						}
+					});
+					break;
+				case 'ENDED':
+					Logger.log('info', 'Queue item ended');
+					res.status(200).json(queueItem).end();
+					break;
+			}
+		});
 
 
 }
