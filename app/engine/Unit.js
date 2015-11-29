@@ -1,5 +1,5 @@
 "use strict";
-var _, Vector2D, Angle, Bullet, Util, Logger, EasyStar;
+var _, Vector2D, Angle, Bullet, Util, Logger, PF;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
@@ -7,7 +7,7 @@ Angle = require("./vendor/Angle");
 Bullet = require("./Bullet");
 Util = require("./vendor/Util");
 Logger = require('../logger.js');
-
+PF = require('pathfinding');
 
 var TYPE = {
 	RANGE: 0,
@@ -233,15 +233,32 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
  * @param {Vector2D} _position
  */
 Unit.prototype.moveToHandler = function (_position) {
+
+
 	Util.isInstance(_position, Vector2D);
 	Logger.log('debug', 'Unit move to position', _position);
 
-	if (_position.subtract(this.position).mag() == 0) {
+	if (_position.subtract(this.position).mag() === 0) {
 		this.moveTo = undefined;
 	} else {
 
 		this.moveTo = _position.subtract(this.position).normalize();
 	}
+
+	//TODO FUNCTION GETPATH VISIBLE PARA LOS AGENTES
+
+	var path=this.game.map.getPath(this.position,_position);
+
+	if(path[1]!==undefined)
+	{
+		var nextPos=new Vector2D(path[1][0]+0.5,path[1][1]+0.5);
+
+		this.moveTo=nextPos.subtract(this.position).normalize();
+	}
+
+
+	Logger.log('debug', 'Units Path: ' +path);
+
 
 
 };
@@ -278,6 +295,8 @@ Unit.prototype.move = function () {
 		this.position = this.position.add(dir.multiply(this.speed));
 	}
 
+
+	this.moveTo = undefined;
 
 };
 

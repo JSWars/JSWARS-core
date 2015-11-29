@@ -1,5 +1,5 @@
 "use strict";
-var Vector2D, Graph, PF, _, defaultOptions, defaultMap, EasyStar, Logger;
+var Vector2D, Graph, PF, _, defaultOptions, defaultMap, EasyStar, Logger,PF;
 
 Vector2D = require("./vendor/Vector2D");
 Graph = require('./vendor/astar');
@@ -7,6 +7,7 @@ PF = require('pathfinding');
 _ = require('underscore');
 EasyStar = require('easystarjs');
 Logger = require('../logger.js');
+PF = require("pathfinding");
 /**
  * Constants
  */
@@ -129,22 +130,21 @@ function GridMap(_name, _game) {
 
 	this.easystar = undefined;
 
-
-	//todo setear opciones de los mapas, max equipos para el mapa, zonas de comienzo de cada equipo, etc
 }
 
 
 /**
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
  *
- * Ini
  */
-GridMap.prototype.initializePathfinding = function () {
-	this.easystar = new EasyStar.js();
-	this.easystar.enableSync();
-	var grid = this.colMap;
-	this.easystar.setGrid(grid);
-	this.easystar.setAcceptableTiles([0]);
+GridMap.prototype.initializePathfinding=function(){
+    this.grid=new PF.Grid(this.width,this.height, this.colMap);
+    GRID= _.extend(this.grid,{});
+    this.finder=new PF.AStarFinder({
+        allowDiagonal: true,
+        dontCrossCorners: true
+    }
+    );
 };
 
 /**
@@ -153,11 +153,14 @@ GridMap.prototype.initializePathfinding = function () {
  * @param {Vector2D} _posFin
  * @returns {Array.<number|number[]>}
  */
-GridMap.prototype.getPath = function (_posIni, _posFin) {
-	//clonamos el objeto grid antes de recorrerlo.
-	var gridClone = this.grid.clone();
-	var pathResult = this.finder.findPath(_posIni.x, _posIni.y, _posFin.x, _posFin.y, gridClone);
-	return pathResult;
+GridMap.prototype.getPath=function(_posIni,_posFin){
+    //clonamos el objeto grid antes de recorrerlo.
+    var gridClone=this.grid.clone();
+
+	_posIni=_posIni.floor();
+	_posFin=_posFin.floor();
+    var pathResult = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, gridClone);
+    return pathResult;
 
 };
 

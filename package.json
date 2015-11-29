@@ -9,6 +9,7 @@
   "author": "Marcos Perez Ferro y Luis Sebastián Huerta",
   "license": "MIT",
   "dependencies": {
+    "a-star": "^0.2.0",
     "body-parser": "^1.9.2",
     "connect-mongo": "^0.8.2",
     "easystarjs": "^0.2.3",
