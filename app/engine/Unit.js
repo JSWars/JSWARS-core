@@ -1,5 +1,5 @@
 "use strict";
-var _, Vector2D, Angle, Bullet, Util, Logger,EasyStar;
+var _, Vector2D, Angle, Bullet, Util, Logger, EasyStar;
 
 _ = require("underscore");
 Vector2D = require("./vendor/Vector2D");
@@ -210,17 +210,20 @@ Unit.prototype.hurt = function (_damage) {
  */
 Unit.prototype.attackToHandler = function (_attackPosition) {
 
-	Logger.log('debug', 'Unit attack to position', _attackPosition);
-	Util.isInstance(_attackPosition, Vector2D);
+	if (this.cooldown <= 0) {
+		Logger.log('debug', 'Unit attack to position', _attackPosition);
+		Util.isInstance(_attackPosition, Vector2D);
 
-	if(_attackPosition.subtract(this.position).mag()==0){
+		if (_attackPosition.subtract(this.position).mag() == 0) {
+			this.attackTo = undefined;
+		} else {
+
+			this.attackTo = _attackPosition.subtract(this.position).normalize();
+		}
+	} else {
 		this.attackTo = undefined;
-	}else{
-
-		this.attackTo = _attackPosition.subtract(this.position).normalize();
+		Logger.log('debug', 'Unit attack dicard due to cooldown');
 	}
-
-
 
 
 };
@@ -231,16 +234,14 @@ Unit.prototype.attackToHandler = function (_attackPosition) {
  */
 Unit.prototype.moveToHandler = function (_position) {
 	Util.isInstance(_position, Vector2D);
-	Logger.log('debug','Unit move to position',_position);
+	Logger.log('debug', 'Unit move to position', _position);
 
-	if(_position.subtract(this.position).mag()==0){
-		this.moveTo=undefined;
-	}else{
+	if (_position.subtract(this.position).mag() == 0) {
+		this.moveTo = undefined;
+	} else {
 
 		this.moveTo = _position.subtract(this.position).normalize();
 	}
-
-
 
 
 };

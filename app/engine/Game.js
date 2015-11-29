@@ -373,7 +373,7 @@ Game.prototype.getGameFrame = function () {
 
 	var bullets = {};
 	_.each(this.bullets, function (_bullet) {
-		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius");
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius", "angle", "speed");
 		bullets[_bullet.id] = bulletPicked;
 
 	});
