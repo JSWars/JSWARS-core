@@ -145,8 +145,6 @@ GridMap.prototype.initializePathfinding = function () {
 	var grid = this.colMap;
 	this.easystar.setGrid(grid);
 	this.easystar.setAcceptableTiles([0]);
-
-
 };
 
 /**

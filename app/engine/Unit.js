@@ -157,7 +157,7 @@ function Unit(_game, _team, _properties) {
 	 * Unit's direction angle
 	 * @type {Angle}
 	 */
-	this.direction = undefined;
+	this.moveTo = undefined;
 
 	/**
 	 * Unit's direction attack
@@ -234,10 +234,10 @@ Unit.prototype.moveToHandler = function (_position) {
 	Logger.log('debug','Unit move to position',_position);
 
 	if(_position.subtract(this.position).mag()==0){
-		this.direction=undefined;
+		this.moveTo=undefined;
 	}else{
 
-		this.direction = _position.subtract(this.position).normalize();
+		this.moveTo = _position.subtract(this.position).normalize();
 	}
 
 
@@ -261,16 +261,16 @@ Unit.prototype.attack = function () {
 
 
 /**
- * Move the unit in the direction give by this.direction attribute
+ * Move the unit in the moveTo give by this.moveTo attribute
  */
 Unit.prototype.move = function () {
 	//If action is false, do nothing
 
-	if (this.direction === undefined) {
+	if (this.moveTo === undefined) {
 		return;
 	}
 
-	var dir = this.direction;
+	var dir = this.moveTo;
 
 	if (!this.checkCollide(this.position.add(dir.multiply(this.speed)))) {
 		//if the next position is free, update the unit's position
@@ -281,7 +281,7 @@ Unit.prototype.move = function () {
 };
 
 Unit.prototype.stop = function () {
-	this.direction = undefined;
+	this.moveTo = undefined;
 };
 
 

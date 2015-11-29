@@ -179,7 +179,7 @@ Game.prototype.tick = function () {
 	this.updateHealths();
 	Logger.log('debug', 'Checking if game has finished');
 	this.checkGameFinished();
-	Logger.log('debug', 'Tick clicle ended');
+	Logger.log('debug', 'Tick cicle ended');
 };
 
 /**
@@ -364,7 +364,7 @@ Game.prototype.getGameFrame = function () {
 		teamPicked.units = [];
 		//Recorremos las unidades
 		_.each(_team.units, function (_unit) {
-			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius");
+			var unitPicked = _.pick(_unit, "health", "alive", "position", "radius", "attackTo","moveTo");
 			//var unitPicked= _.omit(_unit,"game");
 			teamPicked.units.push(unitPicked);
 		});
