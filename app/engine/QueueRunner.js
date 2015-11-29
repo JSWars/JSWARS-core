@@ -104,7 +104,7 @@ function runBattleQueueItem(battleQueueItem) {
 					});
 				}
 
-				function endCallback() {
+				function endCallback(gameResult) {
 					battleQueueItem.set('status', 'ENDED');
 					battleQueueItem.save(function (err) {
 						if (!err) {
@@ -114,6 +114,11 @@ function runBattleQueueItem(battleQueueItem) {
 							});
 						}
 					});
+					if(gameResult===-1){
+						Logger.log('info','Battle ends with timeout');
+					}else{
+						Logger.log('info','Battle ends with a winner team')
+					}
 
 					Logger.log('info', 'Battle ended');
 				}

@@ -89,7 +89,7 @@ Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 		_startCallBack();
 	}
 
-	while (!this.checkGameFinished()) {
+	while (this.checkGameFinished() === false) {
 		this.tick();
 		if (typeof _tickCallBack === 'function') {
 			_tickCallBack(this.totalTicks, this.getGameFrame());
@@ -97,7 +97,7 @@ Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 	}
 
 	if (typeof _endCallback === 'function') {
-		_endCallback();
+		_endCallback(this.checkGameFinished());
 	}
 
 };
@@ -199,14 +199,26 @@ Game.prototype.updateHealths = function () {
  * @return {boolean}
  */
 Game.prototype.checkGameFinished = function () {
-	var teamsAlive = 0;
+	var teamsAlive = [];
 	_.each(this.teams, function (_team) {
 		if (_team.isAlive()) {
-			teamsAlive += 1;
+			teamsAlive.push(_team)
 		}
 	});
 
-	return (teamsAlive <= 1) || (this.totalTicks >= this.timeLeft);
+	var oneTeamWins = (teamsAlive.length <= 1);
+	var gameTimeout = (this.totalTicks >= this.timeLeft);
+	var gameResult;
+
+	if(oneTeamWins){
+		gameResult = teamsAlive[0];
+	}else if(gameTimeout){
+		gameResult = -1;
+	}else{
+		gameResult = false;
+	}
+
+	return gameResult;
 };
 
 /**
