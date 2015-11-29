@@ -1,4 +1,4 @@
-var Q,Battle, BattleFrame, Mongoose, Logger;
+var Q, Battle, BattleFrame, Mongoose, Logger;
 
 Q = require('q');
 Battle = require('../../model/Battle');
@@ -6,8 +6,8 @@ BattleFrame = require('../../model/BattleFrame');
 Mongoose = require('mongoose');
 Logger = require('../../logger.js');
 
-function Chunk(req, res) {
-	var chunkId, battleId, chunkSize, chunkStartFrame, chunkEndFrame;
+function Dump(req, res) {
+	var  battleId;
 
 	battleId = req.params.id;
 
@@ -31,12 +31,16 @@ function Chunk(req, res) {
 				frames: results[1]
 			};
 
-			res.json(response).end();
+			res.set('Content-Description','jswars_' + battleId + '.json');
+			res.set('Content-Type','application/json');
+			res.set('Content-Disposition','attachment; filename=jswars_' + battleId + '.json');
+			res.set('Pragma','no-cache');
+
+			res.send(JSON.stringify(response)).end();
 		}, function (errors) {
-			res.status(500).json(errors);
+			res.status(500).json(errors).end();
 		});
 
 
-
 }
-module.exports = Chunk;
+module.exports = Dump;
