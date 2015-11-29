@@ -1,5 +1,5 @@
 "use strict";
-var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, Action, AgentController, AgentGame, Logger, EasyStar;
+var Q, _, Unit, GridMap, Vector2D, Team, Bullet, Util, AgentController, AgentGame, Logger, EasyStar;
 
 Q = require('q');
 _ = require("underscore");
