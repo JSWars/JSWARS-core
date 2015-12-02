@@ -84,6 +84,7 @@ server.get(Config.path + '/logout', require('./routes/Logout'));
 
 //Users
 server.get(Config.path + '/users/:username', require('./routes/User'));
+server.get(Config.path + '/users/', require('./routes/user/UserList'));
 server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/UserUpdate'));
 
 //Agents
