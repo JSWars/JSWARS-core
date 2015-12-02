@@ -11,6 +11,7 @@ var AgentOutput = require("./interfaces/AgentOutput");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
 var Logger = require('../../logger.js');
+var PF = require('pathfinding');
 
 
 var Agent = require('../../model/Agent');

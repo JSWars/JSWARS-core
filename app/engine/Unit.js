@@ -245,21 +245,6 @@ Unit.prototype.moveToHandler = function (_position) {
 		this.moveTo = _position.subtract(this.position).normalize();
 	}
 
-	//TODO FUNCTION GETPATH VISIBLE PARA LOS AGENTES
-
-	var path=this.game.map.getPath(this.position,_position);
-
-	if(path[1]!==undefined)
-	{
-		var nextPos=new Vector2D(path[1][0]+0.5,path[1][1]+0.5);
-
-		this.moveTo=nextPos.subtract(this.position).normalize();
-	}
-
-
-	Logger.log('debug', 'Units Path: ' +path);
-
-
 
 };
 
