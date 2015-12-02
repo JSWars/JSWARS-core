@@ -355,10 +355,12 @@ Game.prototype.getGameState = function () {
 
 	});
 
+	var map= _.pick(this.map,"grid","gridMap","width","height","finder","getPath");
+
 	var gameState = {
 		"teams": teams,
 		"bullets": bullets,
-		"colMap": this.map.colMap
+		"map": map
 	};
 
 	return gameState;
