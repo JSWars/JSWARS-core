@@ -3,7 +3,6 @@ var User, Crypto;
 User = require('../model/User');
 Crypto = require('crypto');
 
-
 function UserRoute(req, res) {
 
 	User.findOne({
@@ -14,7 +13,6 @@ function UserRoute(req, res) {
 				res.status(500).end();
 				return;
 			}
-
 			if (user) {
 				var jsonuser = user.toJSON();
 				if (jsonuser.github.avatar_url) {

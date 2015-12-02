@@ -76,6 +76,7 @@ var EnsureAuthentication = require('./filters/EnsureAuthenticated');
 Logger.log('debug', "Loading routes");
 
 //Session Routes
+server.get(Config.path + '/status', require('./routes/Status'));
 server.get(Config.path + '/session', EnsureAuthentication, require('./routes/Session'));
 server.get(Config.path + '/login/github', require('./routes/login/github/Entry'));
 server.get(Config.path + '/login/github/callback', Passport.authenticate('github'), require('./routes/login/github/Callback'));

@@ -5,7 +5,7 @@ Mongoose = require('mongoose');
 
 User = new Mongoose.Schema({
 	username: {type: String, index: true, unique: true},
-	name: {type: String, required: true},
+	name: {type: String, required: false},
 	email: {type: String, required: false},
 	created: {type: Date, required: true},
 	avatar: {type: String, required: false},

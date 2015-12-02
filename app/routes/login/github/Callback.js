@@ -41,7 +41,12 @@ function CallbackRoute(req, res) {
 				var ret = req.session.return;
 				delete req.session.return;
 				req.session.internalUser = user;
-				res.redirect(ret.replace(':username', user.username));
+				user.name = githubData.name;
+				user.username = githubData.login;
+				user.github = githubData;
+				user.save(function(){
+					res.redirect(ret.replace(':username', user.username));
+				});
 			}
 		}, function () {
 			//Database failure
