@@ -132,13 +132,21 @@ postal.subscribe({
 });
 
 queueRunner.on('message', function (message) {
-
-	if (message.name = 'ENDED') {
-		postal.publish({
-			channel: "queue",
-			topic: "battle.ended." + message.data,
-			data: undefined
-		});
+	switch (message.name) {
+		case 'ENDED':
+			postal.publish({
+				channel: "queue",
+				topic: "battle.ended." + message.data,
+				data: undefined
+			});
+			break;
+		case 'ERROR':
+			postal.publish({
+				channel: "queue",
+				topic: "battle.error." + message.data,
+				data: undefined
+			});
+			break;
 	}
 });
 

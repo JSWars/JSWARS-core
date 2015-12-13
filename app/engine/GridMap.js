@@ -1,5 +1,5 @@
 "use strict";
-var Vector2D, Graph, PF, _, defaultOptions, defaultMap, EasyStar, Logger,PF;
+var Vector2D, Graph, PF, _, defaultOptions, defaultMap, EasyStar, Logger, PF;
 
 Vector2D = require("./vendor/Vector2D");
 Graph = require('./vendor/astar');
@@ -137,14 +137,14 @@ function GridMap(_name, _game) {
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
  *
  */
-GridMap.prototype.initializePathfinding=function(){
-    this.grid=new PF.Grid(this.width,this.height, this.colMap);
-    GRID= _.extend(this.grid,{});
-    this.finder=new PF.AStarFinder({
-        allowDiagonal: true,
-        dontCrossCorners: true
-    }
-    );
+GridMap.prototype.initializePathfinding = function () {
+	this.grid = new PF.Grid(this.width, this.height, this.colMap);
+	GRID = _.extend(this.grid, {});
+	this.finder = new PF.AStarFinder({
+			allowDiagonal: true,
+			dontCrossCorners: true
+		}
+	);
 };
 
 /**
@@ -153,14 +153,14 @@ GridMap.prototype.initializePathfinding=function(){
  * @param {Vector2D} _posFin
  * @returns {Array.<number|number[]>}
  */
-GridMap.prototype.getPath=function(_posIni,_posFin){
-    //clonamos el objeto grid antes de recorrerlo.
-    var gridClone=this.grid.clone();
+GridMap.prototype.getPath = function (_posIni, _posFin) {
+	//clonamos el objeto grid antes de recorrerlo.
+	var gridClone = this.grid.clone();
 
-	_posIni=_posIni.floor();
-	_posFin=_posFin.floor();
-    var pathResult = this.finder.findPath(_posIni.x,_posIni.y,_posFin.x,_posFin.y, gridClone);
-    return pathResult;
+	_posIni = _posIni.floor();
+	_posFin = _posFin.floor();
+	var pathResult = this.finder.findPath(_posIni.x, _posIni.y, _posFin.x, _posFin.y, gridClone);
+	return pathResult;
 
 };
 

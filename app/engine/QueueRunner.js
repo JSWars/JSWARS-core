@@ -43,6 +43,20 @@ function runBattleQueueItem(battleQueueItem) {
 			Logger.log('error', 'Can\'t find default map to run the battle', err);
 			return;
 		}
+
+		if(map === null){
+			Logger.log('error','No map found.');
+			battleQueueItem.status = 'ERROR';
+			battleQueueItem.save(function (err) {
+				if (!err) {
+					process.send({
+						name: 'ERROR',
+						data: battleQueueItem._id
+					});
+				}
+			});
+			return;
+		}
 		//Create teams
 
 		Logger.log('info', 'Creating a game instance');

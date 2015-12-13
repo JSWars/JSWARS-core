@@ -49,6 +49,10 @@ function QueueItem(req, res) {
 					Logger.log('info', 'Queue item ended');
 					res.status(200).json(queueItem).end();
 					break;
+				case 'ERROR':
+					Logger.log('info', 'Queue item error');
+					res.status(500).json(queueItem).end();
+					break;
 			}
 		});
 

@@ -26,9 +26,9 @@ Map.findOne({default: true}, function (err, map) {
 
 	if (map === null) {
 		Logger.log('info', 'Map not found in DB');
-		FS.readFile('.app/resources/maps/_default.json', 'utf8', function (err, mapData) {
+		FS.readFile('app/resources/maps/_default.json', 'utf8', function (err, mapData) {
 			if (err) {
-				Logger.log('error', 'Default map file can\'t not be loaded', err);
+				Logger.log('error', 'Default map file can\'t not be loaded');
 				return;
 			}
 			Logger.log('info', 'Default map file loaded');
