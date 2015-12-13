@@ -1,6 +1,7 @@
-var ObjectId, Agent, AgentVersion;
+var ObjectId, vm, Agent, AgentVersion;
 
 ObjectId = require('mongoose').Types.ObjectId;
+vm = require('vm');
 Agent = require('../../model/Agent');
 AgentVersion = require('../../model/AgentVersion');
 
@@ -19,6 +20,17 @@ function AgentUpdateRoute(req, res) {
 	if (code === undefined || code.trim().length === 0) {
 		//Todo: Check valid code!
 		res.status(400).json({error: 'CODE_REQUIRED'}).end();
+		return;
+	}
+
+	try {
+		var syntaxTest = new vm.Script(code);
+	} catch (e) {
+		res.status(400).json({
+				error: 'INVALID_JAVASCRIPT',
+				exceptionMessage: e.message
+			}
+		);
 		return;
 	}
 

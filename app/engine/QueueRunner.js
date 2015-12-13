@@ -93,7 +93,6 @@ function runBattleQueueItem(battleQueueItem) {
 				}
 				Logger.log('info', 'Battle referenced in queue item');
 			});
-
 		});
 
 		//Run Game
@@ -139,8 +138,19 @@ function runBattleQueueItem(battleQueueItem) {
 
 				newGame.run(startCallback, tickCallback, endCallback);
 
-			}, function initializeRejected(e) {
+			}, function initializeRejected(errors) {
 				Logger.log('error', 'Unknown error during game initializing');
+				battleQueueItem.status = 'ERROR';
+				battleQueueItem.save(function (err) {
+					if (!err) {
+						process.send({
+							name: 'ERROR',
+							data: battleQueueItem._id
+
+
+						});
+					}
+				});
 			});
 
 	});

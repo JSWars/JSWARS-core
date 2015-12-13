@@ -1,8 +1,10 @@
-var FS, Agent, AgentVersion;
+var FS, vm, Agent, AgentVersion;
 
 FS = require('fs');
+vm = require('vm');
 Agent = require('../../model/Agent');
 AgentVersion = require('../../model/AgentVersion');
+
 
 //fs.writeFile("/tmp/test", "Hey there!", function(err) {
 //    if(err) {
@@ -38,6 +40,16 @@ function AgentNewRoute(req, res) {
 		return;
 	}
 
+	try {
+		var syntaxTest = new vm.Script(code);
+	} catch (e) {
+		res.status(400).json({
+				errorId: 'INVALID_JAVASCRIPT',
+				exceptionMessage: e.message
+			}
+		);
+		return;
+	}
 
 	//Create Agent object and push on it the AgentVersion
 	var agentEntity = new Agent({

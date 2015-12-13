@@ -80,7 +80,7 @@ Game.prototype.prepare = function () {
 	});
 
 	//Creamos una promesa compuesta del resto de promesas
-	return Q.all(agentPromises)
+	return Q.all(agentPromises);
 };
 
 Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {

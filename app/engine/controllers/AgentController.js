@@ -95,10 +95,12 @@ AgentController.prototype.prepare = function () {
 				_self.prepared = true;
 				deferred.resolve();
 			} catch (error) {
-				_self.log(error.stack);
 				Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [init] failed to execute VM');
 				_self.logFromVm(error.stack, 'error');
-				deferred.reject();
+				deferred.reject({
+					error: 'ERROR_LOADING_AGENT_CODE',
+					agent: _self.agentVersionId
+				});
 			}
 		});
 
