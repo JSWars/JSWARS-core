@@ -5,8 +5,9 @@ Battle = require('../../model/Battle');
 
 function List(req, res) {
 	Battle.find({})
-		.select('-__v')
+		//.select('-__v')
 		.sort('-moment')
+		.populate('map','agents')
 		.lean(true)
 		.exec(function (err, battles) {
 			res.json(battles);

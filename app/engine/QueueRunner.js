@@ -117,7 +117,12 @@ function runBattleQueueItem(battleQueueItem) {
 					});
 				}
 
-				function endCallback(gameResult) {
+				function endCallback(gameResult, gameTicks) {
+
+					battleEntity.set('duration', gameTicks/battleEntity.fps);
+					battleEntity.save(function (err) {
+					});
+
 					battleQueueItem.set('status', 'ENDED');
 					battleQueueItem.save(function (err) {
 						if (!err) {
