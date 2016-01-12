@@ -8,8 +8,8 @@ Config = {
 	path: '/api',
 	apis: {
 		github: {
-			clientID: '4fe54540f35eb99dbfa7',
-			clientSecret: '40d94397a272430fc8cbcbd73cd5775e926fc59e',
+			clientID: 'sampleid',
+			clientSecret: 'samplesecret',
 			callbackURL: "http://jswars.org/api/login/github/callback"
 		}
 

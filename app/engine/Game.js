@@ -355,7 +355,7 @@ Game.prototype.getGameState = function () {
 
 	});
 
-	var map= _.pick(this.map,"grid","gridMap","width","height","finder","getPath");
+	var map= _.pick(this.map,"grid","colMap","width","height","finder","getPath");
 
 	var gameState = {
 		"teams": teams,

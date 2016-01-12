@@ -242,7 +242,14 @@ Unit.prototype.moveToHandler = function (_position) {
 		this.moveTo = undefined;
 	} else {
 
-		this.moveTo = _position.subtract(this.position).normalize();
+
+		if(_position.subtract(this.position).mag()>this.speed) {
+			this.moveTo = _position.subtract(this.position).normalize();
+		}else{
+			this.moveTo = _position.subtract(this.position);
+		}
+
+
 	}
 
 
