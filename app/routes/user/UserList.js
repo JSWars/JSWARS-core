@@ -48,7 +48,7 @@ function UserList(req, res) {
 					}));
 			}
 
-			Q.all(promises)
+			Q.allSettled(promises)
 				.then(function () {
 					res.status(200).json(users).end();
 				})
