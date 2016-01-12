@@ -97,7 +97,7 @@ Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 	}
 
 	if (typeof _endCallback === 'function') {
-		_endCallback(this.checkGameFinished());
+		_endCallback(this.checkGameFinished(), this.totalTicks);
 	}
 
 };
@@ -210,11 +210,11 @@ Game.prototype.checkGameFinished = function () {
 	var gameTimeout = (this.totalTicks >= this.timeLeft);
 	var gameResult;
 
-	if(oneTeamWins){
+	if (oneTeamWins) {
 		gameResult = teamsAlive[0];
-	}else if(gameTimeout){
+	} else if (gameTimeout) {
 		gameResult = -1;
-	}else{
+	} else {
 		gameResult = false;
 	}
 
@@ -355,7 +355,7 @@ Game.prototype.getGameState = function () {
 
 	});
 
-	var map= _.pick(this.map,"grid","gridMap","width","height","finder","getPath");
+	var map = _.pick(this.map, "grid", "gridMap", "width", "height", "finder", "getPath");
 
 	var gameState = {
 		"teams": teams,
