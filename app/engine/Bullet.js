@@ -45,7 +45,7 @@ function Bullet(_game, _position, _teamId, _angle, _speed, _damage, _radius) {
 	this.teamId = _teamId;
 
 	/**
-	 * @type {Angle}
+	 * @type {Vector2D}
 	 */
 	this.angle = _angle;
 	/**
