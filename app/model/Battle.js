@@ -1,8 +1,9 @@
-var ModelName, _, Mongoose, Battle;
+var ModelName, _, Mongoose, mongoosePaginate, Battle;
 
 ModelName = 'Battle';
 _ = require('underscore');
 Mongoose = require('mongoose');
+mongoosePaginate = require('mongoose-paginate');
 
 Battle = new Mongoose.Schema({
 	id: {type: Number, index: true},
@@ -13,6 +14,8 @@ Battle = new Mongoose.Schema({
 	moment: {type: Date, required: true},
 	duration: {type: Number, required: false}
 });
+
+Battle.plugin(mongoosePaginate);
 
 module.exports = Mongoose.model(ModelName, Battle);
 
