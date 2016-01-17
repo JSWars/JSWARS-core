@@ -16,6 +16,7 @@
     "express": "^4.10.2",
     "express-session": "^1.9.1",
     "mongoose": "^4.2.2",
+    "mongoose-paginate": "^5.0.0",
     "passport": "^0.2.2",
     "passport-github": "^0.1.5",
     "passport-http": "^0.2.2",
