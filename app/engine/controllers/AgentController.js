@@ -58,10 +58,8 @@ AgentController.prototype.isPrepared = function () {
 
 AgentController.prototype.logFromVm = function (log, level) {
 	level = level || 'info';
-	Logger.log(level, 'Team: ' + this.teamId + ' | Agent controller log:');
-	Logger.log(level, '---------------------');
+	Logger.log(level, '[LOG] [Team: ' + this.teamId + ']');
 	Logger.log(level, log);
-	Logger.log(level, '---------------------');
 	this.logString += '\r\n' + log;
 };
 
