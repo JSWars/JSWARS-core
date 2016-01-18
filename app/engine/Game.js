@@ -350,7 +350,7 @@ Game.prototype.getGameState = function () {
 
 	var bullets = [];
 	_.each(this.bullets, function (_bullet) {
-		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "radius","angle");
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position","angle", "radius");
 		bullets.push(bulletPicked);
 
 	});

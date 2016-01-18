@@ -33,6 +33,10 @@ function tick() {
 		var minimumDistanceBullet = undefined;
 		var selectedBullet = undefined;
 		for (var u = 0; u < game.bullets.length; u++) {
+			if(game.bullets[u].teamId==me.id){
+				continue;
+			}
+
 			var bullet = game.bullets[u];
 			var bulletPosition = bullet.position;
 			var currentBulletDistance = bulletPosition.subtract(friendUnitPosition).mag();
@@ -47,15 +51,17 @@ function tick() {
 		Utils.log("SelectedBullet: " + selectedEnemy);
 		if (selectedBullet !== undefined) {
 
-			var bulletFriendVector = game.bullets[selectedBullet].position.subtract(friendUnitPosition);
+			var bulletFriendVector = game.bullets[selectedBullet].angle;
 
 			Utils.log(bulletFriendVector);
 
 			var bulletFriendVectorPerperdicular = new Utils.Vector2D(-bulletFriendVector.y, bulletFriendVector.x);
 
-			output.unit(i).addAction("moveTo", bulletFriendVectorPerperdicular);
+			output.unit(i).addAction("moveTo", friendUnitPosition.add(bulletFriendVectorPerperdicular));
 		} else {
-			output.unit(i).addAction("moveTo", new Utils.Vector2D(pathToEnemy[1][0] + 0.5 , pathToEnemy[1][1] + 0.5));
+			if(enemyUnitPosition.subtract(friendUnitPosition).mag()>3){
+				output.unit(i).addAction("moveTo", new Utils.Vector2D(pathToEnemy[1][0] + 0.5 , pathToEnemy[1][1] + 0.5));
+			}
 		}
 
 
