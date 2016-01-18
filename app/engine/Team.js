@@ -10,18 +10,6 @@ AgentController = require('./controllers/AgentController');
 Agent = require('../model/Agent');
 
 
-function get_random_color() {
-	var letters = '0123456789ABCDEF'.split('');
-	var color = '#';
-	for (var i = 0; i < 6; i += 1) {
-		color += letters[Math.round(Math.random() * 15)];
-	}
-	return color;
-}
-
-var COLORS = ["#FF0000", "#004FFF"]
-
-
 /**
  * Representa un equipo
  * @param {number} _id Identificador del equipo
@@ -86,7 +74,7 @@ function Team(_id, _agentId, _game) {
 	 *
 	 * @type {string}
 	 */
-	this.color = COLORS[_id];
+	this.color;
 
 
 	/**
@@ -107,12 +95,20 @@ function Team(_id, _agentId, _game) {
 
 
 Team.prototype.prepare = function () {
+	var _self = this;
 	//Convertimos el agente en un controlador
 	this.agent = new AgentController(this.agent.id, this.game, this.id);
+
+	var promises = [this.agent.prepare()];
+	promises.push(Agent.findById(this.agent.id)
+		.then(function (agent) {
+			_self.color = agent.color || "#000000";
+		}));
+
 	//Esto no es cierto...
 	this.prepared = true;
 	//Devolvemos la promesa del agente tal cual
-	return this.agent.prepare();
+	return Q.all(promises);
 };
 
 
