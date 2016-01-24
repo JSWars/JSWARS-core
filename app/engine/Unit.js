@@ -69,7 +69,7 @@ function Unit(_game, _team, _properties) {
 
 	/**
 	 *
-	 * @type {Array[Vector2D]}
+	 * @type {Array[]}
 	 */
 	this.collSphereRelative = [];
 

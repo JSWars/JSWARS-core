@@ -36,7 +36,7 @@ function tick() {
 			u_position=me.units[i].position;
 
 
-			var path=game.map.getPath(u_position,e_position);
+			var path=Utils.map.getPath(u_position,e_position);
 
 
 			if(u_position.subtract(e_position).mag()>min_distance) {
