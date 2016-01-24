@@ -31,7 +31,7 @@ function Bullet(_game, _position, _teamId, _angle, _speed, _damage, _radius) {
 	/**
 	 * @type {number}
 	 */
-	this.id = _game.totalBullets += 1;
+	this.id = _game.totalBullets;
 
 	/**
 	 * @type {Vector2D}
