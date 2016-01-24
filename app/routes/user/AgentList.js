@@ -1,21 +1,24 @@
-var _, Agent, User;
+var _, Q, Agent, User, BattleResult;
 
+Q = require('q');
 _ = require('underscore');
 Agent = require('../../model/Agent');
+BattleResult = require('../../model/BattleResult');
 User = require('../../model/User');
 
 function AgentListRoute(req, res) {
 
-	var username = req.params.username;
 
-	//if (username === undefined || username.trim().length === 0) {
-	//	res.status(400).end();
-	//}
+	var page = req.query.page || 1;
 
-	var query = {
+	if (page < 0) {
+		res.status(400).end();
+		return;
+	}
+
+	User.findOne({
 		'username': req.params.username
-	};
-	User.findOne(query)
+	})
 		.exec(function (err, user) {
 			if (err) {
 				res.status(500).end();
@@ -27,30 +30,36 @@ function AgentListRoute(req, res) {
 				return;
 			}
 
-			Agent.find({user: user._id})
-				.sort('-moment')
-				//.populate('versions')
-				.exec(function (err, agents) {
+			Agent.paginate({user: user._id}, {
+				sort: '-moment',
+				lean: true,
+				page: page
+			})
+				.then(function (paginated) {
 					if (err) {
 						res.status(500).end();
 						return;
 					}
 
-					var formatted = [];
-					_.map(agents, function (agent) {
-						formatted.push(
-							_.extend(
-								agent.toJSON(),
-								{
-									wins: 0,
-									losses: 0,
-									rank: 0
-								}
-							)
-						);
+					var promises = [];
+					for (var docIndex in paginated.docs) {
+						(function (_docIndex) {
+							promises.push(BattleResult.count({winner: paginated.docs[_docIndex]._id})
+								.then(function (count) {
+									paginated.docs[_docIndex].wins = count;
+								}));
+
+							promises.push(BattleResult.count({loosers: paginated.docs[_docIndex]._id})
+								.then(function (count) {
+									paginated.docs[_docIndex].losses = count;
+								}));
+						})(docIndex)
+					}
+
+					Q.allSettled(promises).then(function () {
+						res.status(200).json(paginated);
 					});
 
-					res.status(200).json(formatted);
 				}, function () {
 					res.status(500).end();
 				});
