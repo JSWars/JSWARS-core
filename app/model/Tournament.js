@@ -6,10 +6,12 @@ Mongoose = require('mongoose');
 mongoosePaginate = require('mongoose-paginate');
 
 Tournament = new Mongoose.Schema({
+	name: {type: String, required: true},
 	map: {type: Mongoose.Schema.Types.ObjectId, ref: 'Map', required: true},
-	max: {type: Number, required: true},
+	rounds: {type: Number, required: true},
 	fps: {type: Number, required: true},
-	start: {type: Date, required: true}
+	moment: {type: Date, required: true},
+	start: {type: Date, required: false}
 });
 ////agents: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}],
 Tournament.plugin(mongoosePaginate);

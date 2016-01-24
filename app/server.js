@@ -87,6 +87,10 @@ server.get(Config.path + '/users/:username', require('./routes/User'));
 server.get(Config.path + '/users/', require('./routes/user/UserList'));
 server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/UserUpdate'));
 
+//Tournaments
+server.get(Config.path + '/tournaments', EnsureAuthentication, require('./routes/tournament/TournamentList'));
+server.post(Config.path + '/tournaments/:id/join', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
+
 //Agents
 server.get(Config.path + '/users/:username/agents', require('./routes/user/AgentList'));
 server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
@@ -96,14 +100,14 @@ server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', Ensu
 server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
 
-server.get(Config.path + '/battle/queue/:id/', EnsureAuthentication, require('./routes/battle/QueueGet'));
+server.get(Config.path + '/battle/queue/:id/', EnsureAuthentication, require('./routes/battle/BattleQueueGet'));
 
 //Battle
-server.post(Config.path + '/battle/', EnsureAuthentication, require('./routes/battle/Queue'));
+server.post(Config.path + '/battle/', EnsureAuthentication, require('./routes/battle/BattleQueue'));
 server.get(Config.path + '/battle/', require('./routes/battle/BattleList'));
-server.get(Config.path + '/battle/:id/', require('./routes/battle/Detail'));
-server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/Chunk'));
-server.get(Config.path + '/battle/:id/dump', require('./routes/battle/Dump'));
+server.get(Config.path + '/battle/:id/', require('./routes/battle/BattleDetail'));
+server.get(Config.path + '/battle/:id/chunk/:chunkId', require('./routes/battle/BattleChunk'));
+server.get(Config.path + '/battle/:id/dump', require('./routes/battle/BattleDump'));
 
 
 var debug = typeof v8debug === 'object';

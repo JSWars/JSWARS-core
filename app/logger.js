@@ -4,7 +4,7 @@ winston.emitErrs = true;
 var logger = new winston.Logger({
 	transports: [
 		new winston.transports.File({
-			level: 'info',
+			level: 'error',
 			filename: './app/logs/all-logs.log',
 			handleExceptions: true,
 			json: true,
@@ -13,7 +13,7 @@ var logger = new winston.Logger({
 			colorize: false
 		}),
 		new winston.transports.Console({
-			level: 'debug',
+			level: 'error',
 			handleExceptions: true,
 			json: false,
 			colorize: true
