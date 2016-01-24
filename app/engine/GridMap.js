@@ -92,7 +92,7 @@ function GridMap(_name, _game) {
 	 */
 	this.name = _name;
 	/**
-	 * Array con las colisiones del mapa
+	 * Array map collision
 	 * Collision map
 	 * @type {int[][]}
 	 */
@@ -121,21 +121,20 @@ function GridMap(_name, _game) {
 	 */
 	this.height = 25;
 	/**
-	 * Escala del mapa, para futuras implementaciones
+	 * Map scale, default 1 size of the grid.
 	 *
 	 * GridMap scale
 	 * @type {number}
 	 */
 	this.scale = 1;
 
-	this.easystar = undefined;
 
 }
 
 
 /**
  *Inicializa la malla de colisiones que se utilizará para el cálculo de rutas. Tener en cuenta llamar a esta función si se modifica el mapa.
- *
+ * Initialize the
  */
 GridMap.prototype.initializePathfinding = function () {
 	this.grid = new PF.Grid(this.width, this.height, this.colMap);
