@@ -14,8 +14,7 @@ function Dump(req, res) {
 	Logger.log('debug', 'Requested dump for battle ' + battleId);
 
 	var promises = [];
-	promises.push(Battle.findById(battleId)
-		.populate('map'));
+	promises.push(Battle.findById(battleId));
 
 
 	promises.push(BattleFrame.find({
@@ -30,6 +29,12 @@ function Dump(req, res) {
 				battle: results[0],
 				frames: results[1]
 			};
+
+			for(var i = 0; i <response.frames.length;i++){
+				response.frames[i] = response.frames[i].data;
+			}
+
+
 
 			res.set('Content-Description', 'jswars_' + battleId + '.json');
 			res.set('Content-Type', 'application/json');

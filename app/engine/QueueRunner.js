@@ -1,10 +1,11 @@
-var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleQueue, Logger;
+var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleResult, BattleQueue, Logger;
 
 Config = require('../config');
 _ = require("underscore");
 Mongoose = require("mongoose");
 
 BattleQueue = require("../model/BattleQueue");
+BattleResult = require("../model/BattleResult");
 Game = require("./Game");
 Unit = require("./Unit");
 
@@ -44,8 +45,8 @@ function runBattleQueueItem(battleQueueItem) {
 			return;
 		}
 
-		if(map === null){
-			Logger.log('error','No map found.');
+		if (map === null) {
+			Logger.log('error', 'No map found.');
 			battleQueueItem.status = 'ERROR';
 			battleQueueItem.save(function (err) {
 				if (!err) {
@@ -119,7 +120,7 @@ function runBattleQueueItem(battleQueueItem) {
 
 				function endCallback(gameResult, gameTicks) {
 
-					battleEntity.set('duration', gameTicks/battleEntity.fps);
+					battleEntity.set('duration', gameTicks / battleEntity.fps);
 					battleEntity.save(function (err) {
 					});
 
@@ -132,10 +133,31 @@ function runBattleQueueItem(battleQueueItem) {
 							});
 						}
 					});
-					if(gameResult===-1){
-						Logger.log('info','Battle ends with timeout');
-					}else{
-						Logger.log('info','Battle ends with a winner team')
+					if (gameResult === -1) {
+						Logger.log('info', 'Battle ends with timeout');
+					} else {
+						var winner = gameResult;
+
+						var battleResultEntity = new BattleResult();
+						battleResultEntity.battle = battleEntity._id;
+						battleResultEntity.moment = new Date();
+						battleResultEntity.winner = winner.agent.id;
+						battleResultEntity.loosers = [];
+
+						var battleAgents = battleEntity.get('agents');
+						for(var i = 0; i < battleAgents.length; i++){
+							if(battleAgents[i].toString() != battleResultEntity.winner.toString()){
+								battleResultEntity.loosers.push(battleAgents[i]);
+							}
+						}
+
+						battleResultEntity.save(function (err) {
+							if (err) {
+								Logger.log('error', 'Can\'t create result entity');
+							}
+						});
+
+						Logger.log('info', 'Battle ends with a winner team')
 					}
 
 					Logger.log('info', 'Battle ended');
