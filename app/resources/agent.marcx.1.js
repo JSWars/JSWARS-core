@@ -26,7 +26,7 @@ function tick() {
 			}
 		}
 		Utils.log("SelectedEnemy: " + selectedEnemy);
-		var pathToEnemy = game.map.getPath(friendUnitPosition, enemy.units[selectedEnemy].position);
+		var pathToEnemy = Utils.map.getPath(friendUnitPosition, enemy.units[selectedEnemy].position);
 		//Now each unit shots to near enemy
 		output.unit(i).addAction("attackTo", enemy.units[selectedEnemy].position);
 

@@ -44,7 +44,7 @@ function AgentController(_id, _game, _teamId) {
 		writable: false,
 		value: {
 			Vector2D: Vector2D,
-			colMap: _.pick(_game.map, "colMap", "width", "height", "getPath"),
+			map: _.pick(_game.map, "grid", "finder","colMap", "width", "height", "getPath"),
 			log: function (log) {
 				_self.logFromVm(log, 'info');
 			}
