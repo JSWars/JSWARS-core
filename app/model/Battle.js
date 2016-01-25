@@ -12,7 +12,9 @@ Battle = new Mongoose.Schema({
 	fps: {type: Number, required: true},
 	agents: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}],
 	moment: {type: Date, required: true},
-	duration: {type: Number, required: false}
+	duration: {type: Number, required: false},
+	tournament: {type: Mongoose.Schema.Types.ObjectId, ref: 'Tournament', required: false},
+	tournamentRound: {type: Number, required: false}
 });
 
 Battle.plugin(mongoosePaginate);

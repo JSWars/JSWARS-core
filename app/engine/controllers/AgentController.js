@@ -11,7 +11,6 @@ var AgentOutput = require("./interfaces/AgentOutput");
 var Angle = require("../vendor/Angle");
 var Vector2D = require("../vendor/Vector2D");
 var Logger = require('../../logger.js');
-var PF = require('pathfinding');
 
 
 var Agent = require('../../model/Agent');
@@ -19,9 +18,12 @@ var AgentVersion = require('../../model/AgentVersion');
 
 /**
  * El controlador de agente usa fragmentos de javascript para calcular los futuros movimientos
- * del equipo.
+ * @param _id
+ * @param _game {Game}
+ * @param _teamId
  * @constructor
  */
+
 function AgentController(_id, _game, _teamId) {
 	var _self = this;
 
@@ -42,6 +44,7 @@ function AgentController(_id, _game, _teamId) {
 		writable: false,
 		value: {
 			Vector2D: Vector2D,
+			map: _.pick(_game.map, "grid", "finder","colMap", "width", "height", "getPath"),
 			log: function (log) {
 				_self.logFromVm(log, 'info');
 			}

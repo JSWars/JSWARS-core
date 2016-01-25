@@ -51,36 +51,47 @@ function AgentNewRoute(req, res) {
 		return;
 	}
 
-	//Create Agent object and push on it the AgentVersion
-	var agentEntity = new Agent({
-		name: req.body.name,
-		moment: new Date(),
-		user: req.session.internalUser._id,
-		color: req.body.color
-	});
-	//Create AgentVersion Object
+	Agent.count({name: req.body.name}).then(function (count) {
+		if (count > 0) {
+			res.status(400).json({
+					errorId: 'NAME_ALREADY_IN_USE'
+				}
+			);
+			return;
+		}
 
-	//Save new Agent
-	agentEntity.save(function (err) {
-			if (err) {
-				res.status(500).json({error: 'AGENT_NOT_SAVED'}).end();
-				return;
-			}
-			var agentVersionEntity = new AgentVersion({
-				code: code,
-				moment: new Date(),
-				agent: agentEntity._id
-			});
+		//Create Agent object and push on it the AgentVersion
+		var agentEntity = new Agent({
+			name: req.body.name,
+			moment: new Date(),
+			user: req.session.internalUser._id,
+			color: req.body.color
+		});
 
-			agentVersionEntity.save(function (err) {
+		//Save new Agent
+		agentEntity.save(function (err) {
 				if (err) {
-					res.status(500).json({error: 'AGENT_VERSION_NOT_SAVED'}).end();
+					res.status(500).json({error: 'AGENT_NOT_SAVED'}).end();
 					return;
 				}
-				res.status(201).json(agentEntity);
-			});
-		}
-	)
-	;
+				var agentVersionEntity = new AgentVersion({
+					code: code,
+					moment: new Date(),
+					agent: agentEntity._id
+				});
+
+				agentVersionEntity.save(function (err) {
+					if (err) {
+						res.status(500).json({error: 'AGENT_VERSION_NOT_SAVED'}).end();
+						return;
+					}
+					res.status(201).json(agentEntity);
+				});
+			}
+		)
+		;
+
+	});
+
 }
 module.exports = AgentNewRoute;

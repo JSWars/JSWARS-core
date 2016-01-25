@@ -22,7 +22,7 @@ function List(req, res) {
 	var options = {
 		sort: "-moment",
 		lean: true,
-		page: page || 1
+		page: page
 	};
 
 	Battle.paginate({}, options)
