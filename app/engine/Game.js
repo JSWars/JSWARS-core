@@ -66,7 +66,7 @@ function Game() {
 	 */
 	this.totalTicks = 0;
 
-	this.timeLeft = 2000;
+	this.timeLeft = 7200;
 }
 
 Game.prototype.initialize = function () {
