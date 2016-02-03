@@ -24,12 +24,12 @@ function QueueRequest(req, res) {
 
 	var units = req.body.units;
 
-	if (units < 1 || units > 10) {
-		units = 5;
-	}
+	//if (units < 1 || units > 10) {
+		units = 6;
+	//}
 
 
-	Logger.log('debug', 'Searching agents to ensure that battle requuest is correct', agents);
+	Logger.log('debug', 'Searching agents to ensure that battle request is correct', agents);
 	Agent.find({
 		'_id': {
 			$in: agents
@@ -46,7 +46,7 @@ function QueueRequest(req, res) {
 		battleQueueEntity.agents = foundAgents;
 		battleQueueEntity.status = "PENDING";
 		battleQueueEntity.requester = user._id;
-		battleQueueEntity.unis = units;
+		battleQueueEntity.units = units;
 		battleQueueEntity.moment = new Date();
 
 		battleQueueEntity.save(function (err, response) {

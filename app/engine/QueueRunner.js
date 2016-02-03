@@ -75,7 +75,7 @@ function runBattleQueueItem(battleQueueItem) {
 			for (var o = 0; o < battleQueueItem.units; o++) {
 				Logger.log('info', 'Creating unit ' + o + ' for team ' + team.id);
 				team.addUnit(new Unit(newGame, team, {
-					position: [2 + o * 8, 2 + i * 25] //Return a vector2d,
+					position: [5 + o * 4, 2 + i * 25] //Return a vector2d,
 				}));
 			}
 

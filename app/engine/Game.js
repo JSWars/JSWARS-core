@@ -355,13 +355,9 @@ Game.prototype.getGameState = function () {
 
 	});
 
-	//TODO MOSTRAR MAPA EN LUGAR DE EN CADA TICK EN .UTILS QUE NO SE MODIFICA
-	var map = _.pick(this.map, "colMap", "width", "height", "getPath");
-
 	var gameState = {
 		"teams": teams,
-		"bullets": bullets,
-		"map": map
+		"bullets": bullets
 	};
 
 	return gameState;
