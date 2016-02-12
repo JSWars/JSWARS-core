@@ -40,8 +40,9 @@ function AgentNewRoute(req, res) {
 		return;
 	}
 
+	var codeScript;
 	try {
-		var syntaxTest = new vm.Script(code);
+		codeScript = new vm.Script(code);
 	} catch (e) {
 		res.status(400).json({
 				errorId: 'INVALID_JAVASCRIPT',
@@ -50,6 +51,22 @@ function AgentNewRoute(req, res) {
 		);
 		return;
 	}
+	var sandbox = new vm.createContext({
+		hasInit: false,
+		hasTick: false
+	});
+	var hasScript = new vm.Script('hasInit = typeof init === "function";hasTick = typeof tick === "function"; ');
+	codeScript.runInContext(sandbox);
+	hasScript.runInContext(sandbox);
+
+	if(sandbox.hasInit == false || sandbox.hasTick == false){
+		res.status(400).json({
+				errorId: 'NOT_INIT_OR_TICK_FUNCTION'
+			}
+		);
+		return;
+	}
+
 
 	Agent.count({name: req.body.name}).then(function (count) {
 		if (count > 0) {
