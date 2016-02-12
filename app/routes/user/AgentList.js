@@ -1,9 +1,9 @@
-var _, Q, Agent, User, BattleResult;
+var _, Q, Agent, User, Battle;
 
 Q = require('q');
 _ = require('underscore');
 Agent = require('../../model/Agent');
-BattleResult = require('../../model/BattleResult');
+Battle = require('../../model/Battle');
 User = require('../../model/User');
 
 function AgentListRoute(req, res) {
@@ -44,12 +44,12 @@ function AgentListRoute(req, res) {
 					var promises = [];
 					for (var docIndex in paginated.docs) {
 						(function (_docIndex) {
-							promises.push(BattleResult.count({winner: paginated.docs[_docIndex]._id})
+							promises.push(Battle.count({winner: paginated.docs[_docIndex]._id})
 								.then(function (count) {
 									paginated.docs[_docIndex].wins = count;
 								}));
 
-							promises.push(BattleResult.count({loosers: paginated.docs[_docIndex]._id})
+							promises.push(Battle.count({loosers: paginated.docs[_docIndex]._id})
 								.then(function (count) {
 									paginated.docs[_docIndex].losses = count;
 								}));

@@ -25,7 +25,7 @@ function Chunk(req, res) {
 		index: {$gt: chunkStartFrame, $lte: chunkEndFrame}
 	})
 		.sort({'index': 1})
-		.select({data: 1})
+		.select('-_id -battle -__v -index')
 		.exec(function (err, frames) {
 			if (err) {
 				Logger.log('error', 'Battle with id' + battleId * ' not found');

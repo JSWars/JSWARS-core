@@ -5,7 +5,6 @@ _ = require("underscore");
 Mongoose = require("mongoose");
 
 BattleQueue = require("../model/BattleQueue");
-BattleResult = require("../model/BattleResult");
 Game = require("./Game");
 Unit = require("./Unit");
 
@@ -138,20 +137,17 @@ function runBattleQueueItem(battleQueueItem) {
 					} else {
 						var winner = gameResult;
 
-						var battleResultEntity = new BattleResult();
-						battleResultEntity.battle = battleEntity._id;
-						battleResultEntity.moment = new Date();
-						battleResultEntity.winner = winner.agent.id;
-						battleResultEntity.loosers = [];
+						battleEntity.winner = winner.agent.id;
+						battleEntity.loosers = [];
 
 						var battleAgents = battleEntity.get('agents');
 						for(var i = 0; i < battleAgents.length; i++){
-							if(battleAgents[i].toString() != battleResultEntity.winner.toString()){
-								battleResultEntity.loosers.push(battleAgents[i]);
+							if(battleAgents[i].toString() != battleEntity.winner.toString()){
+								battleEntity.loosers.push(battleAgents[i]);
 							}
 						}
 
-						battleResultEntity.save(function (err) {
+						battleEntity.save(function (err) {
 							if (err) {
 								Logger.log('error', 'Can\'t create result entity');
 							}

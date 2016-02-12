@@ -6,7 +6,6 @@ Mongoose = require('mongoose');
 mongoosePaginate = require('mongoose-paginate');
 
 Battle = new Mongoose.Schema({
-	id: {type: Number, index: true},
 	map: {type: Mongoose.Schema.Types.ObjectId, ref: 'Map', required: true},
 	chunkSize: {type: Number, required: true},
 	fps: {type: Number, required: true},
@@ -14,7 +13,9 @@ Battle = new Mongoose.Schema({
 	moment: {type: Date, required: true},
 	duration: {type: Number, required: false},
 	tournament: {type: Mongoose.Schema.Types.ObjectId, ref: 'Tournament', required: false},
-	tournamentRound: {type: Number, required: false}
+	tournamentRound: {type: Number, required: false},
+	winner: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true},
+	loosers: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}]
 });
 
 Battle.plugin(mongoosePaginate);

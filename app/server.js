@@ -31,6 +31,7 @@ Mongoose.connection.on('error', function (error) {
 
 server = Express();
 
+//server.use(require('prerender-node'));
 server.use(ExpressBodyParser.json()); // get information from html forms
 server.use(ExpressBodyParser.urlencoded({extended: true}));
 server.use(ExpressSession({
@@ -93,12 +94,13 @@ server.post(Config.path + '/tournaments/:id/join', EnsureAuthentication, require
 
 //Agents
 server.get(Config.path + '/users/:username/agents', require('./routes/user/AgentList'));
-server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
-server.get(Config.path + '/users/:username/agents/:id/versions/', EnsureAuthentication, require('./routes/user/AgentVersionList'));
-
-server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', EnsureAuthentication, require('./routes/user/AgentVersionDetail'));
-server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
 server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
+
+server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
+server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
+
+server.get(Config.path + '/users/:username/agents/:id/versions/', EnsureAuthentication, require('./routes/user/AgentVersionList'));
+server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', EnsureAuthentication, require('./routes/user/AgentVersionDetail'));
 
 server.get(Config.path + '/battle/queue/:id/', EnsureAuthentication, require('./routes/battle/BattleQueueGet'));
 

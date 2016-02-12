@@ -30,16 +30,12 @@ function UserList(req, res) {
 			var paginatedResponse = _.extend({}, paginated);
 			for (var docIndex in paginatedResponse.docs) {
 				(function (_docIndex) {
-
-
 					if (paginatedResponse.docs[_docIndex].github.avatar_url) {
 						paginatedResponse.docs[_docIndex].avatar = paginatedResponse.docs[_docIndex].github.avatar_url;
 					} else if (paginatedResponse.docs[_docIndex].github.email) {
 						paginatedResponse.docs[_docIndex].avatar = "http://www.gravatar.com/avatar/" + Crypto.createHash('md5').update(paginatedResponse.docs[_docIndex].github.email).digest('hex');
 					}
 					delete paginatedResponse.docs[_docIndex].github;
-
-
 					promises.push(Agent.count({user: paginatedResponse.docs[_docIndex]._id})
 						.then(function (count) {
 							paginatedResponse.docs[_docIndex].agents = count;
