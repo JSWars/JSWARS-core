@@ -23,12 +23,13 @@ module.exports = function (grunt) {
 		copy: {
 			pro: {
 				files: [
-					{expand: true, cwd: 'app/', src: ['**'], dest: 'build/pro/'}
+					{expand: true, cwd: 'app/', src: ['**'], dest: 'build/pro/'},
+					{expand: true, cwd: './', src: ['node_modules/**'], dest: 'build/pro'}
 				]
 			},
 			"config-pro": {
 				files: [
-					{expand: true, cwd: 'env/pro/', src: ['**'], dest: 'build/pro/'}
+					{expand: true, cwd: 'env/pro/', src: ['**'], dest: 'build/pro/app'}
 				]
 			}
 		},
