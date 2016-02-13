@@ -121,7 +121,7 @@ if (debug) {
 
 //Start Queue Runner
 Logger.log('debug', "Starting QueueRunner");
-var queueRunner = fork('app/engine/QueueRunner', [], {});
+var queueRunner = fork('engine/QueueRunner', [], {});
 
 //Subscribe QueueRunner to DB updates
 postal.subscribe({
