@@ -23,7 +23,6 @@
     "passport-local": "^1.0.0",
     "pathfinding": "^0.4.13",
     "postal": "^1.0.7",
-    "prerender-node": "^2.2.0",
     "q": "^1.4.1",
     "underscore": "^1.7.0",
     "winston": "^1.1.1"
