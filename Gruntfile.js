@@ -29,7 +29,7 @@ module.exports = function (grunt) {
 			},
 			"config-pro": {
 				files: [
-					{expand: true, cwd: 'env/pro/', src: ['**'], dest: 'build/pro/app'}
+					{expand: true, cwd: 'env/pro/', src: ['**'], dest: 'build/pro'}
 				]
 			}
 		},
