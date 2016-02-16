@@ -38,7 +38,7 @@ server.use(ExpressSession({
 	resave: true,
 	saveUninitialized: true,
 	secret: 'a6277604a',
-	store: new MongoStore({mongoose_connection: Mongoose.connection})
+	store: new MongoStore({mongooseConnection: Mongoose.connection})
 }));
 server.use(Passport.initialize());
 server.use(Passport.session()); // persistent login sessions
@@ -78,29 +78,29 @@ Logger.log('debug', "Loading routes");
 
 //Session Routes
 server.get(Config.path + '/status', require('./routes/Status'));
-server.get(Config.path + '/session', EnsureAuthentication, require('./routes/Session'));
-server.get(Config.path + '/login/github', require('./routes/login/github/Entry'));
-server.get(Config.path + '/login/github/callback', Passport.authenticate('github'), require('./routes/login/github/Callback'));
-server.get(Config.path + '/logout', require('./routes/Logout'));
+server.get(Config.path + '/session', EnsureAuthentication, require('./routes/session/Session'));
+server.get(Config.path + '/login/github', require('./routes/session/github/Entry'));
+server.get(Config.path + '/login/github/callback', Passport.authenticate('github'), require('./routes/session/github/Callback'));
+server.get(Config.path + '/logout', require('./routes/session/Logout'));
 
 //Users
-server.get(Config.path + '/users/:username', require('./routes/User'));
+server.get(Config.path + '/users/:username', require('./routes/user/User'));
 server.get(Config.path + '/users/', require('./routes/user/UserList'));
-server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/UserUpdate'));
+server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/user/UserUpdate'));
 
 //Tournaments
 server.get(Config.path + '/tournaments', EnsureAuthentication, require('./routes/tournament/TournamentList'));
 server.post(Config.path + '/tournaments/:id/join', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
 
 //Agents
-server.get(Config.path + '/users/:username/agents', require('./routes/user/AgentList'));
-server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/user/AgentNew'));
+server.get(Config.path + '/users/:username/agents', require('./routes/agent/AgentList'));
+server.post(Config.path + '/users/:username/agents', EnsureAuthentication, require('./routes/agent/AgentNew'));
 
-server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentDetail'));
-server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/user/AgentUpdate'));
+server.get(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/agent/AgentDetail'));
+server.put(Config.path + '/users/:username/agents/:id', EnsureAuthentication, require('./routes/agent/AgentUpdate'));
 
-server.get(Config.path + '/users/:username/agents/:id/versions/', EnsureAuthentication, require('./routes/user/AgentVersionList'));
-server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', EnsureAuthentication, require('./routes/user/AgentVersionDetail'));
+server.get(Config.path + '/users/:username/agents/:id/versions/', EnsureAuthentication, require('./routes/agent/AgentVersionList'));
+server.get(Config.path + '/users/:username/agents/:id/versions/:versionId', EnsureAuthentication, require('./routes/agent/AgentVersionDetail'));
 
 server.get(Config.path + '/battle/queue/:id/', EnsureAuthentication, require('./routes/battle/BattleQueueGet'));
 

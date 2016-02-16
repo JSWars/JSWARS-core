@@ -1,6 +1,6 @@
 var User, Crypto;
 
-User = require('../model/User');
+User = require('../../model/User');
 Crypto = require('crypto');
 
 

@@ -1,6 +1,6 @@
 var User;
 
-User = require('../model/User');
+User = require('../../model/User');
 
 function UserUpdateRoute(req, res) {
 
