@@ -1,8 +1,12 @@
-var _, AgentVersion, User;
+var Q, _, mongoose, AgentVersion, User, Battle;
 
+Q = require("q");
 _ = require('underscore');
+mongoose = require('mongoose');
 AgentVersion = require('../../model/AgentVersion');
 User = require('../../model/User');
+Battle = require('../../model/Battle');
+
 
 function AgentVersionListRoute(req, res) {
 
@@ -10,6 +14,13 @@ function AgentVersionListRoute(req, res) {
 	var user = req.session.internalUser;
 
 	if (user.username !== req.params.username) {
+		res.status(400).end();
+		return;
+	}
+
+	var page = req.query.page || 1;
+
+	if (page < 0) {
 		res.status(400).end();
 		return;
 	}
@@ -22,18 +33,31 @@ function AgentVersionListRoute(req, res) {
 		return;
 	}
 
-	AgentVersion.find({
+	var query = {
 		agent: agentId
-	})
-		.sort('-moment')
-		.lean(true)
-		.limit(10)
-		.exec(function (err, versions) {
-			if (err || versions.length === 0) {
-				res.status(500).json({error: 'ERROR_RECOVERING_AGENT_VERSIONS'}).end();
-				return;
+	};
+
+	var options = {
+		sort: "-moment",
+		lean: true,
+		page: page,
+		limit: 10
+	};
+
+	AgentVersion.paginate(query, options)
+		.then(function (paginated) {
+			var promises = [];
+			for (var docIndex in paginated.docs) {
+				(function (_docIndex) {
+					promises.push(Battle.count({agents: paginated.docs[_docIndex].id}).then(function (count) {
+						paginated.docs[_docIndex].battles = count;
+					}));
+				})(docIndex);
 			}
-			res.json(versions);
+
+			Q.all(promises).then(function () {
+				res.json(paginated);
+			});
 		});
 }
 module.exports = AgentVersionListRoute;

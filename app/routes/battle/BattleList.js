@@ -17,6 +17,8 @@ function List(req, res) {
 		return;
 	}
 
+	var username = req.query.username;
+
 	var promises = [];
 
 	var options = {
@@ -30,13 +32,13 @@ function List(req, res) {
 			var paginatedResponse = _.extend({}, paginated);
 			for (var docIndex in paginatedResponse.docs) {
 				(function (_docIndex) {
-					promises.push(Map.findOne({"_id": paginatedResponse.docs[docIndex].map})
+					/*promises.push(Map.findOne({"_id": paginatedResponse.docs[docIndex].map})
 						.select("-data")
 						.lean(true)
 						.then(function (map) {
 							if (!_.isNull(map))
 								paginatedResponse.docs[_docIndex].map = map;
-						}));
+						}));*/
 					promises.push(Agent.find({
 						_id: {$in: paginatedResponse.docs[_docIndex].agents}
 					})
