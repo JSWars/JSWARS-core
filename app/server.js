@@ -89,8 +89,8 @@ server.get(Config.path + '/users/', require('./routes/user/UserList'));
 server.put(Config.path + '/users/:username', EnsureAuthentication, require('./routes/user/UserUpdate'));
 
 //Tournaments
-server.get(Config.path + '/tournaments', EnsureAuthentication, require('./routes/tournament/TournamentList'));
-server.post(Config.path + '/tournaments/:id/join', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
+server.get(Config.path + '/tournaments', require('./routes/tournament/TournamentList'));
+server.post(Config.path + '/tournaments/:id', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
 
 //Agents
 server.get(Config.path + '/users/:username/agents', require('./routes/agent/AgentList'));

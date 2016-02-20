@@ -16,8 +16,17 @@ function AgentListRoute(req, res) {
 		return;
 	}
 
+	var username = req.params.username;
+
+	var search = req.query.search;
+	var query = {};
+	if (search != undefined) {
+		query.name = {"$regex": search, "$options": "i"};
+	}
+
+
 	User.findOne({
-		'username': req.params.username
+		'username': username
 	})
 		.exec(function (err, user) {
 			if (err) {
@@ -30,10 +39,10 @@ function AgentListRoute(req, res) {
 				return;
 			}
 
-			Agent.paginate({user: user._id}, {
+			Agent.paginate(_.extend({user: user._id}, query), {
 				sort: '-moment',
 				lean: true,
-				page: page
+				page: page,
 			})
 				.then(function (paginated) {
 					if (err) {
