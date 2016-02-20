@@ -230,6 +230,9 @@ Game.prototype.loadUnitActions = function () {
 		Logger.log('debug', 'Loading actions for agent ' + _team.id);
 		var agentOutput = _team.agent.tick();
 		for (var unit in agentOutput.actions) {
+			unit.moveTo=undefined;
+			unit.attackTo=undefined;
+
 			for (var action in agentOutput.actions[unit]) {
 				_team.units[unit][action + "Handler"](agentOutput.actions[unit][action]);
 			}
@@ -248,13 +251,14 @@ Game.prototype.unitsMove = function () {
 			_.each(_team.units, function (_unit) {
 				//Actualizar posición de las unidades que están vivas
 				if (_unit.alive) {
+
 					_unit.update();
 				}
 			}, this);
 		}, this);
 	} catch (e) {
 		Logger.log('error', e);
-		console.log(e)
+		console.log(e);
 	}
 };
 
