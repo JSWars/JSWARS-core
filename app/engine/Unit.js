@@ -288,7 +288,6 @@ Unit.prototype.move = function () {
 	}
 
 
-	this.moveTo = undefined;
 
 };
 
