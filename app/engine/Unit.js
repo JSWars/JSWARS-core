@@ -288,8 +288,6 @@ Unit.prototype.move = function () {
 	}
 
 
-	this.moveTo = undefined;
-
 };
 
 Unit.prototype.stop = function () {
