@@ -150,6 +150,7 @@ function runBattleQueueItem(battleQueueItem) {
 						battleEntity.save(function (err) {
 							if (err) {
 								Logger.log('error', 'Can\'t create result entity');
+								Logger.log('error',err);
 							}
 						});
 
