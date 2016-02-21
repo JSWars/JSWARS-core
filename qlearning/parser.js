@@ -2,7 +2,6 @@
 var jsonfile = require('jsonfile');
 var util = require('util');
 var fs = require('fs');
-
 var Vector2D=require('./Vector2D');
 
 function State(name){
@@ -131,16 +130,33 @@ var file="battle.json";
 
 var learner = new QLearner(0.8);
 var centroides=[];
-centroides.push([   1.005,   -1.347, 8000.000, 8000.000]);
-centroides.push([  -1.265,   -0.141, 8000.000, 8000.000]);
+centroides.push([   5.607,   -1.089, 8000.000, 8000.000]);
+centroides.push([  -1.421,    3.114, 8000.000, 8000.000]);
+centroides.push([   1.371,   -0.596, 8000.000, 8000.000]);
+centroides.push([8000.000, 8000.000,    0.979,   -1.359]);
+centroides.push([  -1.455,   -1.257, 8000.000, 8000.000]);
+centroides.push([  -0.063,    0.233, 8000.000, 8000.000]);
 centroides.push([8000.000, 8000.000, 8000.000, 8000.000]);
-centroides.push([   1.432,    1.125, 8000.000, 8000.000]);
-centroides.push([  -5.376,   -2.594, 8000.000, 8000.000]);
-centroides.push([   0.368,    2.141,   -2.023,    0.968]);
-centroides.push([   6.101,    0.446, 8000.000, 8000.000]);
-centroides.push([  -0.693,   -1.068,    0.664,   -1.598]);
-centroides.push([   1.553,    0.241,    1.990,   -0.037]);
-centroides.push([  -0.916,    5.034, 8000.000, 8000.000]);
+centroides.push([  -2.322,   -6.415, 8000.000, 8000.000]);
+centroides.push([   0.292,   -0.245,    1.178,   -0.740]);
+centroides.push([  -1.593,    0.289, 8000.000, 8000.000]);
+centroides.push([   2.715,    6.011, 8000.000, 8000.000]);
+centroides.push([   3.647,    2.134, 8000.000, 8000.000]);
+centroides.push([   1.696,    1.306, 8000.000, 8000.000]);
+centroides.push([   1.965,   -6.459, 8000.000, 8000.000]);
+centroides.push([  -0.015,   -0.024, 8000.000, 8000.000]);
+centroides.push([   0.092,   -0.360, 8000.000, 8000.000]);
+centroides.push([  -2.419,    5.827, 8000.000, 8000.000]);
+centroides.push([  -4.767,   -1.382, 8000.000, 8000.000]);
+centroides.push([   1.323,    2.031,   -2.388,    1.862]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+centroides.push([   1.408,   -2.130, 8000.000, 8000.000]);
+
 
 
 
@@ -173,14 +189,12 @@ function getEstado(array){
 
 var readFile=function(file){
 
-	jsonfile.readFile(file,function(err,obj){
-		main(obj);
-	});
+	main(jsonfile.readFileSync(file));
 };
 
-var writeFile=function(texto){
+var writeFile=function(filename,texto){
 //ESCRIBIMIOS FICHERO
-fs.writeFile("out.arff", texto, function(err) {
+fs.writeFile(filename, texto, function(err) {
 	if(err) {
 		return console.log(err);
 	}
@@ -189,6 +203,11 @@ fs.writeFile("out.arff", texto, function(err) {
 });
 };
 
+var writeJSON=function(filename,obj){
+	jsonfile.writeFile(filename,obj,function(err){
+		console.log(err);
+	});
+}
 
 var unidadCercana=function(frameActual,_unit,idTeam){
 	var unit=frameActual.teams[idTeam].units[_unit];
@@ -258,29 +277,28 @@ var enemigosVivos= function (frameActual,idTeam) {
 
 
 //main
+var wekaData="";
+
+wekaData+="@relation jswars\n";
+wekaData+="@attribute prevenX numeric\n";
+wekaData+="@attribute prevenY numeric\n";
+wekaData+="@attribute prevbulX numeric\n";
+wekaData+="@attribute prevbulY numeric\n";
+wekaData+="@attribute action {atacar,esquivar,avanzar, atacarAvanzar,atacarEsquivar}\n";
+wekaData+="@attribute enX numeric\n";
+wekaData+="@attribute enY numeric\n";
+wekaData+="@attribute bulX numeric\n";
+wekaData+="@attribute bulY numeric\n";
+wekaData+="@attribute rec numeric\n";
+wekaData+="@data\n";
+
 
 var main = function(objtFile){
 
 	var rawBattle=objtFile;
 	var lapso=10;
 
-	var attributos="@relation cosas";
 
-
-	var wekaData="";
-
-	wekaData+="@relation jswars\n";
-	wekaData+="@attribute prevenX numeric\n";
-	wekaData+="@attribute prevenY numeric\n";
-	wekaData+="@attribute prevbulX numeric\n";
-	wekaData+="@attribute prevbulY numeric\n";
-	wekaData+="@attribute action {atacar,esquivar,avanzar, atacarAvanzar,atacarEsquivar}\n";
-	wekaData+="@attribute enX numeric\n";
-	wekaData+="@attribute enY numeric\n";
-	wekaData+="@attribute bulX numeric\n";
-	wekaData+="@attribute bulY numeric\n";
-	wekaData+="@attribute rec numeric\n";
-	wekaData+="@data\n";
 	for(var i=lapso;i<rawBattle.frames.length;i+=1)
 	{
 		var frameActual = rawBattle.frames[i];
@@ -394,11 +412,18 @@ var main = function(objtFile){
 
 	}
 
-	learner.learn(1000);
 
-	console.log(wekaData);
-	writeFile(wekaData);
 
 };
 
 readFile("battle.json");
+readFile("battle2.json");
+readFile("battle3.json");
+readFile("battle4.json");
+readFile("battle5.json");
+readFile("battle6.json");
+learner.learn(1000);
+
+writeJSON("qt.json",learner.rewards);
+
+writeFile("out.arff",wekaData);

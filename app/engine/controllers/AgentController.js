@@ -30,8 +30,8 @@ function AgentController(_id, _game, _teamId) {
 	this.id = _id;
 	this.teamId = _teamId;
 	this.game = _game;
-	this.timeout = 500;
-	this.timeoutStart = 2000;
+	this.timeout = 2500;
+	this.timeoutStart = 20000;
 	this.agent = undefined;
 	this.prepared = false;
 	this.agentVersionId = undefined;
