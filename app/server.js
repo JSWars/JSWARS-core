@@ -90,6 +90,7 @@ server.put(Config.path + '/users/:username', EnsureAuthentication, require('./ro
 
 //Tournaments
 server.get(Config.path + '/tournaments', require('./routes/tournament/TournamentList'));
+server.get(Config.path + '/tournaments/:id',  require('./routes/tournament/TournamentDetail'));
 server.post(Config.path + '/tournaments/:id', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
 
 //Agents

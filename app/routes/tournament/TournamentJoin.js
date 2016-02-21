@@ -25,17 +25,25 @@ function Join(req, res) {
 		return;
 	}
 
-	var tournament = req.body.tournament;
+	var tournament = req.body.id;
 
 	if (_.isUndefined(tournament)) {
 		res.status(400).end();
 		return;
 	}
 
+	var getMax = function (rounds) {
+		var max = 0;
+
+		for (var i = 1; i <= rounds; i++) {
+			max += i * 2;
+		}
+		return max
+	};
+
 	var promises = [];
 
 	promises.push(Agent.findById(agent)
-		.populate('user')
 		.lean(true)
 		.exec());
 
@@ -45,27 +53,48 @@ function Join(req, res) {
 		.exec());
 
 	promises.push(TournamentRegistration.find({tournament: tournament})
-		.populate('agent', ['user'])
+		.populate('agent')
 		.lean(true)
 		.exec());
 
 
 	Q.allSettled(promises).spread(function (_agent, _tournament, _tournamentRegistrations) {
-		if (_.isNull(_agent)) {
+		if (_.isNull(_agent.value)) {
 			res.status(400).json({errorId: "AGENT_NOT_FOUND"}).end();
 			return;
 		}
-		if (_agent.user.username != user.username) {
+		if (_agent.value.user != user._id) {
 			res.status(403).json({errorId: "UNAUTHORIZED"}).end();
 			return;
 		}
-		if (_.isNull(_tournament)) {
-			res.status(404).json({errorId: "TOURNMANET_NOT_FOUND"}).end();
+		if (_.isNull(_tournament.value)) {
+			res.status(404).json({errorId: "TOURNAMENT_NOT_FOUND"}).end();
 			return;
 		}
 
-		console.log(_tournamentRegistrations);
+		if (_tournamentRegistrations.value.length >= getMax(_tournament.value.rounds)) {
+			res.status(400).json({errorId: "TOURNAMENT_FULL"});
+		}
 
+		if (_.find(_tournamentRegistrations.value, function (regis) {
+				return regis.agent.user == user._id;
+			})) {
+			res.status(404).json({errorId: "ALREADY_JOINED"}).end();
+			return;
+		}
+
+		var registration = new TournamentRegistration();
+		registration.tournament = _tournament.value._id;
+		registration.agent = _agent.value._id;
+		registration.moment = new Date();
+		registration.save(function (err, arg) {
+			if (err) {
+				Logger.log('error', err);
+				res.status(500).end();
+				return;
+			}
+			res.status(204).end();
+		})
 	});
 
 }

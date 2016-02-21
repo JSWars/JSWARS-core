@@ -13,7 +13,6 @@ Tournament = new Mongoose.Schema({
 	moment: {type: Date, required: true},
 	start: {type: Date, required: false}
 });
-////agents: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}],
 Tournament.plugin(mongoosePaginate);
 
 module.exports = Mongoose.model(ModelName, Tournament);

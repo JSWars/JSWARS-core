@@ -8,15 +8,14 @@ User = require('../../model/User');
 
 function AgentListRoute(req, res) {
 
-
-	var page = req.query.page || 1;
-
-	if (page < 0) {
-		res.status(400).end();
-		return;
-	}
+	var page = Math.max(req.query.page, 0) || 1;
 
 	var username = req.params.username;
+
+	if (username === undefined) {
+		res.status(500).json("NO_USER_SPECIFIED").end();
+		return;
+	}
 
 	var search = req.query.search;
 	var query = {};

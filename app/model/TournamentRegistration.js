@@ -8,6 +8,7 @@ mongoosePaginate = require('mongoose-paginate');
 TournamentRegistration = new Mongoose.Schema({
 	tournament: {type: Mongoose.Schema.Types.ObjectId, ref: 'Tournament', required: true},
 	agent: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true},
+	status: {type: String, enum: ['PENDING', 'RUNNING', 'ENDED','ERROR']},
 	moment: {type: Date, required: true}
 });
 
