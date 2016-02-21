@@ -230,9 +230,6 @@ Game.prototype.loadUnitActions = function () {
 		Logger.log('debug', 'Loading actions for agent ' + _team.id);
 		var agentOutput = _team.agent.tick();
 		for (var unit in agentOutput.actions) {
-			unit.moveTo=undefined;
-			unit.attackTo=undefined;
-
 			for (var action in agentOutput.actions[unit]) {
 				_team.units[unit][action + "Handler"](agentOutput.actions[unit][action]);
 			}
