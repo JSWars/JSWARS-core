@@ -22,6 +22,7 @@ var GithubStrategy = require('passport-github').Strategy;
 //Model
 var User = require('./model/User');
 
+var cpus = require('os').cpus().length;
 
 //Connect to Mongo
 Mongoose.connect(Config.db.url);

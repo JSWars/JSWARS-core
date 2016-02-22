@@ -1,8 +1,9 @@
-var _, mongoose, Q, Tournament, TournamentRegistration, Agent, Map, User;
+var _, mongoose, Q, Tournament, Battle, TournamentRegistration, Agent, Map, User;
 
 _ = require('underscore');
 mongoose = require('mongoose');
 Q = require("q");
+Battle = require('../../model/Battle');
 Tournament = require('../../model/Tournament');
 TournamentRegistration = require('../../model/TournamentRegistration');
 
@@ -17,15 +18,24 @@ function List(req, res) {
 		return;
 	}
 
+	var joinable = req.query.joinable === "true";
+
 	var promises = [];
 
 	var options = {
 		lean: true,
 		page: page,
-		sort: {moment: -1},
+		sort: {moment: -1}
 	};
 
-	Tournament.paginate({}, options)
+	var query = {};
+	if (joinable) {
+		query.status = 'PENDING';
+	} else {
+		query.status = {$ne: 'PENDING'};
+	}
+
+	Tournament.paginate(query, options)
 		.then(function (paginated) {
 			for (var docIndex in paginated.docs) {
 				(function (_docIndex) {
@@ -41,6 +51,13 @@ function List(req, res) {
 								//	}) != undefined
 							})
 					)
+					if (!joinable) {
+						promises.push(Battle.findOne({tournament: paginated.docs[_docIndex], tournamentRound: 1})
+							.populate('winner')
+							.then(function (battle) {
+								paginated.docs[_docIndex].winner = battle.winner;
+							}));
+					}
 				})
 				(docIndex);
 			}
