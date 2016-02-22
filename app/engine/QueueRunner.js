@@ -83,6 +83,7 @@ function runBattleQueueItem(battleQueueItem) {
 		battleEntity.save(function (err) {
 			if (err) {
 				Logger.log('error', 'New battle can\'t be saved');
+				return;
 			}
 			Logger.log('info', 'Battle saved');
 			battleQueueItem.battle = battleEntity;
@@ -102,7 +103,11 @@ function runBattleQueueItem(battleQueueItem) {
 
 				function startCallback() {
 					battleEntity.set('status', 'RUNNING');
-					battleEntity.save();
+					battleEntity.save(function (err) {
+						if (err) {
+							Logger.log('error', err);
+						}
+					});
 					Logger.log('info', 'Battle started');
 				}
 
@@ -114,6 +119,9 @@ function runBattleQueueItem(battleQueueItem) {
 					});
 
 					battleFrameEntity.save(function (err, response) {
+						if (err) {
+							Logger.log('error', err);
+						}
 					});
 				}
 
@@ -142,15 +150,18 @@ function runBattleQueueItem(battleQueueItem) {
 					}
 
 					Logger.log('info', 'Battle ended');
+
+					battleEntity.save(function (err) {
+						if (!err) {
+							process.send({
+								name: 'ENDED',
+								data: battleQueueItem._id
+							});
+						} else {
+							Logger.log('error', err);
+						}
+					});
 				}
-				battleEntity.save(function (err) {
-					if (!err) {
-						process.send({
-							name: 'ENDED',
-							data: battleQueueItem._id
-						});
-					}
-				});
 
 				newGame.run(startCallback, tickCallback, endCallback);
 

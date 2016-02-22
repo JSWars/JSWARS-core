@@ -15,8 +15,8 @@ Battle = new Mongoose.Schema({
 	duration: {type: Number, required: false},
 	tournament: {type: Mongoose.Schema.Types.ObjectId, ref: 'Tournament', required: false},
 	tournamentRound: {type: Number, required: false},
-	winner: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true},
-	loosers: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}]
+	winner: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: false},
+	loosers: [{type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: false}]
 });
 
 Battle.plugin(mongoosePaginate);

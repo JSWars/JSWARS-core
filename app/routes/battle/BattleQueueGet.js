@@ -14,11 +14,9 @@ function QueueItem(req, res) {
 	if (_.isUndefined(user)) {
 		res.status(401).end();
 		return;
-
 	}
 
 	var id = req.params.id;
-
 
 	if (id === undefined) {
 		res.status(404).end();
@@ -26,6 +24,7 @@ function QueueItem(req, res) {
 	}
 
 	BattleQueue.findById(id)
+		.populate('battle')
 		.lean()
 		.exec(function (err, queueItem) {
 			if (err) {
@@ -33,26 +32,35 @@ function QueueItem(req, res) {
 				res.status(500).end();
 				return;
 			}
-			switch (queueItem.status) {
-				case 'PENDING':
-				case 'RUNNING':
-					Logger.log('info', 'Queue item pending or running');
-					postal.subscribe({
-						channel: "queue",
-						topic: "battle.ended." + id,
-						callback: function (model) {
-							QueueItem(req, res);
-						}
-					});
-					break;
-				case 'ENDED':
-					Logger.log('info', 'Queue item ended');
-					res.status(200).json(queueItem).end();
-					break;
-				case 'ERROR':
-					Logger.log('info', 'Queue item error');
-					res.status(500).json(queueItem).end();
-					break;
+			function listenPostal() {
+				Logger.log('info', 'Queue item pending or running');
+				postal.subscribe({
+					channel: "queue",
+					topic: "battle.ended." + id,
+					callback: function (model) {
+						QueueItem(req, res);
+					}
+				});
+			}
+
+			if (queueItem.battle == undefined || queueItem.battle == null) {
+				listenPostal();
+			} else {
+
+				switch (queueItem.battle.status) {
+					case 'PENDING':
+					case 'RUNNING':
+						listenPostal();
+						break;
+					case 'ENDED':
+						queueItem.battle = queueItem.battle._id;
+						res.status(200).json(queueItem).end();
+						break;
+					case 'ERROR':
+						queueItem.battle = queueItem.battle._id;
+						res.status(500).json(queueItem).end();
+						break;
+				}
 			}
 		});
 

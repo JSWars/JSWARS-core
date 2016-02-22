@@ -97,7 +97,7 @@ AgentController.prototype.prepare = function () {
 				deferred.resolve();
 			} catch (error) {
 				Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [init] failed to execute VM');
-				_self.logFromVm(error.stack, 'error');
+				_self.logFromVm(error.stack, 'warn');
 				deferred.reject({
 					error: 'ERROR_LOADING_AGENT_CODE',
 					agent: _self.agentVersionId
@@ -128,7 +128,7 @@ AgentController.prototype.tick = function () {
 		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] executed successfully in VM');
 	} catch (error) {
 		Logger.log('debug', '(AgentVersion: ' + _self.agentVersionId + ') User code [tick] failed to execute VM');
-		_self.logFromVm(error.stack, 'error');
+		_self.logFromVm(error.stack, 'warn');
 	}
 
 	return this.context.output;
