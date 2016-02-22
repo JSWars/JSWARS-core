@@ -1,4 +1,4 @@
-var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleResult, BattleQueue, Logger;
+var _, Map, Battle, BattleFrame, Mongoose, Game, Unit, Config, BattleQueue, Logger;
 
 Config = require('../config');
 _ = require("underscore");
@@ -46,8 +46,8 @@ function runBattleQueueItem(battleQueueItem) {
 
 		if (map === null) {
 			Logger.log('error', 'No map found.');
-			battleQueueItem.status = 'ERROR';
-			battleQueueItem.save(function (err) {
+			battleEntity.status = 'ERROR';
+			battleEntity.save(function (err) {
 				if (!err) {
 					process.send({
 						name: 'ERROR',
@@ -101,8 +101,8 @@ function runBattleQueueItem(battleQueueItem) {
 			.then(function initializeResolved() {
 
 				function startCallback() {
-					battleQueueItem.set('status', 'RUNNING');
-					battleQueueItem.save();
+					battleEntity.set('status', 'RUNNING');
+					battleEntity.save();
 					Logger.log('info', 'Battle started');
 				}
 
@@ -120,18 +120,8 @@ function runBattleQueueItem(battleQueueItem) {
 				function endCallback(gameResult, gameTicks) {
 
 					battleEntity.set('duration', gameTicks / battleEntity.fps);
-					battleEntity.save(function (err) {
-					});
+					battleEntity.set('status', 'ENDED');
 
-					battleQueueItem.set('status', 'ENDED');
-					battleQueueItem.save(function (err) {
-						if (!err) {
-							process.send({
-								name: 'ENDED',
-								data: battleQueueItem._id
-							});
-						}
-					});
 					if (gameResult === -1) {
 						Logger.log('info', 'Battle ends with timeout');
 					} else {
@@ -141,31 +131,33 @@ function runBattleQueueItem(battleQueueItem) {
 						battleEntity.loosers = [];
 
 						var battleAgents = battleEntity.get('agents');
-						for(var i = 0; i < battleAgents.length; i++){
-							if(battleAgents[i].toString() != battleEntity.winner.toString()){
+						for (var i = 0; i < battleAgents.length; i++) {
+							if (battleAgents[i].toString() != battleEntity.winner.toString()) {
 								battleEntity.loosers.push(battleAgents[i]);
 							}
 						}
 
-						battleEntity.save(function (err) {
-							if (err) {
-								Logger.log('error', 'Can\'t create result entity');
-								Logger.log('error',err);
-							}
-						});
 
 						Logger.log('info', 'Battle ends with a winner team')
 					}
 
 					Logger.log('info', 'Battle ended');
 				}
+				battleEntity.save(function (err) {
+					if (!err) {
+						process.send({
+							name: 'ENDED',
+							data: battleQueueItem._id
+						});
+					}
+				});
 
 				newGame.run(startCallback, tickCallback, endCallback);
 
 			}, function initializeRejected(errors) {
 				Logger.log('error', 'Unknown error during game initializing');
-				battleQueueItem.status = 'ERROR';
-				battleQueueItem.save(function (err) {
+				battleEntity.status = 'ERROR';
+				battleEntity.save(function (err) {
 					if (!err) {
 						process.send({
 							name: 'ERROR',

@@ -35,9 +35,10 @@ function List(req, res) {
 								var count = results.length;
 								paginated.docs[_docIndex].registrations = count;
 								paginated.docs[_docIndex].max = Math.pow(2, (paginated.docs[_docIndex].rounds));
-								paginated.docs[_docIndex].joined = user !== undefined && _.find(results, function (regis) {
-										return regis.agent.user == user._id
-									}) != undefined
+								paginated.docs[_docIndex].joined = false;
+								//paginated.docs[_docIndex].joined = user !== undefined && _.find(results, function (regis) {
+								//		return regis.agent.user == user._id
+								//	}) != undefined
 							})
 					)
 				})

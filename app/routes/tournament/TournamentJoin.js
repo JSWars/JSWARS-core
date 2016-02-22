@@ -72,16 +72,22 @@ function Join(req, res) {
 			return;
 		}
 
-		if (_tournamentRegistrations.value.length >= getMax(_tournament.value.rounds)) {
-			res.status(400).json({errorId: "TOURNAMENT_FULL"});
-		}
-
-		if (_.find(_tournamentRegistrations.value, function (regis) {
-				return regis.agent.user == user._id;
-			})) {
-			res.status(404).json({errorId: "ALREADY_JOINED"}).end();
+		if (_tournament.value.status != "PENDING") {
+			rest.status(500).json({errorId: "INVALID_TOURNAMENT_STATE"});
 			return;
 		}
+
+		if (_tournamentRegistrations.value.length >= getMax(_tournament.value.rounds)) {
+			res.status(400).json({errorId: "TOURNAMENT_FULL"});
+			return;
+		}
+
+		//if (_.find(_tournamentRegistrations.value, function (regis) {
+		//		return regis.agent.user == user._id;
+		//	})) {
+		//	res.status(404).json({errorId: "ALREADY_JOINED"}).end();
+		//	return;
+		//}
 
 		var registration = new TournamentRegistration();
 		registration.tournament = _tournament.value._id;

@@ -90,7 +90,7 @@ server.put(Config.path + '/users/:username', EnsureAuthentication, require('./ro
 
 //Tournaments
 server.get(Config.path + '/tournaments', require('./routes/tournament/TournamentList'));
-server.get(Config.path + '/tournaments/:id',  require('./routes/tournament/TournamentDetail'));
+server.get(Config.path + '/tournaments/:id', require('./routes/tournament/TournamentDetail'));
 server.post(Config.path + '/tournaments/:id', EnsureAuthentication, require('./routes/tournament/TournamentJoin'));
 
 //Agents
@@ -133,6 +133,29 @@ postal.subscribe({
 		queueRunner.send({
 			name: "RUN",
 			data: model._id.toString()
+		});
+	}
+});
+
+
+if (debug) {
+	var DEBUG_PORT = 50001;
+	Logger.log('debug', "Process is being debugged. Opening debug in QueueRunner. Port " + DEBUG_PORT);
+	process.execArgv.push('--debug=' + (DEBUG_PORT ));
+}
+
+
+Logger.log('debug', "Starting TournamentRunner");
+var tournamentRunner = fork('engine/TournamentRunner', [], {});
+
+postal.subscribe({
+	channel: "models",
+	topic: "tournament.join",
+	callback: function (model) {
+		Logger.log('info', "New tournament detected. Sending a message to TournamentRunner");
+		tournamentRunner.send({
+			name: "RUN",
+			data: model
 		});
 	}
 });

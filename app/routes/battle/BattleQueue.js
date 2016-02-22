@@ -44,7 +44,6 @@ function QueueRequest(req, res) {
 		Logger.log('debug', 'Agents found. Creating a battle.');
 		var battleQueueEntity = new BattleQueue();
 		battleQueueEntity.agents = foundAgents;
-		battleQueueEntity.status = "PENDING";
 		battleQueueEntity.requester = user._id;
 		battleQueueEntity.units = units;
 		battleQueueEntity.moment = new Date();
