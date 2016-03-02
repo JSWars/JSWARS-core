@@ -47,6 +47,7 @@ function BattleDetail(req, res) {
 					for (var i in agents) {
 						var agent = agents[i];
 						teams[i] = {
+							agent: agent.id,
 							name: agent.name,
 							color: agent.color || '#ffffff',
 							user: {

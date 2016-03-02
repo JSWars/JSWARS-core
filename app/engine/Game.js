@@ -89,12 +89,12 @@ Game.prototype.run = function (_startCallBack, _tickCallBack, _endCallback) {
 		_startCallBack();
 	}
 
-	while (this.checkGameFinished() === false) {
+	do {
 		this.tick();
 		if (typeof _tickCallBack === 'function') {
 			_tickCallBack(this.totalTicks, this.getGameFrame());
 		}
-	}
+	} while (this.checkGameFinished() === false);
 
 	if (typeof _endCallback === 'function') {
 		_endCallback(this.checkGameFinished(), this.totalTicks);
@@ -243,20 +243,14 @@ Game.prototype.loadUnitActions = function () {
  * Update all the players creatures positions
  */
 Game.prototype.unitsMove = function () {
-	try {
-		_.each(this.teams, function (_team) {
-			_.each(_team.units, function (_unit) {
-				//Actualizar posición de las unidades que están vivas
-				if (_unit.alive) {
-
-					_unit.update();
-				}
-			}, this);
+	_.each(this.teams, function (_team) {
+		_.each(_team.units, function (_unit) {
+			//Actualizar posición de las unidades que están vivas
+			if (_unit.alive) {
+				_unit.update();
+			}
 		}, this);
-	} catch (e) {
-		Logger.log('error', e);
-		console.log(e);
-	}
+	}, this);
 };
 
 /**
@@ -282,7 +276,6 @@ Game.prototype.unitAttack = function () {
  */
 Game.prototype.checkPosition = function (_position) {
 	Util.isInstance(_position, Vector2D);
-
 	return this.map.isOnCollision(_position);
 };
 
@@ -313,22 +306,6 @@ Game.prototype.checkUnitHit = function (_bullet) {
 	return hit;
 };
 
-
-/**
- * Obtiene una posicion libre del mapa
- * @returns {Vector2D}
- */
-Game.prototype.getRandomFreeCell = function () {
-	//Posición aleatoria
-	var rx = Math.floor(Math.random() * this.map.width);
-	var ry = Math.floor(Math.random() * this.map.height);
-	if (this.checkPosition(new Vector2D(rx, ry))) {
-		return this.getRandomFreeCell();
-	}
-	return new Vector2D(rx + 0.5, ry + 0.5);
-};
-
-
 /*
  * AGENT FUNCTIONS
  */
@@ -351,7 +328,7 @@ Game.prototype.getGameState = function () {
 
 	var bullets = [];
 	_.each(this.bullets, function (_bullet) {
-		var bulletPicked = _.pick(_bullet, "id", "teamId", "position","angle", "radius");
+		var bulletPicked = _.pick(_bullet, "id", "teamId", "position", "angle", "radius");
 		bullets.push(bulletPicked);
 
 	});
