@@ -155,7 +155,9 @@ function runBattleQueueItem(battleQueueItem) {
 						if (!err) {
 							process.send({
 								name: 'ENDED',
-								data: battleQueueItem._id
+								data: {
+									id: battleQueueItem._id
+								}
 							});
 						} else {
 							Logger.log('error', err);
