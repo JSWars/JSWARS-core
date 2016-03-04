@@ -29,7 +29,7 @@ function QueueItem(req, res) {
 		.exec(function (err, queueItem) {
 			if (err) {
 				Logger.log('error', 'Can\'t find queue item');
-				res.status(500).end();
+				res.status(500).json({errorID: "ITEM_QUEUE_NOT_FOUND"}).end();
 				return;
 			}
 			function listenPostal() {
@@ -37,8 +37,15 @@ function QueueItem(req, res) {
 				postal.subscribe({
 					channel: "queue",
 					topic: "battle.ended." + id,
-					callback: function (model) {
+					callback: function (data) {
 						QueueItem(req, res);
+					}
+				});
+				postal.subscribe({
+					channel: "queue",
+					topic: "battle.error." + id,
+					callback: function (data) {
+						res.status(500).json({errorId: data}).end();
 					}
 				});
 			}
@@ -58,7 +65,7 @@ function QueueItem(req, res) {
 						break;
 					case 'ERROR':
 						queueItem.battle = queueItem.battle._id;
-						res.status(500).json(queueItem).end();
+						res.status(500).json({errorId: 'UNKNOWN'}).end();
 						break;
 				}
 			}

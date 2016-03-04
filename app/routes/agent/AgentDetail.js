@@ -19,14 +19,14 @@ function AgentDetailRoute(req, res) {
 
 	if (agentId === undefined || agentId.trim().length === 0) {
 		//Todo: Check valid code!
-		res.status(400).json({error: 'ID_REQUIRED'}).end();
+		res.status(400).json({errorId: 'ID_REQUIRED'}).end();
 		return;
 	}
 
 	Agent.findById(agentId)
 		.exec(function (err, agent) {
 			if (err) {
-				res.status(500).json({error: 'ERROR_RECOVERING_AGENT'}).end();
+				res.status(500).json({errorId: 'ERROR_RECOVERING_AGENT'}).end();
 				return;
 			}
 			if (agent === null) {

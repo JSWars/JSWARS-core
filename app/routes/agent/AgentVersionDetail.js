@@ -28,20 +28,20 @@ function AgentDetailRoute(req, res) {
 
 	if (agentId === undefined || agentId.trim().length === 0) {
 		//Todo: Check valid code!
-		res.status(400).json({error: 'ID_REQUIRED'}).end();
+		res.status(400).json({errorId: 'ID_REQUIRED'}).end();
 		return;
 	}
 
 	if (versionId === undefined || versionId.trim().length === 0) {
 		//Todo: Check valid code!
-		res.status(400).json({error: 'VERSION_ID_REQUIRED'}).end();
+		res.status(400).json({errorId: 'VERSION_ID_REQUIRED'}).end();
 		return;
 	}
 
 	Agent.findById(agentId)
 		.exec(function (err, agent) {
 			if (err) {
-				res.status(500).json({error: 'ERROR_RECOVERING_AGENT'}).end();
+				res.status(500).json({errorId: 'ERROR_RECOVERING_AGENT'}).end();
 				return;
 			}
 			if (agent === null) {
@@ -52,7 +52,7 @@ function AgentDetailRoute(req, res) {
 				.lean()
 				.exec(function (err, versions) {
 					if (err || versions.length === 0) {
-						res.status(500).json({error: 'ERROR_RECOVERING_AGENT_VERSIONS'}).end();
+						res.status(500).json({errorId: 'ERROR_RECOVERING_AGENT_VERSIONS'}).end();
 						return;
 					}
 					res.json(versions);

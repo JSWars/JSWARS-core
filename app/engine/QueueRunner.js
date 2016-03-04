@@ -169,14 +169,14 @@ function runBattleQueueItem(battleQueueItem) {
 				Logger.log('error', 'Unknown error during game initializing');
 				battleEntity.status = 'ERROR';
 				battleEntity.save(function (err) {
-					if (!err) {
-						process.send({
-							name: 'ERROR',
-							data: battleQueueItem._id
+					process.send({
+						name: 'ERROR',
+						data: {
+							id: battleQueueItem._id,
+							reason: errors.error
+						}
+					});
 
-
-						});
-					}
 				});
 			});
 

@@ -21,10 +21,12 @@ function List(req, res) {
 		sort: "-moment",
 		lean: false,
 		page: page,
-		populate: 'agents'
+		populate: 'agents',
 	};
 
-	Battle.paginate({}, options)
+	Battle.paginate({
+		status: {$ne: 'ERROR'}
+	}, options)
 		.then(function (paginated) {
 			User.populate(paginated.docs, {
 				path: 'agents.user',

@@ -5,16 +5,6 @@ vm = require('vm');
 Agent = require('../../model/Agent');
 AgentVersion = require('../../model/AgentVersion');
 
-
-//fs.writeFile("/tmp/test", "Hey there!", function(err) {
-//    if(err) {
-//        console.log(err);
-//    } else {
-//        console.log("The file was saved!");
-//    }
-//});
-
-
 function AgentNewRoute(req, res) {
 
 	//Check user is logged
@@ -30,13 +20,13 @@ function AgentNewRoute(req, res) {
 
 	//Validations: Not empty or only space
 	if (name === undefined || name.trim().length === 0) {
-		res.status(400).json({error: 'NAME_REQUIRED'}).end();
+		res.status(400).json({errorId: 'NAME_REQUIRED'}).end();
 		return;
 	}
 
 	if (code === undefined || code.trim().length === 0) {
 		//Todo: Check valid code!
-		res.status(400).json({error: 'CODE_REQUIRED'}).end();
+		res.status(400).json({errorId: 'CODE_REQUIRED'}).end();
 		return;
 	}
 
@@ -45,7 +35,7 @@ function AgentNewRoute(req, res) {
 		codeScript = new vm.Script(code);
 	} catch (e) {
 		res.status(400).json({
-				errorId: 'INVALID_JAVASCRIPT',
+				errorId: 'INVALID_SYNTAX',
 				exceptionMessage: e.message
 			}
 		);
@@ -56,19 +46,28 @@ function AgentNewRoute(req, res) {
 		hasTick: false
 	});
 	var hasScript = new vm.Script('hasInit = typeof init === "function";hasTick = typeof tick === "function"; ');
-	codeScript.runInContext(sandbox);
-	hasScript.runInContext(sandbox);
-
-	if(sandbox.hasInit == false || sandbox.hasTick == false){
+	try {
+		codeScript.runInContext(sandbox);
+		hasScript.runInContext(sandbox);
+	} catch (e) {
 		res.status(400).json({
-				errorId: 'NOT_INIT_OR_TICK_FUNCTION'
+				errorId: 'INVALID_CODE',
+				exceptionMessage: e.message
+			}
+		);
+		return;
+	}
+
+	if (sandbox.hasInit == false || sandbox.hasTick == false) {
+		res.status(400).json({
+				errorId: 'NO_INIT_OR_TICK_FUNCTION'
 			}
 		);
 		return;
 	}
 
 
-	Agent.count({name: req.body.name}).then(function (count) {
+	Agent.count({name: req.body.name, user: req.session.internalUser._id}).then(function (count) {
 		if (count > 0) {
 			res.status(400).json({
 					errorId: 'NAME_ALREADY_IN_USE'
@@ -88,7 +87,7 @@ function AgentNewRoute(req, res) {
 		//Save new Agent
 		agentEntity.save(function (err) {
 				if (err) {
-					res.status(500).json({error: 'AGENT_NOT_SAVED'}).end();
+					res.status(500).json({errorId: 'AGENT_NOT_SAVED'}).end();
 					return;
 				}
 				var agentVersionEntity = new AgentVersion({
@@ -99,7 +98,7 @@ function AgentNewRoute(req, res) {
 
 				agentVersionEntity.save(function (err) {
 					if (err) {
-						res.status(500).json({error: 'AGENT_VERSION_NOT_SAVED'}).end();
+						res.status(500).json({errorId: 'AGENT_VERSION_NOT_SAVED'}).end();
 						return;
 					}
 					res.status(201).json(agentEntity);

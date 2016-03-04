@@ -73,12 +73,12 @@ function Join(req, res) {
 		}
 
 		if (_tournament.value.status != "PENDING") {
-			rest.status(500).json({errorId: "INVALID_TOURNAMENT_STATE"});
+			res.status(500).json({errorId: "INVALID_TOURNAMENT_STATE"}).end();
 			return;
 		}
 
 		if (_tournamentRegistrations.value.length >= getMax(_tournament.value.rounds)) {
-			res.status(400).json({errorId: "TOURNAMENT_FULL"});
+			res.status(400).json({errorId: "TOURNAMENT_FULL"}).end();
 			return;
 		}
 

@@ -29,7 +29,7 @@ function AgentVersionListRoute(req, res) {
 
 	if (agentId === undefined || agentId.trim().length === 0) {
 		//Todo: Check valid code!
-		res.status(400).json({error: 'ID_REQUIRED'}).end();
+		res.status(400).json({errorId: 'ID_REQUIRED'}).end();
 		return;
 	}
 

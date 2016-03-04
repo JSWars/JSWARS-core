@@ -166,15 +166,15 @@ queueRunner.on('message', function (message) {
 		case 'ENDED':
 			postal.publish({
 				channel: "queue",
-				topic: "battle.ended." + message.data,
+				topic: "battle.ended." + message.data.id,
 				data: undefined
 			});
 			break;
 		case 'ERROR':
 			postal.publish({
 				channel: "queue",
-				topic: "battle.error." + message.data,
-				data: undefined
+				topic: "battle.error." + message.data.id,
+				data: message.data.reason
 			});
 			break;
 	}
