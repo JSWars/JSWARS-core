@@ -6,6 +6,7 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.zip
 
 pids
 logs
@@ -13,4 +14,7 @@ results
 build
 
 node_modules
+build
 .idea
+app/resources/chunk.json
+out/

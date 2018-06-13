@@ -1,16 +1,17 @@
-var ModelName, _, Mongoose, Agent;
+var ModelName, _, Mongoose, mongoosePaginate, AgentVersion;
 
-ModelName = 'Agent';
+ModelName = 'AgentVersion';
 _ = require('underscore');
 Mongoose = require('mongoose');
+mongoosePaginate = require('mongoose-paginate');
 
-Agent = new Mongoose.Schema({
-    id: {type: Number, index: true},
-    name: String,
-    file: String,
-    moment: Date
+
+AgentVersion = new Mongoose.Schema({
+	code: {type: String, required: true},
+	moment: {type: Date, required: true},
+	agent: {type: Mongoose.Schema.Types.ObjectId, ref: 'Agent', required: true}
 });
 
-module.exports = Agent;
+AgentVersion.plugin(mongoosePaginate);
 
-
+module.exports = Mongoose.model(ModelName, AgentVersion);

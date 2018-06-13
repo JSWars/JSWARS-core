@@ -9,21 +9,24 @@
   "author": "Marcos Perez Ferro y Luis Sebastián Huerta",
   "license": "MIT",
   "dependencies": {
+    "a-star": "^0.2.0",
     "body-parser": "^1.9.2",
-    "coffee-script": "^1.8.0",
+    "connect-mongo": "^1.1.0",
+    "easystarjs": "^0.2.3",
     "express": "^4.10.2",
     "express-session": "^1.9.1",
-    "mongoose": "^3.8.19",
-    "passport": "^0.2.1",
-    "passport-http": "^0.2.2",
+    "jsonfile": "^2.2.3",
+    "mongoose": "^4.2.2",
+    "mongoose-paginate": "^5.0.0",
+    "passport": "^0.3.2",
+    "passport-github": "^1.1.0",
+    "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "require.js": "^0.3.94",
+    "pathfinding": "^0.4.13",
+    "postal": "^1.0.7",
+    "q": "^1.4.1",
     "underscore": "^1.7.0",
-    "validator": "^3.22.1"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-exec": "^0.4.6"
+    "winston": "^2.1.1"
   },
   "jshintConfig": {
     "bitwise": true,
@@ -39,7 +42,7 @@
     "plusplus": true,
     "regexp": true,
     "undef": true,
-    "strict": true,
+    "strict": false,
     "trailing": true,
     "asi": false,
     "boss": false,
@@ -82,7 +85,18 @@
     "passfail": false,
     "white": false,
     "maxerr": 100,
-    "predef": ["require","define"],
+    "predef": [
+      "require",
+      "define"
+    ],
     "indent": 4
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-compress": "^1.0.0",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-exec": "^0.4.6"
   }
 }
